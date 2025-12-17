@@ -5,6 +5,7 @@ import javax.baja.nre.annotations.NiagaraType;
 import javax.baja.sys.*;
 import javax.baja.driver.*;
 import javax.baja.status.*;
+import javax.baja.util.IFuture;
 
 /**
  * Custom Point Device
@@ -56,6 +57,13 @@ public class BMyPointDevice extends BDevice {
 
     /*+ ------------ END BAJA AUTO GENERATED CODE -------------- +*/
 
+    // ==================== BDevice Required Methods ====================
+
+    @Override
+    public Type getNetworkType() {
+        return BMyPointNetwork.TYPE;
+    }
+
     // ==================== Device Lifecycle ====================
 
     @Override
@@ -99,12 +107,26 @@ public class BMyPointDevice extends BDevice {
     }
 
     /**
+     * postPing() - Called after doPing() completes
+     * Must return IFuture
+     */
+    @Override
+    protected IFuture postPing() {
+        // Return null to indicate no async operation needed
+        return null;
+    }
+
+    /**
      * Get network parent (renamed from getNetwork to avoid conflict)
      */
     public BMyPointNetwork getMyPointNetwork() {
-        BComponent parent = getParent();
+        BComplex parent = getParent();
         while (parent != null && !(parent instanceof BMyPointNetwork)) {
-            parent = parent.getParent();
+            if (parent instanceof BComponent) {
+                parent = ((BComponent) parent).getParent();
+            } else {
+                break;
+            }
         }
         return (BMyPointNetwork) parent;
     }

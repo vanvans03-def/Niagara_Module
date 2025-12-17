@@ -6,6 +6,7 @@
   <type class="com.c.myPoc.BMyApiNetwork" name="MyApiNetwork"/>
   <type class="com.c.myPoc.BMyPointServer" name="MyPointServer"/>
   <type class="com.c.myPoc.BMyPointNetwork" name="MyPointNetwork"/>
+  <type class="com.c.myPoc.BMyPointDevice" name="MyPointDevice"/>
   <!--com.c.myPoc.controllers-->
   <type class="com.c.myPoc.controllers.BPointController" name="PointController"/>
 </types>

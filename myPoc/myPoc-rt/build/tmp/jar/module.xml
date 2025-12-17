@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<module name="myPoc-rt" bajaVersion="0" vendor="c" vendorVersion="1.0" description="My PoC Module with Web Servlet (UberJar)" preferredSymbol="c" nre="true" autoload="true" installable="true" buildMillis="1765790427581" buildHost="DESKTOP-KB4HMJQ" moduleName="myPoc" runtimeProfile="rt">
+<module name="myPoc-rt" bajaVersion="0" vendor="c" vendorVersion="1.0" description="My PoC Module with Web Servlet (UberJar)" preferredSymbol="c" nre="true" autoload="true" installable="true" buildMillis="1765946252005" buildHost="DESKTOP-KB4HMJQ" moduleName="myPoc" runtimeProfile="rt">
  <dependencies>
   <dependency name="web-rt" vendor="Tridium" vendorVersion="4.12"/>
   <dependency name="control-rt" vendor="Tridium" vendorVersion="4.12"/>
@@ -14,6 +14,7 @@
   <type class="com.c.myPoc.BMyApiNetwork" name="MyApiNetwork"/>
   <type class="com.c.myPoc.BMyPointServer" name="MyPointServer"/>
   <type class="com.c.myPoc.BMyPointNetwork" name="MyPointNetwork"/>
+  <type class="com.c.myPoc.BMyPointDevice" name="MyPointDevice"/>
   <type class="com.c.myPoc.controllers.BPointController" name="PointController"/>
  </types>
  <permissions>
