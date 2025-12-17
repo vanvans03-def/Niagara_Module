@@ -1,0 +1,27 @@
+apply plugin: 'java-library'
+
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src/main/java']
+        }
+    }
+}
+
+group 'com.cocoad'
+version '1.0'
+
+repositories {
+    mavenCentral()
+}
+
+
+dependencies {
+    compile "javax.servlet:javax.servlet-api:4.0.1"
+    compile "org.java-websocket:Java-WebSocket:1.5.3"
+}
+
+jar {
+    enabled = true
+}

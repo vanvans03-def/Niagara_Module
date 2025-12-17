@@ -1,0 +1,11 @@
+<types>
+  <!--com.c.myPoc-->
+  <type class="com.c.myPoc.BMyApiServlet" name="MyApiServlet"/>
+  <type class="com.c.myPoc.BMySmartScanner" name="MySmartScanner"/>
+  <type class="com.c.myPoc.BMySocketServer" name="MySocketServer"/>
+  <type class="com.c.myPoc.BMyApiNetwork" name="MyApiNetwork"/>
+  <type class="com.c.myPoc.BMyPointServer" name="MyPointServer"/>
+  <type class="com.c.myPoc.BMyPointNetwork" name="MyPointNetwork"/>
+  <!--com.c.myPoc.controllers-->
+  <type class="com.c.myPoc.controllers.BPointController" name="PointController"/>
+</types>

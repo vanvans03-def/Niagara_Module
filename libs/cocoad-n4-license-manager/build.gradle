@@ -1,0 +1,28 @@
+apply plugin: 'java-library'
+
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src/main/java']
+        }
+    }
+}
+
+group 'com.cocoad'
+version '1.0'
+
+description     = "cocoad_license_manager"
+ext {
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+}
+
+jar {
+    enabled = true
+}

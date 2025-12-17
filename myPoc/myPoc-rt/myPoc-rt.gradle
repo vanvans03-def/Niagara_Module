@@ -1,0 +1,67 @@
+/* Module Build File - UberJar (รวม servlet-api เข้ามา) */
+description = "My PoC Module with Web Servlet (UberJar)"
+
+ext {
+  project.group = "c"
+}
+
+niagaraModule {
+  moduleName = "myPoc"
+  preferredSymbol = "c"
+  runtimeProfile = "rt"
+  certAlias = "myPocCert"
+}
+
+repositories {
+  mavenCentral()
+}
+
+configurations {
+  embed
+  compile.extendsFrom(embed)
+}
+
+dependencies {
+  compile "Tridium:nre:4.12"
+  compile "Tridium:baja:4.12"
+  compile "Tridium:driver-rt:4.12"
+  compile "Tridium:web-rt:4.12"
+  compile "Tridium:control-rt:4.12"
+  // ✅ ใช้แค่ compile อย่างเดียว
+  compile project(":cocoad-extension-niagara")
+
+  compile files("C:/Honeywell/OptimizerSupervisor-N4.12.2.16/modules/alarm-rt.jar")
+  compile files("C:/Honeywell/OptimizerSupervisor-N4.12.2.16/modules/file-rt.jar")
+  implementation 'org.eclipse.jetty:jetty-server:9.4.+'
+  embed 'javax.servlet:javax.servlet-api:3.1.0'
+}
+
+jar {
+  from project(":cocoad-extension-niagara").sourceSets.main.output
+
+  // ✅ รวม WEB-INF จาก src directory
+  from('src') {
+    include 'WEB-INF/**'
+  }
+
+  // รวม embedded dependencies
+  from {
+    configurations.embed.collect {
+      it.isDirectory() ? it : zipTree(it)
+    }
+  }
+
+  exclude 'META-INF/*.SF'
+  exclude 'META-INF/*.DSA'
+  exclude 'META-INF/*.RSA'
+  exclude 'META-INF/LICENSE*'
+  exclude 'META-INF/NOTICE*'
+  exclude 'META-INF/maven/**'
+
+  duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+moduleTestJar {
+  from('srcTest') {
+  }
+}

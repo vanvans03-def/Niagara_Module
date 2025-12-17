@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module name="hello-rt" bajaVersion="0" vendor="h" vendorVersion="1.0" description="h" preferredSymbol="h" nre="true" autoload="true" installable="true" buildMillis="1765355428849" buildHost="DESKTOP-KB4HMJQ" moduleName="hello" runtimeProfile="rt">
+ <dependencies>
+  <dependency name="baja" vendor="Tridium" vendorVersion="4.12"/>
+ </dependencies>
+ <dirs/>
+ <types/>
+ <permissions>
+  <niagara-permission-groups type="all"/>
+  <niagara-permission-groups type="workbench"/>
+  <niagara-permission-groups type="station"/>
+ </permissions>
+</module>

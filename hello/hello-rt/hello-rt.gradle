@@ -1,0 +1,20 @@
+/* Module Build File */
+
+description     = "h"
+ext {
+}
+niagaraModule {
+  moduleName = "hello"
+  preferredSymbol = "h"
+  runtimeProfile = "rt"
+}
+
+dependencies {
+  compile "Tridium:nre:4.12"
+  compile "Tridium:baja:4.12"
+}
+
+moduleTestJar {
+  from('srcTest') {
+  }
+}

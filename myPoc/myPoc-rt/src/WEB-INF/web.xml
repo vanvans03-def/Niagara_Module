@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app>
+    <display-name>My Point API Server</display-name>
+
+    <servlet>
+        <servlet-name>PointAPI</servlet-name>
+        <servlet-class>com.c.myPoc.controllers.PointController</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>PointAPI</servlet-name>
+        <url-pattern>/pointApi/*</url-pattern>
+    </servlet-mapping>
+</web-app>
