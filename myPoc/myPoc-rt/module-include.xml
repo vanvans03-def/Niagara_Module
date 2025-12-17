@@ -10,5 +10,5 @@
   <!--com.c.myPoc.controllers-->
   <type class="com.c.myPoc.controllers.BPointController" name="PointController"/>
   <type class="com.c.myPoc.BMyUniversalNetwork" name="MyUniversalNetwork"/>
-
+  <type class="com.c.myPoc.BMyProxyPoint" name="MyProxyPoint"/>
 </types>

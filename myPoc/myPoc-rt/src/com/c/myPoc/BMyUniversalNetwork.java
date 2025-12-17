@@ -38,133 +38,323 @@ import java.security.*;
 @NiagaraAction(name = "ping")
 public class BMyUniversalNetwork extends BDeviceNetwork {
 
-    /*+ ------------ BEGIN BAJA AUTO GENERATED CODE ------------ +*/
-    /*@ $com.c.myPoc.BMyUniversalNetwork(2979906276)1.0$ @*/
-    /* Generated Wed Dec 17 16:00:00 ICT 2025 by Slot-o-Matic (c) Tridium, Inc. 2012 */
+    
+/*+ ------------ BEGIN BAJA AUTO GENERATED CODE ------------ +*/
+/*@ $com.c.myPoc.BMyUniversalNetwork(3756468945)1.0$ @*/
+/* Generated Wed Dec 17 15:18:57 ICT 2025 by Slot-o-Matic (c) Tridium, Inc. 2012 */
 
-    ////////////////////////////////////////////////////////////////
-    // Property "version"
-    ////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////
+// Property "version"
+////////////////////////////////////////////////////////////////
+  
+  /**
+   * Slot for the {@code version} property.
+   * @see #getVersion
+   * @see #setVersion
+   */
+  public static final Property version = newProperty(Flags.READONLY, "3.0.0", null);
+  
+  /**
+   * Get the {@code version} property.
+   * @see #version
+   */
+  public String getVersion() { return getString(version); }
+  
+  /**
+   * Set the {@code version} property.
+   * @see #version
+   */
+  public void setVersion(String v) { setString(version, v, null); }
 
-    public static final Property version = newProperty(Flags.READONLY, "3.0.0", null);
-    public String getVersion() { return getString(version); }
-    public void setVersion(String v) { setString(version, v, null); }
+////////////////////////////////////////////////////////////////
+// Property "subnet"
+////////////////////////////////////////////////////////////////
+  
+  /**
+   * Slot for the {@code subnet} property.
+   * @see #getSubnet
+   * @see #setSubnet
+   */
+  public static final Property subnet = newProperty(Flags.SUMMARY, "192.168.1.0/24", null);
+  
+  /**
+   * Get the {@code subnet} property.
+   * @see #subnet
+   */
+  public String getSubnet() { return getString(subnet); }
+  
+  /**
+   * Set the {@code subnet} property.
+   * @see #subnet
+   */
+  public void setSubnet(String v) { setString(subnet, v, null); }
 
-    ////////////////////////////////////////////////////////////////
-    // Property "subnet"
-    ////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////
+// Property "enableBACnet"
+////////////////////////////////////////////////////////////////
+  
+  /**
+   * Slot for the {@code enableBACnet} property.
+   * @see #getEnableBACnet
+   * @see #setEnableBACnet
+   */
+  public static final Property enableBACnet = newProperty(0, true, null);
+  
+  /**
+   * Get the {@code enableBACnet} property.
+   * @see #enableBACnet
+   */
+  public boolean getEnableBACnet() { return getBoolean(enableBACnet); }
+  
+  /**
+   * Set the {@code enableBACnet} property.
+   * @see #enableBACnet
+   */
+  public void setEnableBACnet(boolean v) { setBoolean(enableBACnet, v, null); }
 
-    public static final Property subnet = newProperty(Flags.SUMMARY, "192.168.1.0/24", null);
-    public String getSubnet() { return getString(subnet); }
-    public void setSubnet(String v) { setString(subnet, v, null); }
+////////////////////////////////////////////////////////////////
+// Property "enableModbus"
+////////////////////////////////////////////////////////////////
+  
+  /**
+   * Slot for the {@code enableModbus} property.
+   * @see #getEnableModbus
+   * @see #setEnableModbus
+   */
+  public static final Property enableModbus = newProperty(0, true, null);
+  
+  /**
+   * Get the {@code enableModbus} property.
+   * @see #enableModbus
+   */
+  public boolean getEnableModbus() { return getBoolean(enableModbus); }
+  
+  /**
+   * Set the {@code enableModbus} property.
+   * @see #enableModbus
+   */
+  public void setEnableModbus(boolean v) { setBoolean(enableModbus, v, null); }
 
-    ////////////////////////////////////////////////////////////////
-    // Property "enableBACnet"
-    ////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////
+// Property "enableHTTP"
+////////////////////////////////////////////////////////////////
+  
+  /**
+   * Slot for the {@code enableHTTP} property.
+   * @see #getEnableHTTP
+   * @see #setEnableHTTP
+   */
+  public static final Property enableHTTP = newProperty(0, true, null);
+  
+  /**
+   * Get the {@code enableHTTP} property.
+   * @see #enableHTTP
+   */
+  public boolean getEnableHTTP() { return getBoolean(enableHTTP); }
+  
+  /**
+   * Set the {@code enableHTTP} property.
+   * @see #enableHTTP
+   */
+  public void setEnableHTTP(boolean v) { setBoolean(enableHTTP, v, null); }
 
-    public static final Property enableBACnet = newProperty(0, true, null);
-    public boolean getEnableBACnet() { return getBoolean(enableBACnet); }
-    public void setEnableBACnet(boolean v) { setBoolean(enableBACnet, v, null); }
+////////////////////////////////////////////////////////////////
+// Property "scanTimeout"
+////////////////////////////////////////////////////////////////
+  
+  /**
+   * Slot for the {@code scanTimeout} property.
+   * @see #getScanTimeout
+   * @see #setScanTimeout
+   */
+  public static final Property scanTimeout = newProperty(0, 2000, null);
+  
+  /**
+   * Get the {@code scanTimeout} property.
+   * @see #scanTimeout
+   */
+  public int getScanTimeout() { return getInt(scanTimeout); }
+  
+  /**
+   * Set the {@code scanTimeout} property.
+   * @see #scanTimeout
+   */
+  public void setScanTimeout(int v) { setInt(scanTimeout, v, null); }
 
-    ////////////////////////////////////////////////////////////////
-    // Property "enableModbus"
-    ////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////
+// Property "maxThreads"
+////////////////////////////////////////////////////////////////
+  
+  /**
+   * Slot for the {@code maxThreads} property.
+   * @see #getMaxThreads
+   * @see #setMaxThreads
+   */
+  public static final Property maxThreads = newProperty(0, 50, null);
+  
+  /**
+   * Get the {@code maxThreads} property.
+   * @see #maxThreads
+   */
+  public int getMaxThreads() { return getInt(maxThreads); }
+  
+  /**
+   * Set the {@code maxThreads} property.
+   * @see #maxThreads
+   */
+  public void setMaxThreads(int v) { setInt(maxThreads, v, null); }
 
-    public static final Property enableModbus = newProperty(0, true, null);
-    public boolean getEnableModbus() { return getBoolean(enableModbus); }
-    public void setEnableModbus(boolean v) { setBoolean(enableModbus, v, null); }
+////////////////////////////////////////////////////////////////
+// Property "lastDiscoveryCount"
+////////////////////////////////////////////////////////////////
+  
+  /**
+   * Slot for the {@code lastDiscoveryCount} property.
+   * @see #getLastDiscoveryCount
+   * @see #setLastDiscoveryCount
+   */
+  public static final Property lastDiscoveryCount = newProperty(Flags.READONLY, 0, null);
+  
+  /**
+   * Get the {@code lastDiscoveryCount} property.
+   * @see #lastDiscoveryCount
+   */
+  public int getLastDiscoveryCount() { return getInt(lastDiscoveryCount); }
+  
+  /**
+   * Set the {@code lastDiscoveryCount} property.
+   * @see #lastDiscoveryCount
+   */
+  public void setLastDiscoveryCount(int v) { setInt(lastDiscoveryCount, v, null); }
 
-    ////////////////////////////////////////////////////////////////
-    // Property "enableHTTP"
-    ////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////
+// Property "lastDiscoveryTime"
+////////////////////////////////////////////////////////////////
+  
+  /**
+   * Slot for the {@code lastDiscoveryTime} property.
+   * @see #getLastDiscoveryTime
+   * @see #setLastDiscoveryTime
+   */
+  public static final Property lastDiscoveryTime = newProperty(Flags.READONLY, "", null);
+  
+  /**
+   * Get the {@code lastDiscoveryTime} property.
+   * @see #lastDiscoveryTime
+   */
+  public String getLastDiscoveryTime() { return getString(lastDiscoveryTime); }
+  
+  /**
+   * Set the {@code lastDiscoveryTime} property.
+   * @see #lastDiscoveryTime
+   */
+  public void setLastDiscoveryTime(String v) { setString(lastDiscoveryTime, v, null); }
 
-    public static final Property enableHTTP = newProperty(0, true, null);
-    public boolean getEnableHTTP() { return getBoolean(enableHTTP); }
-    public void setEnableHTTP(boolean v) { setBoolean(enableHTTP, v, null); }
+////////////////////////////////////////////////////////////////
+// Action "discoverAll"
+////////////////////////////////////////////////////////////////
+  
+  /**
+   * Slot for the {@code discoverAll} action.
+   * @see #discoverAll()
+   */
+  public static final Action discoverAll = newAction(Flags.ASYNC | Flags.SUMMARY, null);
+  
+  /**
+   * Invoke the {@code discoverAll} action.
+   * @see #discoverAll
+   */
+  public void discoverAll() { invoke(discoverAll, null, null); }
 
-    ////////////////////////////////////////////////////////////////
-    // Property "scanTimeout"
-    ////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////
+// Action "discoverBACnet"
+////////////////////////////////////////////////////////////////
+  
+  /**
+   * Slot for the {@code discoverBACnet} action.
+   * @see #discoverBACnet()
+   */
+  public static final Action discoverBACnet = newAction(Flags.ASYNC, null);
+  
+  /**
+   * Invoke the {@code discoverBACnet} action.
+   * @see #discoverBACnet
+   */
+  public void discoverBACnet() { invoke(discoverBACnet, null, null); }
 
-    public static final Property scanTimeout = newProperty(0, 2000, null);
-    public int getScanTimeout() { return getInt(scanTimeout); }
-    public void setScanTimeout(int v) { setInt(scanTimeout, v, null); }
+////////////////////////////////////////////////////////////////
+// Action "discoverModbus"
+////////////////////////////////////////////////////////////////
+  
+  /**
+   * Slot for the {@code discoverModbus} action.
+   * @see #discoverModbus()
+   */
+  public static final Action discoverModbus = newAction(Flags.ASYNC, null);
+  
+  /**
+   * Invoke the {@code discoverModbus} action.
+   * @see #discoverModbus
+   */
+  public void discoverModbus() { invoke(discoverModbus, null, null); }
 
-    ////////////////////////////////////////////////////////////////
-    // Property "maxThreads"
-    ////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////
+// Action "discoverHTTP"
+////////////////////////////////////////////////////////////////
+  
+  /**
+   * Slot for the {@code discoverHTTP} action.
+   * @see #discoverHTTP()
+   */
+  public static final Action discoverHTTP = newAction(Flags.ASYNC, null);
+  
+  /**
+   * Invoke the {@code discoverHTTP} action.
+   * @see #discoverHTTP
+   */
+  public void discoverHTTP() { invoke(discoverHTTP, null, null); }
 
-    public static final Property maxThreads = newProperty(0, 50, null);
-    public int getMaxThreads() { return getInt(maxThreads); }
-    public void setMaxThreads(int v) { setInt(maxThreads, v, null); }
+////////////////////////////////////////////////////////////////
+// Action "clearDevices"
+////////////////////////////////////////////////////////////////
+  
+  /**
+   * Slot for the {@code clearDevices} action.
+   * @see #clearDevices()
+   */
+  public static final Action clearDevices = newAction(Flags.SUMMARY, null);
+  
+  /**
+   * Invoke the {@code clearDevices} action.
+   * @see #clearDevices
+   */
+  public void clearDevices() { invoke(clearDevices, null, null); }
 
-    ////////////////////////////////////////////////////////////////
-    // Property "lastDiscoveryCount"
-    ////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////
+// Action "ping"
+////////////////////////////////////////////////////////////////
+  
+  /**
+   * Slot for the {@code ping} action.
+   * @see #ping()
+   */
+  public static final Action ping = newAction(0, null);
+  
+  /**
+   * Invoke the {@code ping} action.
+   * @see #ping
+   */
+  public void ping() { invoke(ping, null, null); }
 
-    public static final Property lastDiscoveryCount = newProperty(Flags.READONLY, 0, null);
-    public int getLastDiscoveryCount() { return getInt(lastDiscoveryCount); }
-    public void setLastDiscoveryCount(int v) { setInt(lastDiscoveryCount, v, null); }
+////////////////////////////////////////////////////////////////
+// Type
+////////////////////////////////////////////////////////////////
+  
+  @Override
+  public Type getType() { return TYPE; }
+  public static final Type TYPE = Sys.loadType(BMyUniversalNetwork.class);
 
-    ////////////////////////////////////////////////////////////////
-    // Property "lastDiscoveryTime"
-    ////////////////////////////////////////////////////////////////
-
-    public static final Property lastDiscoveryTime = newProperty(Flags.READONLY, "", null);
-    public String getLastDiscoveryTime() { return getString(lastDiscoveryTime); }
-    public void setLastDiscoveryTime(String v) { setString(lastDiscoveryTime, v, null); }
-
-    ////////////////////////////////////////////////////////////////
-    // Action "discoverAll"
-    ////////////////////////////////////////////////////////////////
-
-    public static final Action discoverAll = newAction(Flags.ASYNC | Flags.SUMMARY, null);
-    public void discoverAll() { invoke(discoverAll, null, null); }
-
-    ////////////////////////////////////////////////////////////////
-    // Action "discoverBACnet"
-    ////////////////////////////////////////////////////////////////
-
-    public static final Action discoverBACnet = newAction(Flags.ASYNC, null);
-    public void discoverBACnet() { invoke(discoverBACnet, null, null); }
-
-    ////////////////////////////////////////////////////////////////
-    // Action "discoverModbus"
-    ////////////////////////////////////////////////////////////////
-
-    public static final Action discoverModbus = newAction(Flags.ASYNC, null);
-    public void discoverModbus() { invoke(discoverModbus, null, null); }
-
-    ////////////////////////////////////////////////////////////////
-    // Action "discoverHTTP"
-    ////////////////////////////////////////////////////////////////
-
-    public static final Action discoverHTTP = newAction(Flags.ASYNC, null);
-    public void discoverHTTP() { invoke(discoverHTTP, null, null); }
-
-    ////////////////////////////////////////////////////////////////
-    // Action "clearDevices"
-    ////////////////////////////////////////////////////////////////
-
-    public static final Action clearDevices = newAction(Flags.SUMMARY, null);
-    public void clearDevices() { invoke(clearDevices, null, null); }
-
-    ////////////////////////////////////////////////////////////////
-    // Action "ping"
-    ////////////////////////////////////////////////////////////////
-
-    public static final Action ping = newAction(0, null);
-    public void ping() { invoke(ping, null, null); }
-
-    ////////////////////////////////////////////////////////////////
-    // Type
-    ////////////////////////////////////////////////////////////////
-
-    @Override
-    public Type getType() { return TYPE; }
-    public static final Type TYPE = Sys.loadType(BMyUniversalNetwork.class);
-
-    /*+ ------------ END BAJA AUTO GENERATED CODE -------------- +*/
+/*+ ------------ END BAJA AUTO GENERATED CODE -------------- +*/
 
     // ==================== Constants ====================
 
@@ -610,6 +800,9 @@ public class BMyUniversalNetwork extends BDeviceNetwork {
     /**
      * Create devices from discovered list
      */
+    /**
+     * Create devices from discovered list
+     */
     private int createDevicesFromList(List<DiscoveredDevice> discovered) throws Exception {
         int created = 0;
         for (DiscoveredDevice disc : discovered) {
@@ -621,6 +814,15 @@ public class BMyUniversalNetwork extends BDeviceNetwork {
 
                 addDeviceToNetwork(disc.getName(), device);
                 created++;
+
+                // ✅ Auto-discover points after creating device
+                try {
+                    System.out.println("");
+                    System.out.println("🔍 Auto-discovering points for " + disc.getName() + "...");
+                    device.doDiscoverPoints();
+                } catch (Exception e) {
+                    System.err.println("⚠️ Point discovery failed: " + e.getMessage());
+                }
             }
         }
         return created;
