@@ -19,43 +19,89 @@ import javax.baja.util.IFuture;
 @NiagaraProperty(name = "deviceDescription", type = "String", defaultValue = "")
 public class BMyPointDevice extends BDevice {
 
-    /*+ ------------ BEGIN BAJA AUTO GENERATED CODE ------------ +*/
-    /*@ $com.c.myPoc.BMyPointDevice(3542891236)1.0$ @*/
-    /* Generated Fri Dec 17 10:30:00 ICT 2025 by Slot-o-Matic (c) Tridium, Inc. 2012 */
+    
+/*+ ------------ BEGIN BAJA AUTO GENERATED CODE ------------ +*/
+/*@ $com.c.myPoc.BMyPointDevice(166836883)1.0$ @*/
+/* Generated Wed Dec 17 13:36:40 ICT 2025 by Slot-o-Matic (c) Tridium, Inc. 2012 */
 
 ////////////////////////////////////////////////////////////////
 // Property "deviceName"
 ////////////////////////////////////////////////////////////////
-
-    public static final Property deviceName = newProperty(0, "", null);
-    public String getDeviceName() { return getString(deviceName); }
-    public void setDeviceName(String v) { setString(deviceName, v, null); }
+  
+  /**
+   * Slot for the {@code deviceName} property.
+   * @see #getDeviceName
+   * @see #setDeviceName
+   */
+  public static final Property deviceName = newProperty(0, "", null);
+  
+  /**
+   * Get the {@code deviceName} property.
+   * @see #deviceName
+   */
+  public String getDeviceName() { return getString(deviceName); }
+  
+  /**
+   * Set the {@code deviceName} property.
+   * @see #deviceName
+   */
+  public void setDeviceName(String v) { setString(deviceName, v, null); }
 
 ////////////////////////////////////////////////////////////////
 // Property "deviceAddress"
 ////////////////////////////////////////////////////////////////
-
-    public static final Property deviceAddress = newProperty(0, "", null);
-    public String getDeviceAddress() { return getString(deviceAddress); }
-    public void setDeviceAddress(String v) { setString(deviceAddress, v, null); }
+  
+  /**
+   * Slot for the {@code deviceAddress} property.
+   * @see #getDeviceAddress
+   * @see #setDeviceAddress
+   */
+  public static final Property deviceAddress = newProperty(0, "", null);
+  
+  /**
+   * Get the {@code deviceAddress} property.
+   * @see #deviceAddress
+   */
+  public String getDeviceAddress() { return getString(deviceAddress); }
+  
+  /**
+   * Set the {@code deviceAddress} property.
+   * @see #deviceAddress
+   */
+  public void setDeviceAddress(String v) { setString(deviceAddress, v, null); }
 
 ////////////////////////////////////////////////////////////////
 // Property "deviceDescription"
 ////////////////////////////////////////////////////////////////
-
-    public static final Property deviceDescription = newProperty(0, "", null);
-    public String getDeviceDescription() { return getString(deviceDescription); }
-    public void setDeviceDescription(String v) { setString(deviceDescription, v, null); }
+  
+  /**
+   * Slot for the {@code deviceDescription} property.
+   * @see #getDeviceDescription
+   * @see #setDeviceDescription
+   */
+  public static final Property deviceDescription = newProperty(0, "", null);
+  
+  /**
+   * Get the {@code deviceDescription} property.
+   * @see #deviceDescription
+   */
+  public String getDeviceDescription() { return getString(deviceDescription); }
+  
+  /**
+   * Set the {@code deviceDescription} property.
+   * @see #deviceDescription
+   */
+  public void setDeviceDescription(String v) { setString(deviceDescription, v, null); }
 
 ////////////////////////////////////////////////////////////////
 // Type
 ////////////////////////////////////////////////////////////////
+  
+  @Override
+  public Type getType() { return TYPE; }
+  public static final Type TYPE = Sys.loadType(BMyPointDevice.class);
 
-    @Override
-    public Type getType() { return TYPE; }
-    public static final Type TYPE = Sys.loadType(BMyPointDevice.class);
-
-    /*+ ------------ END BAJA AUTO GENERATED CODE -------------- +*/
+/*+ ------------ END BAJA AUTO GENERATED CODE -------------- +*/
 
     // ==================== BDevice Required Methods ====================
 

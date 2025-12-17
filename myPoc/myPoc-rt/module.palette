@@ -9,5 +9,7 @@
     <p n="PointController" m="myPoc=myPoc" t="myPoc:PointController"/>
     <p n="BPointController" m="myPoc=myPoc" t="myPoc:BPointController"/>
     <p n="MyPointNetwork" m="myPoc=myPoc" t="myPoc:MyPointNetwork"/>
+    <p n="MyUniversalNetwork" m="myPoc=myPoc" t="myPoc:MyUniversalNetwork"/>
+
   </p>
 </bajaObjectGraph>

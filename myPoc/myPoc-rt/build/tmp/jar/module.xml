@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<module name="myPoc-rt" bajaVersion="0" vendor="c" vendorVersion="1.0" description="My PoC Module with Web Servlet (UberJar)" preferredSymbol="c" nre="true" autoload="true" installable="true" buildMillis="1765946252005" buildHost="DESKTOP-KB4HMJQ" moduleName="myPoc" runtimeProfile="rt">
+<module name="myPoc-rt" bajaVersion="0" vendor="c" vendorVersion="1.0" description="My PoC Module with Web Servlet (UberJar)" preferredSymbol="c" nre="true" autoload="true" installable="true" buildMillis="1765956341953" buildHost="DESKTOP-KB4HMJQ" moduleName="myPoc" runtimeProfile="rt">
  <dependencies>
   <dependency name="web-rt" vendor="Tridium" vendorVersion="4.12"/>
   <dependency name="control-rt" vendor="Tridium" vendorVersion="4.12"/>
@@ -16,10 +16,44 @@
   <type class="com.c.myPoc.BMyPointNetwork" name="MyPointNetwork"/>
   <type class="com.c.myPoc.BMyPointDevice" name="MyPointDevice"/>
   <type class="com.c.myPoc.controllers.BPointController" name="PointController"/>
+  <type class="com.c.myPoc.BMyUniversalNetwork" name="MyUniversalNetwork"/>
  </types>
  <permissions>
   <niagara-permission-groups type="all"/>
   <niagara-permission-groups type="workbench"/>
-  <niagara-permission-groups type="station"/>
+  <niagara-permission-groups type="station">
+   <req-permission>
+    <name>NETWORK_COMMUNICATION</name>
+    <purposeKey>Universal Network Discovery - Allow network scanning</purposeKey>
+    <parameters>
+     <parameter name="hosts" value="*"/>
+     <parameter name="ports" value="*"/>
+     <parameter name="type" value="all"/>
+    </parameters>
+   </req-permission>
+   <req-permission>
+    <name>SOCKET_PERMISSION</name>
+    <purposeKey>Socket access for protocol discovery</purposeKey>
+    <parameters>
+     <parameter name="host" value="*"/>
+     <parameter name="port" value="*"/>
+     <parameter name="action" value="connect,listen,accept,resolve"/>
+    </parameters>
+   </req-permission>
+   <req-permission>
+    <name>RUNTIME_PERMISSION</name>
+    <purposeKey>Thread pool management for concurrent scanning</purposeKey>
+    <parameters>
+     <parameter name="name" value="modifyThread"/>
+    </parameters>
+   </req-permission>
+   <req-permission>
+    <name>RUNTIME_PERMISSION</name>
+    <purposeKey>Thread group modification for scanning threads</purposeKey>
+    <parameters>
+     <parameter name="name" value="modifyThreadGroup"/>
+    </parameters>
+   </req-permission>
+  </niagara-permission-groups>
  </permissions>
 </module>

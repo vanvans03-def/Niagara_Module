@@ -9,4 +9,6 @@
   <type class="com.c.myPoc.BMyPointDevice" name="MyPointDevice"/>
   <!--com.c.myPoc.controllers-->
   <type class="com.c.myPoc.controllers.BPointController" name="PointController"/>
+  <type class="com.c.myPoc.BMyUniversalNetwork" name="MyUniversalNetwork"/>
+
 </types>
