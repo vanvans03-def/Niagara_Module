@@ -291,9 +291,138 @@ public class BMyProxyPoint extends BNumericPoint {
     /**
      * Read BACnet Present Value
      */
+    /**
+     * Read BACnet Present Value using Raw UDP (PoC Implementation)
+     */
     private double readBACnet() throws Exception {
-        // TODO: Implement BACnet ReadProperty
-        throw new Exception("BACnet not yet implemented");
+        BMyPointDevice device = getParentDevice();
+        if (device == null) {
+            throw new Exception("Device not found");
+        }
+
+        // 1. Prepare Connection Info
+        String[] addrParts = device.getDeviceAddress().split(":");
+        String ip = addrParts[0];
+        int port = addrParts.length > 1 ? Integer.parseInt(addrParts[1]) : 47808;
+
+        // 2. Determine Object Type & Instance
+        // Mapping: AnalogInput=0, AnalogOutput=1, AnalogValue=2, BinaryInput=3, etc.
+        int objectType = 0; // Default to AnalogInput
+        String typeStr = getRegisterType().toLowerCase(); // หรือใช้ชื่อ Point ถ้าไม่ได้ set registerType
+        if (getName().toLowerCase().contains("analogoutput") || typeStr.contains("analogoutput")) objectType = 1;
+        else if (getName().toLowerCase().contains("analogvalue") || typeStr.contains("analogvalue")) objectType = 2;
+        else if (getName().toLowerCase().contains("binaryinput") || typeStr.contains("binaryinput")) objectType = 3;
+        else if (getName().toLowerCase().contains("binaryoutput") || typeStr.contains("binaryoutput")) objectType = 4;
+
+        int instance = getRegisterAddress();
+        int propertyId = 85; // Present_Value
+
+        int finalObjectType = objectType;
+        return AccessController.doPrivileged((PrivilegedAction<Double>) () -> {
+            DatagramSocket socket = null;
+            try {
+                socket = new DatagramSocket();
+                socket.setSoTimeout(3000);
+                InetAddress address = InetAddress.getByName(ip);
+
+                // 3. Construct BACnet/IP Packet (ReadProperty Request)
+                // BVLC (4 bytes) + NPDU (2 bytes) + APDU (variable)
+
+                // --- APDU Construction ---
+                // Service: Confirmed-Request (0x00), MaxSegs (0x05), InvokeID (0x01), ServiceChoice: ReadProperty (0x0C)
+                // ObjectIdentifier (Tag 0): Type + Instance
+                // PropertyIdentifier (Tag 1): 85 (Present_Value)
+
+                // Calculate Object ID parts
+                // ObjectType is bits 22-31, Instance is bits 0-21
+                // We construct the 4 bytes for Object ID manually
+                int objectIdPacked = (finalObjectType << 22) | (instance & 0x3FFFFF);
+
+                byte[] apdu = new byte[] {
+                        0x00,       // PDU Type: Confirmed Request
+                        0x05,       // Max Segments / APDU Size
+                        0x01,       // Invoke ID (Hardcoded 1 for PoC)
+                        0x0c,       // Service Choice: ReadProperty (12)
+
+                        // Tag 0: Object Identifier (Context Specific, Length 4) -> 0x0C
+                        0x0c,
+                        (byte)((objectIdPacked >> 24) & 0xFF),
+                        (byte)((objectIdPacked >> 16) & 0xFF),
+                        (byte)((objectIdPacked >> 8) & 0xFF),
+                        (byte)(objectIdPacked & 0xFF),
+
+                        // Tag 1: Property Identifier (Context Specific, Length 1) -> 0x19
+                        0x19,
+                        (byte)propertyId // 85 (0x55)
+                };
+
+                // --- BVLC & NPDU Construction ---
+                int packetLength = 4 + 2 + apdu.length; // BVLC(4) + NPDU(2) + APDU
+                byte[] buffer = new byte[packetLength];
+
+                // BVLC
+                buffer[0] = (byte) 0x81; // BACnet/IP
+                buffer[1] = (byte) 0x0a; // Function: Original-Unicast-NPDU
+                buffer[2] = (byte) ((packetLength >> 8) & 0xFF); // Length High
+                buffer[3] = (byte) (packetLength & 0xFF);        // Length Low
+
+                // NPDU
+                buffer[4] = (byte) 0x01; // Version
+                buffer[5] = (byte) 0x04; // Control (Expecting Reply)
+
+                // Copy APDU
+                System.arraycopy(apdu, 0, buffer, 6, apdu.length);
+
+                // 4. Send Packet
+                DatagramPacket packet = new DatagramPacket(buffer, buffer.length, address, port);
+                socket.send(packet);
+
+                // 5. Receive Response
+                byte[] rxBuffer = new byte[512];
+                DatagramPacket rxPacket = new DatagramPacket(rxBuffer, rxBuffer.length);
+                socket.receive(rxPacket);
+
+                byte[] data = rxPacket.getData();
+                int len = rxPacket.getLength();
+
+                // 6. Basic Parsing (Heuristic / Simplified)
+                // Check for Complex ACK (PDU Type 0x30)
+                // We skip BVLC(4) + NPDU(2?) to find APDU.
+                // Note: Response NPDU might vary, usually 2 bytes if no source info.
+
+                // Scan for "Real" Application Tag (0x44) -> Float value
+                // Or "Enumerated" Application Tag (0x91) -> Binary value (0/1)
+
+                for (int i = 6; i < len - 4; i++) {
+                    // Check for Real (Float) Tag: 0x44 (Application Tag 4, Length 4)
+                    if (data[i] == 0x44) {
+                        int bits = ((data[i+1] & 0xFF) << 24) |
+                                ((data[i+2] & 0xFF) << 16) |
+                                ((data[i+3] & 0xFF) << 8)  |
+                                (data[i+4] & 0xFF);
+                        return (double) Float.intBitsToFloat(bits);
+                    }
+
+                    // Check for Enumerated Tag: 0x91 (Application Tag 9, Length 1) - Common for Binary PV
+                    if (data[i] == (byte)0x91) {
+                        return (double) (data[i+1] & 0xFF);
+                    }
+                }
+
+                // If we got a response but couldn't parse logic
+                System.out.println("BACnet Response received but value not found/parsed.");
+                return 0.0; // Fail-safe
+
+            } catch (SocketTimeoutException se) {
+                throw new RuntimeException("BACnet Timeout");
+            } catch (Exception e) {
+                throw new RuntimeException("BACnet Error: " + e.getMessage());
+            } finally {
+                if (socket != null && !socket.isClosed()) {
+                    socket.close();
+                }
+            }
+        });
     }
 
     /**
