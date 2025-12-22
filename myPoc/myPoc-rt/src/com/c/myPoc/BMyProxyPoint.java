@@ -265,66 +265,79 @@ public class BMyProxyPoint extends BNumericWritable {
     }
 
     /**
-     * Read Modbus Holding Register
+     * Read Modbus (Supports multiple types)
      */
     private double readModbus() throws Exception {
         BMyPointDevice device = getParentDevice();
-        if (device == null) {
-            throw new Exception("Device not found");
-        }
+        if (device == null) throw new Exception("Device not found");
 
         String[] addrParts = device.getDeviceAddress().split(":");
         String ip = addrParts[0];
         int port = addrParts.length > 1 ? Integer.parseInt(addrParts[1]) : 502;
 
+        int regAddr = getRegisterAddress();
+        String type = getRegisterType().toLowerCase();
+
         return AccessController.doPrivileged((PrivilegedAction<Double>) () -> {
             Socket socket = null;
             try {
                 socket = new Socket();
-                socket.connect(new InetSocketAddress(ip, port), 3000);
+                socket.connect(new InetSocketAddress(ip, port), 2000);
 
-                // Build Modbus Read Holding Registers request
-                int regAddr = getRegisterAddress();
+                // เลือก Function Code ตามประเภท
+                byte fc;
+                if (type.contains("coil")) fc = 0x01;            // Read Coils
+                else if (type.contains("discrete")) fc = 0x02;   // Read Discrete Inputs
+                else if (type.contains("input")) fc = 0x04;      // Read Input Registers
+                else fc = 0x03;                                  // Default: Read Holding Registers
+
                 byte[] request = {
                         0x00, 0x01,  // Transaction ID
                         0x00, 0x00,  // Protocol ID
                         0x00, 0x06,  // Length
                         0x01,        // Unit ID
-                        0x03,        // Function Code (Read Holding Registers)
-                        (byte) (regAddr >> 8), (byte) (regAddr & 0xFF),  // Start Address
-                        0x00, 0x01   // Quantity (1 register)
+                        fc,          // Function Code
+                        (byte)(regAddr >> 8), (byte)(regAddr & 0xFF),  // Start Addr
+                        0x00, 0x01   // Quantity = 1
                 };
 
                 OutputStream out = socket.getOutputStream();
                 out.write(request);
                 out.flush();
 
-                // Read response
                 InputStream in = socket.getInputStream();
                 byte[] response = new byte[256];
                 int len = in.read(response);
 
-                if (len >= 11 && response[7] == 0x03) {
-                    // Extract register value (2 bytes, big-endian)
-                    int value = ((response[9] & 0xFF) << 8) | (response[10] & 0xFF);
-                    return (double) value;
+                // Parse Response
+                if (len >= 9 && response[7] == fc) {
+                    int byteCount = response[8];
+                    if (fc == 0x01 || fc == 0x02) {
+                        // --- Bit Data (Coil/Discrete) ---
+                        // Data อยู่ที่ byte 9, bit แรก
+                        int val = response[9] & 0x01;
+                        return (double) val;
+                    } else {
+                        // --- Word Data (Register) ---
+                        // Data อยู่ที่ byte 9-10 (Big Endian)
+                        int val = ((response[9] & 0xFF) << 8) | (response[10] & 0xFF);
+                        // ถ้าเป็น Signed Int16
+                        if (val > 32767) val -= 65536;
+                        return (double) val;
+                    }
                 }
 
+                // ถ้ามาไม่ถึงตรงนี้ แสดงว่า Error
                 throw new RuntimeException("Invalid Modbus response");
 
             } catch (Exception e) {
+                // Return NaN หรือ throw เพื่อให้ setFault ทำงาน
                 throw new RuntimeException(e);
             } finally {
-                if (socket != null) {
-                    try {
-                        socket.close();
-                    } catch (Exception e) {
-                    }
-                }
+                try { if (socket != null) socket.close(); } catch (Exception e) {}
             }
         });
     }
-
     /**
      * เขียนค่าไปยัง Device
      */
@@ -333,7 +346,7 @@ public class BMyProxyPoint extends BNumericWritable {
         if ("bacnet".equals(proto)) {
             writeBACnet(value);
         } else if ("modbus".equals(proto)) {
-            // writeModbus(value); // Implement Modbus Write 06/16 here
+            writeModbus(value);
         }
     }
 
@@ -346,12 +359,16 @@ public class BMyProxyPoint extends BNumericWritable {
         int port = addrParts.length > 1 ? Integer.parseInt(addrParts[1]) : 47808;
 
         // Determine Object Type from Name/Property
+        String typeStr = getRegisterType().toLowerCase();
         int objectType = 1; // Default AO
-        if (getName().contains("AV")) objectType = 2;
-        if (getName().contains("BO")) objectType = 4;
+        if (typeStr.contains("ai") || typeStr.contains("analoginput")) objectType = 0;
+        else if (typeStr.contains("ao") || typeStr.contains("analogoutput")) objectType = 1;
+        else if (typeStr.contains("av") || typeStr.contains("analogvalue")) objectType = 2;
+        else if (typeStr.contains("bi") || typeStr.contains("binaryinput")) objectType = 3;
+        else if (typeStr.contains("bo") || typeStr.contains("binaryoutput")) objectType = 4;
+        else if (typeStr.contains("bv") || typeStr.contains("binaryvalue")) objectType = 5;
 
         int instance = getRegisterAddress();
-
         int finalObjectType = objectType;
         AccessController.doPrivileged((PrivilegedAction<Void>) () -> {
             DatagramSocket socket = null;
@@ -373,6 +390,82 @@ public class BMyProxyPoint extends BNumericWritable {
                 System.err.println("BACnet Write Error: " + e.getMessage());
             } finally {
                 if (socket != null) socket.close();
+            }
+            return null;
+        });
+    }
+
+    /**
+     * Write Modbus (Support Single Register & Single Coil)
+     */
+    private void writeModbus(double val) throws Exception {
+        BMyPointDevice device = getParentDevice();
+        if (device == null) return;
+
+        String[] addrParts = device.getDeviceAddress().split(":");
+        String ip = addrParts[0];
+        int port = addrParts.length > 1 ? Integer.parseInt(addrParts[1]) : 502;
+
+        int regAddr = getRegisterAddress();
+        String type = getRegisterType().toLowerCase();
+
+        AccessController.doPrivileged((PrivilegedAction<Void>) () -> {
+            Socket socket = null;
+            try {
+                socket = new Socket();
+                socket.connect(new InetSocketAddress(ip, port), 2000);
+
+                OutputStream out = socket.getOutputStream();
+                InputStream in = socket.getInputStream();
+
+                byte[] request;
+
+                // 1. ตัดสินใจว่าจะเขียน Coil หรือ Register
+                if (type.contains("coil") || type.contains("binary")) {
+                    // --- Write Single Coil (FC 05) ---
+                    int outputVal = (val > 0) ? 0xFF00 : 0x0000; // ON=0xFF00, OFF=0x0000
+                    request = new byte[] {
+                            0x00, 0x02,             // Transaction ID
+                            0x00, 0x00,             // Protocol ID
+                            0x00, 0x06,             // Length
+                            0x01,                   // Unit ID (Default 1)
+                            0x05,                   // FC 05: Write Single Coil
+                            (byte)(regAddr >> 8), (byte)(regAddr & 0xFF), // Address
+                            (byte)(outputVal >> 8), (byte)(outputVal & 0xFF) // Value
+                    };
+                } else {
+                    // --- Write Single Register (FC 06) ---
+                    // แปลง double เป็น int (รองรับแค่ 16-bit ใน PoC นี้)
+                    int intVal = (int) val;
+                    request = new byte[] {
+                            0x00, 0x02,             // Transaction ID
+                            0x00, 0x00,             // Protocol ID
+                            0x00, 0x06,             // Length
+                            0x01,                   // Unit ID (Default 1)
+                            0x06,                   // FC 06: Write Single Register
+                            (byte)(regAddr >> 8), (byte)(regAddr & 0xFF), // Address
+                            (byte)(intVal >> 8), (byte)(intVal & 0xFF)    // Value
+                    };
+                }
+
+                // Send
+                out.write(request);
+                out.flush();
+
+                // Read Response (Simple check)
+                byte[] response = new byte[256];
+                int len = in.read(response);
+
+                if (len > 0 && (response[7] == 0x05 || response[7] == 0x06)) {
+                    System.out.println("Modbus Write Success: " + val);
+                } else {
+                    System.err.println("Modbus Write Error: Invalid response or Exception Code");
+                }
+
+            } catch (Exception e) {
+                System.err.println("Modbus Write Error: " + e.getMessage());
+            } finally {
+                try { if (socket != null) socket.close(); } catch (Exception e) {}
             }
             return null;
         });
