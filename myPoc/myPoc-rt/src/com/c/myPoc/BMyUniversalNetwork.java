@@ -30,18 +30,20 @@ import java.security.*;
 @NiagaraProperty(name = "maxThreads", type = "int", defaultValue = "50")
 @NiagaraProperty(name = "lastDiscoveryCount", type = "int", defaultValue = "0", flags = Flags.READONLY)
 @NiagaraProperty(name = "lastDiscoveryTime", type = "String", defaultValue = "", flags = Flags.READONLY)
+@NiagaraProperty(name = "localDeviceId", type = "int", defaultValue = "12345")
 @NiagaraAction(name = "discoverAll", flags = Flags.ASYNC | Flags.SUMMARY)
 @NiagaraAction(name = "discoverBACnet", flags = Flags.ASYNC)
 @NiagaraAction(name = "discoverModbus", flags = Flags.ASYNC)
 @NiagaraAction(name = "discoverHTTP", flags = Flags.ASYNC)
 @NiagaraAction(name = "clearDevices", flags = Flags.SUMMARY)
 @NiagaraAction(name = "ping")
+
 public class BMyUniversalNetwork extends BDeviceNetwork {
 
     
 /*+ ------------ BEGIN BAJA AUTO GENERATED CODE ------------ +*/
-/*@ $com.c.myPoc.BMyUniversalNetwork(3756468945)1.0$ @*/
-/* Generated Wed Dec 17 15:18:57 ICT 2025 by Slot-o-Matic (c) Tridium, Inc. 2012 */
+/*@ $com.c.myPoc.BMyUniversalNetwork(1074625821)1.0$ @*/
+/* Generated Fri Dec 19 13:56:49 ICT 2025 by Slot-o-Matic (c) Tridium, Inc. 2012 */
 
 ////////////////////////////////////////////////////////////////
 // Property "version"
@@ -249,6 +251,29 @@ public class BMyUniversalNetwork extends BDeviceNetwork {
    * @see #lastDiscoveryTime
    */
   public void setLastDiscoveryTime(String v) { setString(lastDiscoveryTime, v, null); }
+
+////////////////////////////////////////////////////////////////
+// Property "localDeviceId"
+////////////////////////////////////////////////////////////////
+  
+  /**
+   * Slot for the {@code localDeviceId} property.
+   * @see #getLocalDeviceId
+   * @see #setLocalDeviceId
+   */
+  public static final Property localDeviceId = newProperty(0, 12345, null);
+  
+  /**
+   * Get the {@code localDeviceId} property.
+   * @see #localDeviceId
+   */
+  public int getLocalDeviceId() { return getInt(localDeviceId); }
+  
+  /**
+   * Set the {@code localDeviceId} property.
+   * @see #localDeviceId
+   */
+  public void setLocalDeviceId(int v) { setInt(localDeviceId, v, null); }
 
 ////////////////////////////////////////////////////////////////
 // Action "discoverAll"
@@ -720,9 +745,9 @@ public class BMyUniversalNetwork extends BDeviceNetwork {
     private byte[] buildBACnetWhoIs() {
         return new byte[] {
                 (byte) 0x81, (byte) 0x0A, (byte) 0x00, (byte) 0x0C,  // BVLC
-                (byte) 0x01, (byte) 0x20, (byte) 0xFF, (byte) 0xFF,  // NPDU
+                (byte) 0x01, (byte) 0x20, (byte) 0xFF, (byte) 0xFF,  // NPDU (Broadcast)
                 (byte) 0x00, (byte) 0xFF,
-                (byte) 0x10, (byte) 0x08   // APDU (Who-Is)
+                (byte) 0x10, (byte) 0x08
         };
     }
 

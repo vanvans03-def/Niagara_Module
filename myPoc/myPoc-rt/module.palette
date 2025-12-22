@@ -11,6 +11,7 @@
     <p n="MyPointNetwork" m="myPoc=myPoc" t="myPoc:MyPointNetwork"/>
     <p n="MyUniversalNetwork" m="myPoc=myPoc" t="myPoc:MyUniversalNetwork"/>
     <p n="MyProxyPoint" m="myPoc=myPoc" t="myPoc:MyProxyPoint"/>
+     <p n="MyPointDevice" m="myPoc=myPoc" t="myPoc:MyPointDevice"/>
 
   </p>
 </bajaObjectGraph>

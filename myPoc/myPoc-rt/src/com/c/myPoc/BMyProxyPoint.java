@@ -9,6 +9,8 @@ import java.io.*;
 import java.net.*;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import javax.baja.status.*;
+import javax.baja.control.*;
 
 /**
  * Proxy Point for reading values from external devices
@@ -20,12 +22,13 @@ import java.security.PrivilegedAction;
 @NiagaraProperty(name = "registerAddress", type = "int", defaultValue = "0")
 @NiagaraProperty(name = "protocol", type = "String", defaultValue = "modbus")
 @NiagaraProperty(name = "pollInterval", type = "int", defaultValue = "5000")
-public class BMyProxyPoint extends BNumericPoint {
+public class BMyProxyPoint extends BNumericWritable {
+
 
     
 /*+ ------------ BEGIN BAJA AUTO GENERATED CODE ------------ +*/
 /*@ $com.c.myPoc.BMyProxyPoint(3642654885)1.0$ @*/
-/* Generated Wed Dec 17 16:22:45 ICT 2025 by Slot-o-Matic (c) Tridium, Inc. 2012 */
+/* Generated Fri Dec 19 14:23:13 ICT 2025 by Slot-o-Matic (c) Tridium, Inc. 2012 */
 
 ////////////////////////////////////////////////////////////////
 // Property "address"
@@ -154,13 +157,11 @@ public class BMyProxyPoint extends BNumericPoint {
 
     private Thread pollingThread;
     private volatile boolean isPolling = false;
-
+    private volatile boolean isPingPong = false;
     @Override
     public void started() throws Exception {
         super.started();
         System.out.println("ProxyPoint started: " + getName());
-
-        // Start polling thread
         startPolling();
     }
 
@@ -170,6 +171,39 @@ public class BMyProxyPoint extends BNumericPoint {
         super.stopped();
     }
 
+    @Override
+    public void changed(Property p, Context cx) {
+        super.changed(p, cx);
+
+        if (p == out) {
+            BStatusNumeric outVal = getOut();
+            BStatusNumeric fbVal = getFallback();
+
+            // 1. ถ้าสถานะเป็น Null (เพิ่งเริ่ม) ไม่ต้องทำอะไร
+            if (outVal.getStatus().isNull()) return;
+
+            // 2. Logic ตัด Loop: เปรียบเทียบค่า Out vs Fallback
+            // ถ้าค่า Out เท่ากับค่าที่เพิ่งอ่านมา (Fallback) เป๊ะๆ
+            // แปลว่าไม่มีการ Command (หรือค่า Command ตรงกับค่าจริง) -> ไม่ต้องเขียน
+            double outV = outVal.getValue();
+            double fbV = fbVal.getValue();
+
+            // ใช้ Math.abs สำหรับเปรียบเทียบ double เพื่อป้องกันเรื่องทศนิยม
+            if (Math.abs(outV - fbV) < 0.0001) {
+                return; // 🛑 จบงานตรงนี้ ไม่ Write
+            }
+
+            // 3. ถ้าไม่เท่ากัน (เช่น User สั่ง Set 50 แต่ค่าที่อ่านได้คือ 40) -> ให้ Write
+            try {
+                System.out.println("Commanding device to: " + outV);
+                writeToDevice(outV);
+            } catch (Exception e) {
+                System.err.println("Write failed: " + e.getMessage());
+            }
+        }
+    }
+
+
     private void startPolling() {
         if (isPolling) return;
 
@@ -177,33 +211,33 @@ public class BMyProxyPoint extends BNumericPoint {
         pollingThread = new Thread(() -> {
             while (isPolling) {
                 try {
-                    // Read value from device
                     double value = readFromDevice();
-
-                    // ✅ แก้: ใช้ BStatusNumeric แทน double
                     BStatusNumeric statusValue = new BStatusNumeric(value, BStatus.ok);
-                    setOut(statusValue);
 
-                    // Sleep based on poll interval
+                    isPingPong = true;
+                    try {
+                        setFallback(statusValue);
+                    } finally {
+                        isPingPong = false;
+                    }
+
                     Thread.sleep(getPollInterval());
 
                 } catch (Exception e) {
-                    System.err.println("Poll error: " + e.getMessage());
-
-                    // ✅ แก้: Set fault status
-                    BStatusNumeric faultValue = new BStatusNumeric(0.0, BStatus.fault);
-                    setOut(faultValue);
-
+                    isPingPong = true; // อย่าลืมดักตรง Error ด้วยเผื่อไว้
                     try {
-                        Thread.sleep(getPollInterval());
-                    } catch (InterruptedException ie) {}
+                        setFallback(new BStatusNumeric(0.0, BStatus.fault));
+                    } finally {
+                        isPingPong = false;
+                    }
+                    // ...
                 }
             }
         });
-
         pollingThread.setDaemon(true);
         pollingThread.start();
     }
+
 
     private void stopPolling() {
         isPolling = false;
@@ -257,7 +291,7 @@ public class BMyProxyPoint extends BNumericPoint {
                         0x00, 0x06,  // Length
                         0x01,        // Unit ID
                         0x03,        // Function Code (Read Holding Registers)
-                        (byte)(regAddr >> 8), (byte)(regAddr & 0xFF),  // Start Address
+                        (byte) (regAddr >> 8), (byte) (regAddr & 0xFF),  // Start Address
                         0x00, 0x01   // Quantity (1 register)
                 };
 
@@ -282,9 +316,65 @@ public class BMyProxyPoint extends BNumericPoint {
                 throw new RuntimeException(e);
             } finally {
                 if (socket != null) {
-                    try { socket.close(); } catch (Exception e) {}
+                    try {
+                        socket.close();
+                    } catch (Exception e) {
+                    }
                 }
             }
+        });
+    }
+
+    /**
+     * เขียนค่าไปยัง Device
+     */
+    private void writeToDevice(double value) throws Exception {
+        String proto = getProtocol().toLowerCase();
+        if ("bacnet".equals(proto)) {
+            writeBACnet(value);
+        } else if ("modbus".equals(proto)) {
+            // writeModbus(value); // Implement Modbus Write 06/16 here
+        }
+    }
+
+    private void writeBACnet(double val) throws Exception {
+        BMyPointDevice device = getParentDevice();
+        if (device == null) return;
+
+        String[] addrParts = device.getDeviceAddress().split(":");
+        String ip = addrParts[0];
+        int port = addrParts.length > 1 ? Integer.parseInt(addrParts[1]) : 47808;
+
+        // Determine Object Type from Name/Property
+        int objectType = 1; // Default AO
+        if (getName().contains("AV")) objectType = 2;
+        if (getName().contains("BO")) objectType = 4;
+
+        int instance = getRegisterAddress();
+
+        int finalObjectType = objectType;
+        AccessController.doPrivileged((PrivilegedAction<Void>) () -> {
+            DatagramSocket socket = null;
+            try {
+                socket = new DatagramSocket();
+                InetAddress addr = InetAddress.getByName(ip);
+
+                // ใช้ Helper สร้าง Packet (ต้องแน่ใจว่าสร้าง BACnetUtil แล้ว)
+                // ถ้ายังไม่มี Helper ให้ใช้โค้ดสร้าง Packet แบบ Inline ไปก่อนได้
+                // แต่แนะนำให้สร้างไฟล์ BACnetUtil.java ตามที่ให้ไปรอบก่อน
+                byte[] tx = BACnetUtil.buildWritePropertyReal(finalObjectType, instance, BACnetUtil.PROP_PRESENT_VALUE, (float) val, 1);
+
+                DatagramPacket p = new DatagramPacket(tx, tx.length, addr, port);
+                socket.send(p);
+
+                System.out.println("BACnet Write Success: " + val);
+
+            } catch (Exception e) {
+                System.err.println("BACnet Write Error: " + e.getMessage());
+            } finally {
+                if (socket != null) socket.close();
+            }
+            return null;
         });
     }
 
@@ -318,109 +408,59 @@ public class BMyProxyPoint extends BNumericPoint {
         int propertyId = 85; // Present_Value
 
         int finalObjectType = objectType;
+        int finalObjectType1 = objectType;
         return AccessController.doPrivileged((PrivilegedAction<Double>) () -> {
             DatagramSocket socket = null;
             try {
                 socket = new DatagramSocket();
-                socket.setSoTimeout(3000);
-                InetAddress address = InetAddress.getByName(ip);
+                socket.setSoTimeout(2000); // Timeout เร็วขึ้นหน่อย
 
-                // 3. Construct BACnet/IP Packet (ReadProperty Request)
-                // BVLC (4 bytes) + NPDU (2 bytes) + APDU (variable)
+                // ใช้ Helper สร้าง Packet
+                int invokeId = (int) (Math.random() * 255); // Random Invoke ID เพื่อความปลอดภัย
+                byte[] tx = BACnetUtil.buildReadPropertyPacket(finalObjectType1, instance, BACnetUtil.PROP_PRESENT_VALUE, invokeId);
 
-                // --- APDU Construction ---
-                // Service: Confirmed-Request (0x00), MaxSegs (0x05), InvokeID (0x01), ServiceChoice: ReadProperty (0x0C)
-                // ObjectIdentifier (Tag 0): Type + Instance
-                // PropertyIdentifier (Tag 1): 85 (Present_Value)
+                socket.send(new DatagramPacket(tx, tx.length, InetAddress.getByName(ip), port));
 
-                // Calculate Object ID parts
-                // ObjectType is bits 22-31, Instance is bits 0-21
-                // We construct the 4 bytes for Object ID manually
-                int objectIdPacked = (finalObjectType << 22) | (instance & 0x3FFFFF);
-
-                byte[] apdu = new byte[] {
-                        0x00,       // PDU Type: Confirmed Request
-                        0x05,       // Max Segments / APDU Size
-                        0x01,       // Invoke ID (Hardcoded 1 for PoC)
-                        0x0c,       // Service Choice: ReadProperty (12)
-
-                        // Tag 0: Object Identifier (Context Specific, Length 4) -> 0x0C
-                        0x0c,
-                        (byte)((objectIdPacked >> 24) & 0xFF),
-                        (byte)((objectIdPacked >> 16) & 0xFF),
-                        (byte)((objectIdPacked >> 8) & 0xFF),
-                        (byte)(objectIdPacked & 0xFF),
-
-                        // Tag 1: Property Identifier (Context Specific, Length 1) -> 0x19
-                        0x19,
-                        (byte)propertyId // 85 (0x55)
-                };
-
-                // --- BVLC & NPDU Construction ---
-                int packetLength = 4 + 2 + apdu.length; // BVLC(4) + NPDU(2) + APDU
-                byte[] buffer = new byte[packetLength];
-
-                // BVLC
-                buffer[0] = (byte) 0x81; // BACnet/IP
-                buffer[1] = (byte) 0x0a; // Function: Original-Unicast-NPDU
-                buffer[2] = (byte) ((packetLength >> 8) & 0xFF); // Length High
-                buffer[3] = (byte) (packetLength & 0xFF);        // Length Low
-
-                // NPDU
-                buffer[4] = (byte) 0x01; // Version
-                buffer[5] = (byte) 0x04; // Control (Expecting Reply)
-
-                // Copy APDU
-                System.arraycopy(apdu, 0, buffer, 6, apdu.length);
-
-                // 4. Send Packet
-                DatagramPacket packet = new DatagramPacket(buffer, buffer.length, address, port);
-                socket.send(packet);
-
-                // 5. Receive Response
-                byte[] rxBuffer = new byte[512];
-                DatagramPacket rxPacket = new DatagramPacket(rxBuffer, rxBuffer.length);
+                // Receive
+                byte[] rxBuf = new byte[512];
+                DatagramPacket rxPacket = new DatagramPacket(rxBuf, rxBuf.length);
                 socket.receive(rxPacket);
 
+                // Parsing Logic ที่ดีขึ้น
                 byte[] data = rxPacket.getData();
-                int len = rxPacket.getLength();
+                // ข้าม Header: BVLC(4) + NPDU(2) + APDU-Header(3-4)
+                // มองหา Application Tag
 
-                // 6. Basic Parsing (Heuristic / Simplified)
-                // Check for Complex ACK (PDU Type 0x30)
-                // We skip BVLC(4) + NPDU(2?) to find APDU.
-                // Note: Response NPDU might vary, usually 2 bytes if no source info.
+                int offset = 6; // Start of APDU
+                if (data[offset] == 0x30) { // Complex ACK
+                    offset += 3; // Skip Type, InvokeID, ServiceACK
+                    // Skip Object ID (Tag 0, len 4+1)
+                    if (data[offset] == 0x0C) offset += 5;
+                    // Skip Prop ID (Tag 1, len 1+1)
+                    if (data[offset] == 0x19) offset += 2;
+                    // Skip Opening Tag (Tag 3, len 1)
+                    if (data[offset] == 0x3E) offset += 1;
 
-                // Scan for "Real" Application Tag (0x44) -> Float value
-                // Or "Enumerated" Application Tag (0x91) -> Binary value (0/1)
-
-                for (int i = 6; i < len - 4; i++) {
-                    // Check for Real (Float) Tag: 0x44 (Application Tag 4, Length 4)
-                    if (data[i] == 0x44) {
-                        int bits = ((data[i+1] & 0xFF) << 24) |
-                                ((data[i+2] & 0xFF) << 16) |
-                                ((data[i+3] & 0xFF) << 8)  |
-                                (data[i+4] & 0xFF);
+                    // Now at Value Tag
+                    byte tag = data[offset];
+                    if (tag == 0x44) { // Real (Float)
+                        int bits = ((data[offset + 1] & 0xFF) << 24) | ((data[offset + 2] & 0xFF) << 16) |
+                                ((data[offset + 3] & 0xFF) << 8) | (data[offset + 4] & 0xFF);
                         return (double) Float.intBitsToFloat(bits);
-                    }
-
-                    // Check for Enumerated Tag: 0x91 (Application Tag 9, Length 1) - Common for Binary PV
-                    if (data[i] == (byte)0x91) {
-                        return (double) (data[i+1] & 0xFF);
+                    } else if (tag == (byte) 0x91) { // Enumerated
+                        return (double) (data[offset + 1] & 0xFF);
+                    } else if (tag == (byte) 0x21) { // Unsigned Int
+                        return (double) (data[offset + 1] & 0xFF); // (simplified 1 byte)
                     }
                 }
 
-                // If we got a response but couldn't parse logic
-                System.out.println("BACnet Response received but value not found/parsed.");
-                return 0.0; // Fail-safe
+                return Double.NaN; // หาไม่เจอ
 
-            } catch (SocketTimeoutException se) {
-                throw new RuntimeException("BACnet Timeout");
             } catch (Exception e) {
-                throw new RuntimeException("BACnet Error: " + e.getMessage());
+                // return 0.0 or throw
+                throw new RuntimeException("Read Failed");
             } finally {
-                if (socket != null && !socket.isClosed()) {
-                    socket.close();
-                }
+                if (socket != null) socket.close();
             }
         });
     }

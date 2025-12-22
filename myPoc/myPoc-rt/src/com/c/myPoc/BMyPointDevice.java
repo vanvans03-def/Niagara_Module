@@ -9,12 +9,17 @@ import javax.baja.status.*;
 import javax.baja.util.IFuture;
 import java.util.HashMap;
 import java.util.Map;
+import java.net.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.security.*;
 
 @NiagaraType
 @NiagaraProperty(name = "deviceName", type = "String", defaultValue = "")
 @NiagaraProperty(name = "deviceAddress", type = "String", defaultValue = "")
 @NiagaraProperty(name = "deviceDescription", type = "String", defaultValue = "")
 @NiagaraProperty(name = "protocol", type = "String", defaultValue = "", flags = Flags.READONLY)
+@NiagaraProperty(name = "deviceId", type = "int", defaultValue = "-1", flags = Flags.READONLY)
 @NiagaraAction(name = "discoverPoints", flags = Flags.ASYNC | Flags.SUMMARY)
 @NiagaraAction(name = "clearPoints", flags = Flags.SUMMARY)
 @NiagaraAction(name = "refreshValues", flags = Flags.SUMMARY)
@@ -22,8 +27,8 @@ public class BMyPointDevice extends BDevice {
 
     
 /*+ ------------ BEGIN BAJA AUTO GENERATED CODE ------------ +*/
-/*@ $com.c.myPoc.BMyPointDevice(4243441022)1.0$ @*/
-/* Generated Thu Dec 18 10:52:01 ICT 2025 by Slot-o-Matic (c) Tridium, Inc. 2012 */
+/*@ $com.c.myPoc.BMyPointDevice(733298069)1.0$ @*/
+/* Generated Fri Dec 19 13:56:48 ICT 2025 by Slot-o-Matic (c) Tridium, Inc. 2012 */
 
 ////////////////////////////////////////////////////////////////
 // Property "deviceName"
@@ -116,6 +121,29 @@ public class BMyPointDevice extends BDevice {
    * @see #protocol
    */
   public void setProtocol(String v) { setString(protocol, v, null); }
+
+////////////////////////////////////////////////////////////////
+// Property "deviceId"
+////////////////////////////////////////////////////////////////
+  
+  /**
+   * Slot for the {@code deviceId} property.
+   * @see #getDeviceId
+   * @see #setDeviceId
+   */
+  public static final Property deviceId = newProperty(Flags.READONLY, -1, null);
+  
+  /**
+   * Get the {@code deviceId} property.
+   * @see #deviceId
+   */
+  public int getDeviceId() { return getInt(deviceId); }
+  
+  /**
+   * Set the {@code deviceId} property.
+   * @see #deviceId
+   */
+  public void setDeviceId(int v) { setInt(deviceId, v, null); }
 
 ////////////////////////////////////////////////////////////////
 // Action "discoverPoints"
@@ -284,48 +312,160 @@ public class BMyPointDevice extends BDevice {
      * Discover BACnet Points - Query from real device
      */
     private int discoverBACnetPoints() throws Exception {
-        System.out.println("🔍 Discovering BACnet objects from device...");
+        System.out.println("🔍 Starting Real BACnet Object Discovery...");
+
+        // 1. หา Device ID จาก Description หรือ Address (สมมติว่า Address format: "IP:Port")
+        // ใน discovery phase เราควรเก็บ Device ID ไว้
+        String[] parts = getDeviceAddress().split(":");
+        String ip = parts[0];
+        int port = parts.length > 1 ? Integer.parseInt(parts[1]) : 47808;
+
+        // ถ้าเรายังไม่รู้ Device Instance ID ของอุปกรณ์ปลายทาง เราอาจต้องใช้ Who-Is อีกรอบ หรือ Parse จากชื่อ
+        // สมมติว่าในชื่อ Device มี ID อยู่ เช่น "BACnet_888" -> 888
+        int targetDeviceId = parseDeviceIdFromName(getDeviceName());
+        if (targetDeviceId == -1) {
+            System.out.println("⚠️ Cannot determine Device ID from name. Using default scan.");
+            // Fallback ไป scan common objects ถ้าหา ID ไม่เจอ
+            return scanCommonObjects(ip, port);
+        }
+
+        // 2. Read "Object List" Property (ID 76) จาก Device Object
+        // Device Object Type = 8
+        System.out.println("   Target Device ID: " + targetDeviceId);
+
+        List<Integer> objectIds = fetchBACnetObjectList(ip, port, targetDeviceId);
 
         int count = 0;
+        for (Integer rawId : objectIds) {
+            String typeName = BACnetUtil.getObjectTypeName(rawId);
+            int instance = BACnetUtil.getInstance(rawId);
 
-        // TODO: Implement real BACnet ReadPropertyMultiple
-        // เพื่อดึง Object List จาก Device ID 888
+            // ข้าม Device Object ตัวเอง
+            if (typeName.equals("Device")) continue;
 
-        // For now, create based on known objects from Python simulator
-        String[][] knownObjects = {
-                // Analog Inputs
-                {"HVAC_Zone1_Temperature", "AI:1", "1"},
-                {"HVAC_Zone1_Humidity", "AI:2", "2"},
-                {"Light_Zone2_Level", "AI:3", "3"},
-                {"AirQuality_Zone4_CO2", "AI:4", "4"},
-                {"AirQuality_Zone4_Pressure", "AI:5", "5"},
-                {"AirQuality_Zone4_Temperature", "AI:6", "6"},
-                {"Energy_Zone5_Power", "AI:7", "7"},
-                {"Energy_Zone5_Voltage", "AI:8", "8"},
+            String pointName = typeName + "_" + instance;
+            // ลองอ่าน Object Name จริงๆ ถ้าทำได้ (Property 77)
+            // String realName = readBACnetObjectName(ip, port, typeName, instance);
+            // if (realName != null) pointName = realName;
 
-                // Binary Inputs
-                {"HVAC_Zone1_Fan_Status", "BI:1", "1"},
-                {"Light_Zone2_Motion", "BI:2", "2"},
-                {"Security_Zone3_Door", "BI:3", "3"},
-                {"Security_Zone3_Window", "BI:4", "4"},
-                {"Energy_Zone5_Status", "BI:5", "5"},
-
-                // Binary Values
-                {"Light_Zone2_Control", "BV:1", "1"},
-                {"Security_Zone3_Alarm", "BV:2", "2"}
-        };
-
-        for (String[] obj : knownObjects) {
-            String objectName = obj[0];
-            String objectType = obj[1];
-            String instance = obj[2];
-
-            if (addDynamicPoint(objectName, "bacnet", objectType, Integer.parseInt(instance))) {
+            if (addDynamicPoint(pointName, "bacnet", typeName + ":" + instance, instance)) {
                 count++;
             }
         }
 
         return count;
+    }
+
+    private int scanCommonObjects(String ip, int port) {
+        System.out.println("⚠️ Scan fallback: Checking common objects...");
+        int count = 0;
+
+        // ลองสุ่มตรวจ Type ละ 10 จุด
+        int[] types = {0, 1, 2, 3, 4, 5}; // AI, AO, AV, BI, BO, BV
+
+        // ต้องใช้ Socket เดิมเพื่อประสิทธิภาพ (สร้างใหม่ทุกรอบจะช้า)
+        DatagramSocket socket = null;
+        try {
+            socket = new DatagramSocket();
+            socket.setSoTimeout(500); // Timeout เร็วหน่อยสำหรับการสุ่ม
+            InetAddress addr = InetAddress.getByName(ip);
+
+            for (int type : types) {
+                for (int i = 0; i <= 10; i++) { // ลองเบอร์ 0-10
+                    if (checkObjectExists(socket, addr, port, type, i)) {
+                        String typeName = BACnetUtil.getObjectTypeName((type << 22));
+                        String name = typeName + "_" + i;
+                        if (addDynamicPoint(name, "bacnet", typeName + ":" + i, i)) {
+                            count++;
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Scan error: " + e.getMessage());
+        } finally {
+            if (socket != null) socket.close();
+        }
+
+        return count;
+    }
+
+    /**
+     * ดึง Object List ทั้งหมด (จำลองการอ่าน Array Index)
+     * หมายเหตุ: ใน production ต้องอ่าน Array Length ก่อน แล้ว loop อ่านทีละ index หรือเป็น range
+     * เพื่อป้องกัน Packet too big
+     */
+    private List<Integer> fetchBACnetObjectList(String ip, int port, int deviceId) {
+        List<Integer> list = new ArrayList<>();
+
+        return AccessController.doPrivileged((PrivilegedAction<List<Integer>>) () -> {
+            DatagramSocket socket = null;
+            try {
+                socket = new DatagramSocket();
+                socket.setSoTimeout(2000);
+                InetAddress addr = InetAddress.getByName(ip);
+
+                // ขั้นตอนที่ 1: อ่าน Array Length (Index 0) ของ Property Object_List (76)
+                // สร้าง Packet อ่าน Index 0 (ต้องเขียน Logic เพิ่มใน BACnetUtil ให้รองรับ ArrayIndex)
+                // *เพื่อความง่ายของ PoC: ผมจะ Scan Object แบบ Brute Force แทน เพราะง่ายกว่าการ Handle Segmentation*
+                // หรือใช้ "Common Objects" list แทนการอ่าน Object List จริงๆ ที่ซับซ้อนเรื่อง Packet size
+
+                // --- Hybrid Strategy for PoC ---
+                // ลองอ่าน AI:0 ถึง AI:10, AV:0 ถึง AV:10, etc.
+
+                int[] typesToScan = {0, 1, 2, 3, 4, 5}; // AI, AO, AV, BI, BO, BV
+
+                for (int type : typesToScan) {
+                    for (int i = 0; i <= 10; i++) { // Scan ID 0-10
+                        if (checkObjectExists(socket, addr, port, type, i)) {
+                            // Raw ID for internal use
+                            int rawId = (type << 22) | i;
+                            list.add(rawId);
+                            System.out.println("     Found: " + BACnetUtil.getObjectTypeName(rawId) + ":" + i);
+                        }
+                    }
+                }
+
+            } catch (Exception e) {
+                System.err.println("   Discovery Error: " + e.getMessage());
+            } finally {
+                if (socket != null) socket.close();
+            }
+            return list;
+        });
+    }
+
+    /**
+     * เช็คว่ามี Object นี้ไหม โดยการลอง Read Present_Value
+     */
+    private boolean checkObjectExists(DatagramSocket socket, InetAddress ip, int port, int type, int instance) {
+        try {
+            byte[] tx = BACnetUtil.buildReadPropertyPacket(type, instance, BACnetUtil.PROP_PRESENT_VALUE, (instance % 255));
+            DatagramPacket p = new DatagramPacket(tx, tx.length, ip, port);
+            socket.send(p);
+
+            byte[] rxBuf = new byte[512];
+            DatagramPacket rx = new DatagramPacket(rxBuf, rxBuf.length);
+            socket.receive(rx);
+
+            // ถ้าได้รับ Complex ACK (0x30) แปลว่ามีอยู่จริง
+            // ถ้าได้ Error (0x50) แปลว่าไม่มี
+            byte apduType = rxBuf[6]; // ข้าม BVLC(4)+NPDU(2)
+            return (apduType & 0xF0) == 0x30; // Complex ACK
+
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    // Helper parse ID
+    private int parseDeviceIdFromName(String name) {
+        try {
+            if (name.contains("_")) {
+                return Integer.parseInt(name.split("_")[1]);
+            }
+        } catch (Exception e) {}
+        return -1;
     }
 
     /**
