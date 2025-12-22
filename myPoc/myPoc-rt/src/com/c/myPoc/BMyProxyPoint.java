@@ -9,8 +9,6 @@ import java.io.*;
 import java.net.*;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-import javax.baja.status.*;
-import javax.baja.control.*;
 
 /**
  * Proxy Point for reading values from external devices
@@ -18,17 +16,16 @@ import javax.baja.control.*;
  */
 @NiagaraType
 @NiagaraProperty(name = "address", type = "String", defaultValue = "")
-@NiagaraProperty(name = "registerType", type = "String", defaultValue = "holdingRegister")
+@NiagaraProperty(name = "registerType", type = "String", defaultValue = "")
 @NiagaraProperty(name = "registerAddress", type = "int", defaultValue = "0")
 @NiagaraProperty(name = "protocol", type = "String", defaultValue = "modbus")
 @NiagaraProperty(name = "pollInterval", type = "int", defaultValue = "5000")
 public class BMyProxyPoint extends BNumericWritable {
 
-
     
 /*+ ------------ BEGIN BAJA AUTO GENERATED CODE ------------ +*/
-/*@ $com.c.myPoc.BMyProxyPoint(3642654885)1.0$ @*/
-/* Generated Fri Dec 19 14:23:13 ICT 2025 by Slot-o-Matic (c) Tridium, Inc. 2012 */
+/*@ $com.c.myPoc.BMyProxyPoint(2195538375)1.0$ @*/
+/* Generated Mon Dec 22 14:55:10 ICT 2025 by Slot-o-Matic (c) Tridium, Inc. 2012 */
 
 ////////////////////////////////////////////////////////////////
 // Property "address"
@@ -62,7 +59,7 @@ public class BMyProxyPoint extends BNumericWritable {
    * @see #getRegisterType
    * @see #setRegisterType
    */
-  public static final Property registerType = newProperty(0, "holdingRegister", null);
+  public static final Property registerType = newProperty(0, "", null);
   
   /**
    * Get the {@code registerType} property.
@@ -157,7 +154,7 @@ public class BMyProxyPoint extends BNumericWritable {
 
     private Thread pollingThread;
     private volatile boolean isPolling = false;
-    private volatile boolean isPingPong = false;
+
     @Override
     public void started() throws Exception {
         super.started();
@@ -171,6 +168,10 @@ public class BMyProxyPoint extends BNumericWritable {
         super.stopped();
     }
 
+    /**
+     * Logic การตรวจสอบว่าควร Write หรือไม่
+     * เปรียบเทียบค่า Out (ผลลัพธ์) กับ Fallback (ค่าที่อ่านได้)
+     */
     @Override
     public void changed(Property p, Context cx) {
         super.changed(p, cx);
@@ -203,7 +204,6 @@ public class BMyProxyPoint extends BNumericWritable {
         }
     }
 
-
     private void startPolling() {
         if (isPolling) return;
 
@@ -214,30 +214,23 @@ public class BMyProxyPoint extends BNumericWritable {
                     double value = readFromDevice();
                     BStatusNumeric statusValue = new BStatusNumeric(value, BStatus.ok);
 
-                    isPingPong = true;
-                    try {
-                        setFallback(statusValue);
-                    } finally {
-                        isPingPong = false;
-                    }
+                    // อัปเดตค่าเข้า Fallback โดยตรง
+                    setFallback(statusValue);
 
                     Thread.sleep(getPollInterval());
 
                 } catch (Exception e) {
-                    isPingPong = true; // อย่าลืมดักตรง Error ด้วยเผื่อไว้
                     try {
                         setFallback(new BStatusNumeric(0.0, BStatus.fault));
-                    } finally {
-                        isPingPong = false;
-                    }
-                    // ...
+                        // พักสักหน่อยถ้า Error กัน Loop ถี่เกินไป
+                        Thread.sleep(getPollInterval());
+                    } catch (Exception ie) {}
                 }
             }
         });
         pollingThread.setDaemon(true);
         pollingThread.start();
     }
-
 
     private void stopPolling() {
         isPolling = false;
@@ -311,7 +304,6 @@ public class BMyProxyPoint extends BNumericWritable {
 
                 // Parse Response
                 if (len >= 9 && response[7] == fc) {
-                    int byteCount = response[8];
                     if (fc == 0x01 || fc == 0x02) {
                         // --- Bit Data (Coil/Discrete) ---
                         // Data อยู่ที่ byte 9, bit แรก
@@ -327,17 +319,16 @@ public class BMyProxyPoint extends BNumericWritable {
                     }
                 }
 
-                // ถ้ามาไม่ถึงตรงนี้ แสดงว่า Error
                 throw new RuntimeException("Invalid Modbus response");
 
             } catch (Exception e) {
-                // Return NaN หรือ throw เพื่อให้ setFault ทำงาน
                 throw new RuntimeException(e);
             } finally {
                 try { if (socket != null) socket.close(); } catch (Exception e) {}
             }
         });
     }
+
     /**
      * เขียนค่าไปยัง Device
      */
@@ -358,27 +349,28 @@ public class BMyProxyPoint extends BNumericWritable {
         String ip = addrParts[0];
         int port = addrParts.length > 1 ? Integer.parseInt(addrParts[1]) : 47808;
 
-        // Determine Object Type from Name/Property
+        // ✅ Smart Type Detection (Check both Config AND Name)
         String typeStr = getRegisterType().toLowerCase();
+        String nameStr = getName().toLowerCase();
         int objectType = 1; // Default AO
-        if (typeStr.contains("ai") || typeStr.contains("analoginput")) objectType = 0;
-        else if (typeStr.contains("ao") || typeStr.contains("analogoutput")) objectType = 1;
-        else if (typeStr.contains("av") || typeStr.contains("analogvalue")) objectType = 2;
-        else if (typeStr.contains("bi") || typeStr.contains("binaryinput")) objectType = 3;
-        else if (typeStr.contains("bo") || typeStr.contains("binaryoutput")) objectType = 4;
-        else if (typeStr.contains("bv") || typeStr.contains("binaryvalue")) objectType = 5;
+
+        if (typeStr.contains("ai") || nameStr.contains("ai_") || nameStr.contains("analoginput")) objectType = 0;
+        else if (typeStr.contains("ao") || nameStr.contains("ao_") || nameStr.contains("analogoutput")) objectType = 1;
+        else if (typeStr.contains("av") || nameStr.contains("av_") || nameStr.contains("analogvalue")) objectType = 2;
+        else if (typeStr.contains("bi") || nameStr.contains("bi_") || nameStr.contains("binaryinput")) objectType = 3;
+        else if (typeStr.contains("bo") || nameStr.contains("bo_") || nameStr.contains("binaryoutput")) objectType = 4;
+        else if (typeStr.contains("bv") || nameStr.contains("bv_") || nameStr.contains("binaryvalue")) objectType = 5;
 
         int instance = getRegisterAddress();
         int finalObjectType = objectType;
+
         AccessController.doPrivileged((PrivilegedAction<Void>) () -> {
             DatagramSocket socket = null;
             try {
                 socket = new DatagramSocket();
                 InetAddress addr = InetAddress.getByName(ip);
 
-                // ใช้ Helper สร้าง Packet (ต้องแน่ใจว่าสร้าง BACnetUtil แล้ว)
-                // ถ้ายังไม่มี Helper ให้ใช้โค้ดสร้าง Packet แบบ Inline ไปก่อนได้
-                // แต่แนะนำให้สร้างไฟล์ BACnetUtil.java ตามที่ให้ไปรอบก่อน
+                // ใช้ Helper สร้าง Packet
                 byte[] tx = BACnetUtil.buildWritePropertyReal(finalObjectType, instance, BACnetUtil.PROP_PRESENT_VALUE, (float) val, 1);
 
                 DatagramPacket p = new DatagramPacket(tx, tx.length, addr, port);
@@ -395,9 +387,6 @@ public class BMyProxyPoint extends BNumericWritable {
         });
     }
 
-    /**
-     * Write Modbus (Support Single Register & Single Coil)
-     */
     private void writeModbus(double val) throws Exception {
         BMyPointDevice device = getParentDevice();
         if (device == null) return;
@@ -423,25 +412,24 @@ public class BMyProxyPoint extends BNumericWritable {
                 // 1. ตัดสินใจว่าจะเขียน Coil หรือ Register
                 if (type.contains("coil") || type.contains("binary")) {
                     // --- Write Single Coil (FC 05) ---
-                    int outputVal = (val > 0) ? 0xFF00 : 0x0000; // ON=0xFF00, OFF=0x0000
+                    int outputVal = (val > 0) ? 0xFF00 : 0x0000;
                     request = new byte[] {
                             0x00, 0x02,             // Transaction ID
                             0x00, 0x00,             // Protocol ID
                             0x00, 0x06,             // Length
-                            0x01,                   // Unit ID (Default 1)
+                            0x01,                   // Unit ID
                             0x05,                   // FC 05: Write Single Coil
                             (byte)(regAddr >> 8), (byte)(regAddr & 0xFF), // Address
                             (byte)(outputVal >> 8), (byte)(outputVal & 0xFF) // Value
                     };
                 } else {
                     // --- Write Single Register (FC 06) ---
-                    // แปลง double เป็น int (รองรับแค่ 16-bit ใน PoC นี้)
                     int intVal = (int) val;
                     request = new byte[] {
                             0x00, 0x02,             // Transaction ID
                             0x00, 0x00,             // Protocol ID
                             0x00, 0x06,             // Length
-                            0x01,                   // Unit ID (Default 1)
+                            0x01,                   // Unit ID
                             0x06,                   // FC 06: Write Single Register
                             (byte)(regAddr >> 8), (byte)(regAddr & 0xFF), // Address
                             (byte)(intVal >> 8), (byte)(intVal & 0xFF)    // Value
@@ -452,14 +440,14 @@ public class BMyProxyPoint extends BNumericWritable {
                 out.write(request);
                 out.flush();
 
-                // Read Response (Simple check)
+                // Read Response
                 byte[] response = new byte[256];
                 int len = in.read(response);
 
                 if (len > 0 && (response[7] == 0x05 || response[7] == 0x06)) {
                     System.out.println("Modbus Write Success: " + val);
                 } else {
-                    System.err.println("Modbus Write Error: Invalid response or Exception Code");
+                    System.err.println("Modbus Write Error: Invalid response");
                 }
 
             } catch (Exception e) {
@@ -474,83 +462,67 @@ public class BMyProxyPoint extends BNumericWritable {
     /**
      * Read BACnet Present Value
      */
-    /**
-     * Read BACnet Present Value using Raw UDP (PoC Implementation)
-     */
     private double readBACnet() throws Exception {
         BMyPointDevice device = getParentDevice();
         if (device == null) {
             throw new Exception("Device not found");
         }
 
-        // 1. Prepare Connection Info
         String[] addrParts = device.getDeviceAddress().split(":");
         String ip = addrParts[0];
         int port = addrParts.length > 1 ? Integer.parseInt(addrParts[1]) : 47808;
 
-        // 2. Determine Object Type & Instance
-        // Mapping: AnalogInput=0, AnalogOutput=1, AnalogValue=2, BinaryInput=3, etc.
-        int objectType = 0; // Default to AnalogInput
-        String typeStr = getRegisterType().toLowerCase(); // หรือใช้ชื่อ Point ถ้าไม่ได้ set registerType
-        if (getName().toLowerCase().contains("analogoutput") || typeStr.contains("analogoutput")) objectType = 1;
-        else if (getName().toLowerCase().contains("analogvalue") || typeStr.contains("analogvalue")) objectType = 2;
-        else if (getName().toLowerCase().contains("binaryinput") || typeStr.contains("binaryinput")) objectType = 3;
-        else if (getName().toLowerCase().contains("binaryoutput") || typeStr.contains("binaryoutput")) objectType = 4;
+        // ✅ Smart Type Detection (Check both Config AND Name)
+        String typeStr = getRegisterType().toLowerCase();
+        String nameStr = getName().toLowerCase();
+        int objectType = 0; // Default AI
+
+        if (typeStr.contains("ai") || nameStr.contains("ai_") || nameStr.contains("analoginput")) objectType = 0;
+        else if (typeStr.contains("ao") || nameStr.contains("ao_") || nameStr.contains("analogoutput")) objectType = 1;
+        else if (typeStr.contains("av") || nameStr.contains("av_") || nameStr.contains("analogvalue")) objectType = 2;
+        else if (typeStr.contains("bi") || nameStr.contains("bi_") || nameStr.contains("binaryinput")) objectType = 3;
+        else if (typeStr.contains("bo") || nameStr.contains("bo_") || nameStr.contains("binaryoutput")) objectType = 4;
+        else if (typeStr.contains("bv") || nameStr.contains("bv_") || nameStr.contains("binaryvalue")) objectType = 5;
 
         int instance = getRegisterAddress();
-        int propertyId = 85; // Present_Value
-
         int finalObjectType = objectType;
-        int finalObjectType1 = objectType;
+
         return AccessController.doPrivileged((PrivilegedAction<Double>) () -> {
             DatagramSocket socket = null;
             try {
                 socket = new DatagramSocket();
-                socket.setSoTimeout(2000); // Timeout เร็วขึ้นหน่อย
+                socket.setSoTimeout(2000);
 
-                // ใช้ Helper สร้าง Packet
-                int invokeId = (int) (Math.random() * 255); // Random Invoke ID เพื่อความปลอดภัย
-                byte[] tx = BACnetUtil.buildReadPropertyPacket(finalObjectType1, instance, BACnetUtil.PROP_PRESENT_VALUE, invokeId);
+                int invokeId = (int) (Math.random() * 255);
+                byte[] tx = BACnetUtil.buildReadPropertyPacket(finalObjectType, instance, BACnetUtil.PROP_PRESENT_VALUE, invokeId);
 
                 socket.send(new DatagramPacket(tx, tx.length, InetAddress.getByName(ip), port));
 
-                // Receive
                 byte[] rxBuf = new byte[512];
                 DatagramPacket rxPacket = new DatagramPacket(rxBuf, rxBuf.length);
                 socket.receive(rxPacket);
 
-                // Parsing Logic ที่ดีขึ้น
                 byte[] data = rxPacket.getData();
-                // ข้าม Header: BVLC(4) + NPDU(2) + APDU-Header(3-4)
-                // มองหา Application Tag
-
-                int offset = 6; // Start of APDU
+                int offset = 6;
                 if (data[offset] == 0x30) { // Complex ACK
-                    offset += 3; // Skip Type, InvokeID, ServiceACK
-                    // Skip Object ID (Tag 0, len 4+1)
+                    offset += 3;
                     if (data[offset] == 0x0C) offset += 5;
-                    // Skip Prop ID (Tag 1, len 1+1)
                     if (data[offset] == 0x19) offset += 2;
-                    // Skip Opening Tag (Tag 3, len 1)
                     if (data[offset] == 0x3E) offset += 1;
 
-                    // Now at Value Tag
                     byte tag = data[offset];
-                    if (tag == 0x44) { // Real (Float)
+                    if (tag == 0x44) { // Real
                         int bits = ((data[offset + 1] & 0xFF) << 24) | ((data[offset + 2] & 0xFF) << 16) |
                                 ((data[offset + 3] & 0xFF) << 8) | (data[offset + 4] & 0xFF);
                         return (double) Float.intBitsToFloat(bits);
                     } else if (tag == (byte) 0x91) { // Enumerated
                         return (double) (data[offset + 1] & 0xFF);
-                    } else if (tag == (byte) 0x21) { // Unsigned Int
-                        return (double) (data[offset + 1] & 0xFF); // (simplified 1 byte)
+                    } else if (tag == (byte) 0x21) { // Unsigned
+                        return (double) (data[offset + 1] & 0xFF);
                     }
                 }
-
-                return Double.NaN; // หาไม่เจอ
-
+                return Double.NaN;
             } catch (Exception e) {
-                // return 0.0 or throw
                 throw new RuntimeException("Read Failed");
             } finally {
                 if (socket != null) socket.close();
@@ -579,33 +551,26 @@ public class BMyProxyPoint extends BNumericWritable {
                 conn.setConnectTimeout(3000);
                 conn.setReadTimeout(3000);
 
-                int responseCode = conn.getResponseCode();
-                if (responseCode == 200) {
-                    BufferedReader in = new BufferedReader(
-                            new InputStreamReader(conn.getInputStream())
-                    );
+                if (conn.getResponseCode() == 200) {
+                    BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
                     StringBuilder response = new StringBuilder();
                     String line;
-
                     while ((line = in.readLine()) != null) {
                         response.append(line);
                     }
                     in.close();
 
-                    // Parse JSON response
                     String json = response.toString();
                     int idx = json.indexOf("\"value\"");
                     if (idx > 0) {
                         int start = json.indexOf(":", idx) + 1;
                         int end = json.indexOf(",", start);
                         if (end < 0) end = json.indexOf("}", start);
-
                         String valueStr = json.substring(start, end).trim();
                         return Double.parseDouble(valueStr);
                     }
                 }
-
-                throw new RuntimeException("HTTP request failed: " + responseCode);
+                throw new RuntimeException("HTTP request failed");
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
