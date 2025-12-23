@@ -24,81 +24,181 @@ import java.security.PrivilegedAction;
 @NiagaraProperty(name = "byteOrder", type = "String", defaultValue = "ABCD")
 public class BMyProxyPoint extends BNumericWritable {
 
-    /*+ ------------ BEGIN BAJA AUTO GENERATED CODE ------------ +*/
-    /*@ $com.c.myPoc.BMyProxyPoint(389456721)1.0$ @*/
-    /* Generated Tue Dec 23 10:45:00 ICT 2025 by Slot-o-Matic (c) Tridium, Inc. 2012 */
+    
+/*+ ------------ BEGIN BAJA AUTO GENERATED CODE ------------ +*/
+/*@ $com.c.myPoc.BMyProxyPoint(3944209486)1.0$ @*/
+/* Generated Tue Dec 23 15:19:13 ICT 2025 by Slot-o-Matic (c) Tridium, Inc. 2012 */
 
 ////////////////////////////////////////////////////////////////
 // Property "address"
 ////////////////////////////////////////////////////////////////
-
-    public static final Property address = newProperty(0, "", null);
-    public String getAddress() { return getString(address); }
-    public void setAddress(String v) { setString(address, v, null); }
+  
+  /**
+   * Slot for the {@code address} property.
+   * @see #getAddress
+   * @see #setAddress
+   */
+  public static final Property address = newProperty(0, "", null);
+  
+  /**
+   * Get the {@code address} property.
+   * @see #address
+   */
+  public String getAddress() { return getString(address); }
+  
+  /**
+   * Set the {@code address} property.
+   * @see #address
+   */
+  public void setAddress(String v) { setString(address, v, null); }
 
 ////////////////////////////////////////////////////////////////
 // Property "registerType"
 ////////////////////////////////////////////////////////////////
-
-    public static final Property registerType = newProperty(0, "", null);
-    public String getRegisterType() { return getString(registerType); }
-    public void setRegisterType(String v) { setString(registerType, v, null); }
+  
+  /**
+   * Slot for the {@code registerType} property.
+   * @see #getRegisterType
+   * @see #setRegisterType
+   */
+  public static final Property registerType = newProperty(0, "", null);
+  
+  /**
+   * Get the {@code registerType} property.
+   * @see #registerType
+   */
+  public String getRegisterType() { return getString(registerType); }
+  
+  /**
+   * Set the {@code registerType} property.
+   * @see #registerType
+   */
+  public void setRegisterType(String v) { setString(registerType, v, null); }
 
 ////////////////////////////////////////////////////////////////
 // Property "registerAddress"
 ////////////////////////////////////////////////////////////////
-
-    public static final Property registerAddress = newProperty(0, 0, null);
-    public int getRegisterAddress() { return getInt(registerAddress); }
-    public void setRegisterAddress(int v) { setInt(registerAddress, v, null); }
+  
+  /**
+   * Slot for the {@code registerAddress} property.
+   * @see #getRegisterAddress
+   * @see #setRegisterAddress
+   */
+  public static final Property registerAddress = newProperty(0, 0, null);
+  
+  /**
+   * Get the {@code registerAddress} property.
+   * @see #registerAddress
+   */
+  public int getRegisterAddress() { return getInt(registerAddress); }
+  
+  /**
+   * Set the {@code registerAddress} property.
+   * @see #registerAddress
+   */
+  public void setRegisterAddress(int v) { setInt(registerAddress, v, null); }
 
 ////////////////////////////////////////////////////////////////
 // Property "protocol"
 ////////////////////////////////////////////////////////////////
-
-    public static final Property protocol = newProperty(0, "modbus", null);
-    public String getProtocol() { return getString(protocol); }
-    public void setProtocol(String v) { setString(protocol, v, null); }
+  
+  /**
+   * Slot for the {@code protocol} property.
+   * @see #getProtocol
+   * @see #setProtocol
+   */
+  public static final Property protocol = newProperty(0, "modbus", null);
+  
+  /**
+   * Get the {@code protocol} property.
+   * @see #protocol
+   */
+  public String getProtocol() { return getString(protocol); }
+  
+  /**
+   * Set the {@code protocol} property.
+   * @see #protocol
+   */
+  public void setProtocol(String v) { setString(protocol, v, null); }
 
 ////////////////////////////////////////////////////////////////
 // Property "pollInterval"
 ////////////////////////////////////////////////////////////////
-
-    public static final Property pollInterval = newProperty(0, 5000, null);
-    public int getPollInterval() { return getInt(pollInterval); }
-    public void setPollInterval(int v) { setInt(pollInterval, v, null); }
+  
+  /**
+   * Slot for the {@code pollInterval} property.
+   * @see #getPollInterval
+   * @see #setPollInterval
+   */
+  public static final Property pollInterval = newProperty(0, 5000, null);
+  
+  /**
+   * Get the {@code pollInterval} property.
+   * @see #pollInterval
+   */
+  public int getPollInterval() { return getInt(pollInterval); }
+  
+  /**
+   * Set the {@code pollInterval} property.
+   * @see #pollInterval
+   */
+  public void setPollInterval(int v) { setInt(pollInterval, v, null); }
 
 ////////////////////////////////////////////////////////////////
-// Property "dataType" & "byteOrder" (Manual Facets for Dropdown)
+// Property "dataType"
 ////////////////////////////////////////////////////////////////
+  
+  /**
+   * Slot for the {@code dataType} property.
+   * @see #getDataType
+   * @see #setDataType
+   */
+  public static final Property dataType = newProperty(0, "int16", null);
+  
+  /**
+   * Get the {@code dataType} property.
+   * @see #dataType
+   */
+  public String getDataType() { return getString(dataType); }
+  
+  /**
+   * Set the {@code dataType} property.
+   * @see #dataType
+   */
+  public void setDataType(String v) { setString(dataType, v, null); }
 
-    // สร้าง Dropdown Choice
-    private static final BFacets DATA_TYPE_RANGE = BFacets.makeEnum(
-            BEnumRange.make(new String[]{"int16", "uint16", "int32", "uint32", "float32"})
-    );
-
-    private static final BFacets BYTE_ORDER_RANGE = BFacets.makeEnum(
-            BEnumRange.make(new String[]{"ABCD", "CDAB", "BADC", "DCBA"})
-    );
-
-    // ใส่ Facets เข้าไปใน Property
-    public static final Property dataType = newProperty(0, "int16", DATA_TYPE_RANGE);
-    public String getDataType() { return getString(dataType); }
-    public void setDataType(String v) { setString(dataType, v, null); }
-
-    public static final Property byteOrder = newProperty(0, "ABCD", BYTE_ORDER_RANGE);
-    public String getByteOrder() { return getString(byteOrder); }
-    public void setByteOrder(String v) { setString(byteOrder, v, null); }
+////////////////////////////////////////////////////////////////
+// Property "byteOrder"
+////////////////////////////////////////////////////////////////
+  
+  /**
+   * Slot for the {@code byteOrder} property.
+   * @see #getByteOrder
+   * @see #setByteOrder
+   */
+  public static final Property byteOrder = newProperty(0, "ABCD", null);
+  
+  /**
+   * Get the {@code byteOrder} property.
+   * @see #byteOrder
+   */
+  public String getByteOrder() { return getString(byteOrder); }
+  
+  /**
+   * Set the {@code byteOrder} property.
+   * @see #byteOrder
+   */
+  public void setByteOrder(String v) { setString(byteOrder, v, null); }
 
 ////////////////////////////////////////////////////////////////
 // Type
 ////////////////////////////////////////////////////////////////
+  
+  @Override
+  public Type getType() { return TYPE; }
+  public static final Type TYPE = Sys.loadType(BMyProxyPoint.class);
 
-    @Override
-    public Type getType() { return TYPE; }
-    public static final Type TYPE = Sys.loadType(BMyProxyPoint.class);
-
-    /*+ ------------ END BAJA AUTO GENERATED CODE -------------- +*/
+/*+ ------------ END BAJA AUTO GENERATED CODE -------------- +*/
 
     private Thread pollingThread;
     private volatile boolean isPolling = false;

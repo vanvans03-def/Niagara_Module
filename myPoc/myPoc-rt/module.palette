@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bajaObjectGraph version="4.0" reversibleEncodingKeySource="none" FIPSEnabled="false" reversibleEncodingValidator="[null.1]=">
   <p m="b=baja" t="b:Folder">
+    <p n="MyUniversalNetwork" m="myPoc=myPoc" t="myPoc:MyUniversalNetwork"/>
+    <p n="MyPointDevice" m="myPoc=myPoc" t="myPoc:MyPointDevice"/>
+
+    <p n="MyProxyPoint" m="myPoc=myPoc" t="myPoc:MyProxyPoint"/>
+    <p n="MyBooleanPoint" m="myPoc=myPoc" t="myPoc:MyBooleanPoint"/>
+    <p n="MyEnumPoint" m="myPoc=myPoc" t="myPoc:MyEnumPoint"/>
+    <p n="MyStringPoint" m="myPoc=myPoc" t="myPoc:MyStringPoint"/>
+
     <p n="MyApiServlet" m="myPoc=myPoc" t="myPoc:MyApiServlet"/>
     <p n="MySmartScanner" m="myPoc=myPoc" t="myPoc:MySmartScanner"/>
     <p n="MySocketServer" m="myPoc=myPoc" t="myPoc:MySocketServer"/>
     <p n="MyApiNetwork" m="myPoc=myPoc" t="myPoc:MyApiNetwork"/>
     <p n="MyPointServer" m="myPoc=myPoc" t="myPoc:MyPointServer"/>
     <p n="PointController" m="myPoc=myPoc" t="myPoc:PointController"/>
-    <p n="BPointController" m="myPoc=myPoc" t="myPoc:BPointController"/>
-    <p n="MyPointNetwork" m="myPoc=myPoc" t="myPoc:MyPointNetwork"/>
-    <p n="MyUniversalNetwork" m="myPoc=myPoc" t="myPoc:MyUniversalNetwork"/>
-    <p n="MyProxyPoint" m="myPoc=myPoc" t="myPoc:MyProxyPoint"/>
-     <p n="MyPointDevice" m="myPoc=myPoc" t="myPoc:MyPointDevice"/>
-
   </p>
 </bajaObjectGraph>

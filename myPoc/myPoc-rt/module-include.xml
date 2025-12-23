@@ -11,4 +11,7 @@
   <type class="com.c.myPoc.controllers.BPointController" name="PointController"/>
   <type class="com.c.myPoc.BMyUniversalNetwork" name="MyUniversalNetwork"/>
   <type class="com.c.myPoc.BMyProxyPoint" name="MyProxyPoint"/>
+  <type class="com.c.myPoc.BMyBooleanPoint" name="MyBooleanPoint"/>
+  <type class="com.c.myPoc.BMyEnumPoint" name="MyEnumPoint"/>
+  <type class="com.c.myPoc.BMyStringPoint" name="MyStringPoint"/>
 </types>
