@@ -11,7 +11,7 @@ import java.net.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.security.*;
-
+import javax.baja.control.*;  // <--- เพิ่มบรรทัดนี้ครับ
 @NiagaraType
 @NiagaraProperty(name = "deviceName", type = "String", defaultValue = "")
 @NiagaraProperty(name = "deviceAddress", type = "String", defaultValue = "")
@@ -31,163 +31,61 @@ public class BMyPointDevice extends BDevice {
 // Property "deviceName"
 ////////////////////////////////////////////////////////////////
 
-    /**
-     * Slot for the {@code deviceName} property.
-     * @see #getDeviceName
-     * @see #setDeviceName
-     */
     public static final Property deviceName = newProperty(0, "", null);
-
-    /**
-     * Get the {@code deviceName} property.
-     * @see #deviceName
-     */
     public String getDeviceName() { return getString(deviceName); }
-
-    /**
-     * Set the {@code deviceName} property.
-     * @see #deviceName
-     */
     public void setDeviceName(String v) { setString(deviceName, v, null); }
 
 ////////////////////////////////////////////////////////////////
 // Property "deviceAddress"
 ////////////////////////////////////////////////////////////////
 
-    /**
-     * Slot for the {@code deviceAddress} property.
-     * @see #getDeviceAddress
-     * @see #setDeviceAddress
-     */
     public static final Property deviceAddress = newProperty(0, "", null);
-
-    /**
-     * Get the {@code deviceAddress} property.
-     * @see #deviceAddress
-     */
     public String getDeviceAddress() { return getString(deviceAddress); }
-
-    /**
-     * Set the {@code deviceAddress} property.
-     * @see #deviceAddress
-     */
     public void setDeviceAddress(String v) { setString(deviceAddress, v, null); }
 
 ////////////////////////////////////////////////////////////////
 // Property "deviceDescription"
 ////////////////////////////////////////////////////////////////
 
-    /**
-     * Slot for the {@code deviceDescription} property.
-     * @see #getDeviceDescription
-     * @see #setDeviceDescription
-     */
     public static final Property deviceDescription = newProperty(0, "", null);
-
-    /**
-     * Get the {@code deviceDescription} property.
-     * @see #deviceDescription
-     */
     public String getDeviceDescription() { return getString(deviceDescription); }
-
-    /**
-     * Set the {@code deviceDescription} property.
-     * @see #deviceDescription
-     */
     public void setDeviceDescription(String v) { setString(deviceDescription, v, null); }
 
 ////////////////////////////////////////////////////////////////
 // Property "protocol"
 ////////////////////////////////////////////////////////////////
 
-    /**
-     * Slot for the {@code protocol} property.
-     * @see #getProtocol
-     * @see #setProtocol
-     */
     public static final Property protocol = newProperty(Flags.READONLY, "", null);
-
-    /**
-     * Get the {@code protocol} property.
-     * @see #protocol
-     */
     public String getProtocol() { return getString(protocol); }
-
-    /**
-     * Set the {@code protocol} property.
-     * @see #protocol
-     */
     public void setProtocol(String v) { setString(protocol, v, null); }
 
 ////////////////////////////////////////////////////////////////
 // Property "deviceId"
 ////////////////////////////////////////////////////////////////
 
-    /**
-     * Slot for the {@code deviceId} property.
-     * @see #getDeviceId
-     * @see #setDeviceId
-     */
     public static final Property deviceId = newProperty(Flags.READONLY, -1, null);
-
-    /**
-     * Get the {@code deviceId} property.
-     * @see #deviceId
-     */
     public int getDeviceId() { return getInt(deviceId); }
-
-    /**
-     * Set the {@code deviceId} property.
-     * @see #deviceId
-     */
     public void setDeviceId(int v) { setInt(deviceId, v, null); }
 
 ////////////////////////////////////////////////////////////////
 // Action "discoverPoints"
 ////////////////////////////////////////////////////////////////
 
-    /**
-     * Slot for the {@code discoverPoints} action.
-     * @see #discoverPoints()
-     */
     public static final Action discoverPoints = newAction(Flags.ASYNC | Flags.SUMMARY, null);
-
-    /**
-     * Invoke the {@code discoverPoints} action.
-     * @see #discoverPoints
-     */
     public void discoverPoints() { invoke(discoverPoints, null, null); }
 
 ////////////////////////////////////////////////////////////////
 // Action "clearPoints"
 ////////////////////////////////////////////////////////////////
 
-    /**
-     * Slot for the {@code clearPoints} action.
-     * @see #clearPoints()
-     */
     public static final Action clearPoints = newAction(Flags.SUMMARY, null);
-
-    /**
-     * Invoke the {@code clearPoints} action.
-     * @see #clearPoints
-     */
     public void clearPoints() { invoke(clearPoints, null, null); }
 
 ////////////////////////////////////////////////////////////////
 // Action "refreshValues"
 ////////////////////////////////////////////////////////////////
 
-    /**
-     * Slot for the {@code refreshValues} action.
-     * @see #refreshValues()
-     */
     public static final Action refreshValues = newAction(Flags.SUMMARY, null);
-
-    /**
-     * Invoke the {@code refreshValues} action.
-     * @see #refreshValues
-     */
     public void refreshValues() { invoke(refreshValues, null, null); }
 
 ////////////////////////////////////////////////////////////////
@@ -200,14 +98,10 @@ public class BMyPointDevice extends BDevice {
 
     /*+ ------------ END BAJA AUTO GENERATED CODE -------------- +*/
 
-    // ==================== BDevice Required Methods ====================
-
     @Override
     public Type getNetworkType() {
         return BMyUniversalNetwork.TYPE;
     }
-
-    // ==================== Device Lifecycle ====================
 
     @Override
     public void started() throws Exception {
@@ -221,17 +115,12 @@ public class BMyPointDevice extends BDevice {
         super.stopped();
     }
 
-    // ==================== Device Communication ====================
-
     @Override
     public void doPing() throws Exception {
-        System.out.println("MyPointDevice: Pinging device " + getDeviceName());
         try {
             setFaultCause(null);
             setStatus(BStatus.ok);
-            System.out.println("MyPointDevice: Ping successful");
         } catch (Exception e) {
-            System.err.println("MyPointDevice: Ping failed - " + e.getMessage());
             setFaultCause(e.getMessage());
             setStatus(BStatus.fault);
             throw e;
@@ -239,113 +128,93 @@ public class BMyPointDevice extends BDevice {
     }
 
     @Override
-    protected IFuture postPing() {
-        return null;
-    }
+    protected IFuture postPing() { return null; }
 
-    // ==================== Point Discovery (Dynamic Properties) ====================
+    // ==================== Point Discovery Logic ====================
 
-    /**
-     * Discover points from device and create as DYNAMIC PROPERTIES
-     */
     public void doDiscoverPoints() throws Exception {
         System.out.println("-------------------------------------------");
-        System.out.println("MyPointDevice: Discovering points...");
-        System.out.println("Device: " + getDeviceName());
-        System.out.println("Address: " + getDeviceAddress());
-        System.out.println("Description: " + getDeviceDescription());
+        System.out.println("Discovering points for: " + getDeviceName());
 
         try {
             String proto = detectProtocol();
-            System.out.println("Detected Protocol: " + proto);
             setProtocol(proto);
-
             int pointsCreated = 0;
 
             switch (proto) {
-                case "bacnet":
-                    pointsCreated = discoverBACnetPoints();
-                    break;
-                case "modbus":
-                    pointsCreated = discoverModbusPoints();
-                    break;
-                case "http":
-                    pointsCreated = discoverHTTPPoints();
-                    break;
-                default:
-                    System.out.println("Unknown protocol, creating test points...");
-                    pointsCreated = createTestPoints();
+                case "bacnet": pointsCreated = discoverBACnetPoints(); break;
+                case "modbus": pointsCreated = discoverModbusPoints(); break;
+                case "http":   pointsCreated = discoverHTTPPoints(); break;
+                default:       pointsCreated = createTestPoints();
             }
 
-            System.out.println("Discovery completed: " + pointsCreated + " points created as properties");
+            System.out.println("Discovery completed: " + pointsCreated + " points created");
             System.out.println("-------------------------------------------");
-
         } catch (Exception e) {
-            System.err.println("Point discovery failed: " + e.getMessage());
-            e.printStackTrace();
+            System.err.println("Discovery failed: " + e.getMessage());
             throw e;
         }
     }
 
     private String detectProtocol() {
         String desc = getDeviceDescription().toLowerCase();
-
         if (desc.contains("bacnet")) return "bacnet";
         if (desc.contains("modbus")) return "modbus";
         if (desc.contains("http")) return "http";
-
         return "unknown";
     }
 
-    /**
-     * Discover BACnet Points - Query from real device
-     */
-    private int discoverBACnetPoints() throws Exception {
-        System.out.println("Starting Real BACnet Object Discovery...");
+    // --- BACnet Discovery (Smart Type Selection) ---
+    // แก้ไขฟังก์ชันนี้ใน BMyPointDevice.java
 
-        // 1. Determine Device ID
+    private int discoverBACnetPoints() throws Exception {
+        System.out.println("Starting BACnet Discovery...");
         String[] parts = getDeviceAddress().split(":");
         String ip = parts[0];
         int port = parts.length > 1 ? Integer.parseInt(parts[1]) : 47808;
 
         int targetDeviceId = parseDeviceIdFromName(getDeviceName());
-        if (targetDeviceId == -1) {
-            System.out.println("Cannot determine Device ID from name. Using default scan.");
+
+        // พยายามดึง Object List (ซึ่งตอนนี้คืนค่าว่างเสมอ)
+        List<Integer> objectIds = fetchBACnetObjectList(ip, port, targetDeviceId);
+
+        // ✅ [แก้ไข] ถ้าดึง List ไม่ได้ ให้เปลี่ยนไปใช้โหมดสแกนหา (scanCommonObjects) แทนทันที
+        if (objectIds.isEmpty()) {
+            System.out.println("Object List is empty (Not implemented). Switching to Fallback Scan...");
             return scanCommonObjects(ip, port);
         }
-
-        System.out.println("   Target Device ID: " + targetDeviceId);
-
-        // 2. Read Object List
-        List<Integer> objectIds = fetchBACnetObjectList(ip, port, targetDeviceId);
 
         int count = 0;
         for (Integer rawId : objectIds) {
             String typeName = BACnetUtil.getObjectTypeName(rawId);
             int instance = BACnetUtil.getInstance(rawId);
-
-            // Skip Device Object
             if (typeName.equals("Device")) continue;
 
             String pointName = typeName + "_" + instance;
-            // Note: Could read Object Name (Prop 77) here for better naming
 
-            // Create Point using manual method to ensure properties are set correctly
-            if (addDynamicPoint(pointName, "bacnet", instance)) {
-                // Ensure registerType is set for BACnet points
-                setPointRegisterType(pointName, typeName);
+            Type targetType = BMyProxyPoint.TYPE;
+            if (typeName.contains("Binary")) {
+                targetType = BMyBooleanPoint.TYPE;
+            } else if (typeName.contains("Multi")) {
+                targetType = BMyEnumPoint.TYPE;
+            }
+
+            if (addDynamicPoint(pointName, "bacnet", instance, targetType)) {
+                if (targetType == BMyProxyPoint.TYPE) {
+                    setPointRegisterType(pointName, typeName);
+                }
                 count++;
             }
         }
-
         return count;
     }
 
     private int scanCommonObjects(String ip, int port) {
-        System.out.println("Scan fallback: Checking common objects...");
+        System.out.println("Scan fallback...");
         int count = 0;
-
-        int[] types = {0, 1, 2, 3, 4, 5}; // AI, AO, AV, BI, BO, BV
+        // AI=0, AO=1, AV=2 -> Numeric
+        // BI=3, BO=4, BV=5 -> Boolean
+        int[] types = {0, 1, 2, 3, 4, 5};
 
         DatagramSocket socket = null;
         try {
@@ -354,12 +223,18 @@ public class BMyPointDevice extends BDevice {
             InetAddress addr = InetAddress.getByName(ip);
 
             for (int type : types) {
-                for (int i = 0; i <= 10; i++) { // Scan ID 0-10
+                for (int i = 0; i <= 5; i++) { // Scan 0-5
                     if (checkObjectExists(socket, addr, port, type, i)) {
                         String typeName = BACnetUtil.getObjectTypeName((type << 22));
                         String name = typeName + "_" + i;
-                        if (addDynamicPoint(name, "bacnet", i)) {
-                            setPointRegisterType(name, typeName);
+
+                        // ✅ เลือก Type
+                        Type targetType = (type >= 3) ? BMyBooleanPoint.TYPE : BMyProxyPoint.TYPE;
+
+                        if (addDynamicPoint(name, "bacnet", i, targetType)) {
+                            if (targetType == BMyProxyPoint.TYPE) {
+                                setPointRegisterType(name, typeName);
+                            }
                             count++;
                         }
                     }
@@ -370,80 +245,30 @@ public class BMyPointDevice extends BDevice {
         } finally {
             if (socket != null) socket.close();
         }
-
         return count;
     }
 
-    private List<Integer> fetchBACnetObjectList(String ip, int port, int deviceId) {
-        List<Integer> list = new ArrayList<>();
-
-        return AccessController.doPrivileged((PrivilegedAction<List<Integer>>) () -> {
-            DatagramSocket socket = null;
-            try {
-                socket = new DatagramSocket();
-                socket.setSoTimeout(2000);
-                InetAddress addr = InetAddress.getByName(ip);
-
-                // Hybrid Strategy for PoC: Scan common ranges
-                int[] typesToScan = {0, 1, 2, 3, 4, 5}; // AI, AO, AV, BI, BO, BV
-
-                for (int type : typesToScan) {
-                    for (int i = 0; i <= 10; i++) { // Scan ID 0-10
-                        if (checkObjectExists(socket, addr, port, type, i)) {
-                            int rawId = (type << 22) | i;
-                            list.add(rawId);
-                            System.out.println("     Found: " + BACnetUtil.getObjectTypeName(rawId) + ":" + i);
-                        }
-                    }
-                }
-
-            } catch (Exception e) {
-                System.err.println("   Discovery Error: " + e.getMessage());
-            } finally {
-                if (socket != null) socket.close();
-            }
-            return list;
-        });
-    }
-
-    private boolean checkObjectExists(DatagramSocket socket, InetAddress ip, int port, int type, int instance) {
-        try {
-            byte[] tx = BACnetUtil.buildReadPropertyPacket(type, instance, BACnetUtil.PROP_PRESENT_VALUE, (instance % 255));
-            DatagramPacket p = new DatagramPacket(tx, tx.length, ip, port);
-            socket.send(p);
-
-            byte[] rxBuf = new byte[512];
-            DatagramPacket rx = new DatagramPacket(rxBuf, rxBuf.length);
-            socket.receive(rx);
-
-            byte apduType = rxBuf[6];
-            return (apduType & 0xF0) == 0x30; // Complex ACK
-
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    private int parseDeviceIdFromName(String name) {
-        try {
-            if (name.contains("_")) {
-                return Integer.parseInt(name.split("_")[1]);
-            }
-        } catch (Exception e) {}
-        return -1;
-    }
-
-    /**
-     * Discover Modbus Points
-     */
+    // --- Modbus Discovery (Smart Type Selection) ---
     private int discoverModbusPoints() throws Exception {
         System.out.println("Discovering Modbus registers...");
-
         int count = 0;
 
-        for (int i = 0; i < 10; i++) {
+        // 1. Discover Holding Registers (Numeric)
+        for (int i = 0; i < 5; i++) {
             String propName = "HR" + i;
-            if (addDynamicPoint(propName, "modbus", i)) {
+            // HR -> Numeric Point
+            if (addDynamicPoint(propName, "modbus", i, BMyProxyPoint.TYPE)) {
+                count++;
+            }
+        }
+
+        // 2. Discover Coils (Boolean) - ลองสมมติว่ามี
+        for (int i = 0; i < 5; i++) {
+            String propName = "Coil" + i;
+            // Coil -> Boolean Point
+            if (addDynamicPoint(propName, "modbus", i, BMyBooleanPoint.TYPE)) {
+                // ต้อง set registerType เป็น coil ด้วย ไม่งั้นมันจะไปอ่าน Holding
+                setPointRegisterType(propName, "coil");
                 count++;
             }
         }
@@ -451,138 +276,127 @@ public class BMyPointDevice extends BDevice {
         return count;
     }
 
-    /**
-     * Discover HTTP Points
-     */
     private int discoverHTTPPoints() throws Exception {
         System.out.println("Discovering HTTP endpoints...");
-
         int count = 0;
-        String[] endpoints = {"temperature", "humidity", "pressure", "status"};
-
+        String[] endpoints = {"temp", "humid"};
         for (int i = 0; i < endpoints.length; i++) {
-            if (addDynamicPoint(endpoints[i], "http", i)) {
+            if (addDynamicPoint(endpoints[i], "http", i, BMyProxyPoint.TYPE)) {
                 count++;
             }
         }
-
         return count;
     }
 
-    /**
-     * Create test points
-     */
     private int createTestPoints() throws Exception {
         int count = 0;
-
-        for (int i = 0; i < 5; i++) {
-            String propName = "Point" + i;
-            if (addDynamicPoint(propName, "test", i)) {
+        for (int i = 0; i < 3; i++) {
+            if (addDynamicPoint("Point" + i, "test", i, BMyProxyPoint.TYPE)) {
                 count++;
             }
         }
-
         return count;
     }
 
-    /**
-     * Add point to Points folder
-     */
-    private boolean addDynamicPoint(String propName, String proto, int address) {
+    // ==================== Core: Add Point by Type ====================
+
+    private boolean addDynamicPoint(String propName, String proto, int address, Type pointType) {
         try {
             BComponent pointsFolder = getPointsFolder();
-
+            // เช็คว่ามี Point ชื่อนี้อยู่แล้วหรือไม่
             if (pointsFolder.get(propName) != null) {
-                System.out.println("   Point already exists: " + propName);
+                System.out.println("Point exists: " + propName);
                 return false;
             }
 
-            BMyProxyPoint point = new BMyProxyPoint();
-            point.setProtocol(proto);
-            point.setRegisterAddress(address);
+            // ✅ แก้ไข 1: สร้าง Instance ใหม่ด้วยวิธีของ Niagara (Baja)
+            // เอาตัวต้นแบบ (Instance) มา Copy สร้างตัวใหม่
+            BControlPoint point = (BControlPoint) ((BValue) pointType.getInstance()).newCopy();
+            // Set ค่าพื้นฐาน
+            // หมายเหตุ: การใช้ set(String, BValue) จะทำงานได้ก็ต่อเมื่อ Point นั้นมี Property ชื่อนี้อยู่จริง
+            try {
+                point.set("protocol", BString.make(proto));
+                point.set("registerAddress", BInteger.make(address));
+            } catch (Exception e) {
+                // กันเหนียว กรณี Point บางประเภทไม่มี Property พวกนี้
+                System.out.println("Warning: Could not set properties on " + propName);
+            }
 
             pointsFolder.add(propName, point);
 
-            System.out.println(" Created point: " + propName + " (" + proto + ", addr:" + address + ")");
+            // ✅ แก้ไข 2: ใช้ getTypeName แทน getSimpleName
+            System.out.println("Created " + pointType.getTypeName() + ": " + propName);
             return true;
 
         } catch (Exception e) {
-            System.err.println("  Failed to create point " + propName + ": " + e.getMessage());
+            System.err.println("Failed to create point " + propName + ": " + e.getMessage());
             e.printStackTrace();
             return false;
         }
     }
+    // --- Helpers ---
 
-    /**
-     * Helper to set register type after creation (for BACnet)
-     */
     private void setPointRegisterType(String propName, String typeName) {
         try {
             BComponent pointsFolder = getPointsFolder();
-            BMyProxyPoint point = (BMyProxyPoint) pointsFolder.get(propName);
+            BComplex point = (BComplex) pointsFolder.get(propName);
             if (point != null) {
-                point.setRegisterType(typeName);
+                // ใช้ set() เพื่อความชัวร์ เพราะบาง Class อาจไม่มี setter นี้
+                try { point.set("registerType", BString.make(typeName)); } catch(Exception e){}
             }
         } catch (Exception e) {}
     }
 
-    /**
-     * Get or create Points folder
-     */
     private BComponent getPointsFolder() {
         try {
             BComponent folder = (BComponent) get("Points");
             if (folder == null) {
                 folder = new BComponent();
                 add("Points", folder);
-                System.out.println("   Created Points folder");
             }
             return folder;
-        } catch (Exception e) {
-            System.err.println("Failed to get Points folder: " + e.getMessage());
-            return null;
-        }
+        } catch (Exception e) { return null; }
     }
 
-    /**
-     * Refresh all point values
-     * (Deprecated: ProxyPoint handles polling independently now)
-     */
     public void doRefreshValues() throws Exception {
-        System.out.println("Refreshing values triggered (Skipped - ProxyPoints handle their own polling)");
+        System.out.println("RefreshValues is disabled.");
     }
 
-    /**
-     * Clear all points
-     */
     public void doClearPoints() throws Exception {
-        System.out.println("Clearing all points from " + getDeviceName());
-
+        System.out.println("Clearing all points...");
         BComponent pointsFolder = getPointsFolder();
-        if (pointsFolder == null) {
-            System.out.println("No Points folder found");
-            return;
-        }
+        if (pointsFolder == null) return;
 
-        int count = 0;
         SlotCursor cursor = pointsFolder.getSlots();
-        java.util.List<String> slotsToRemove = new java.util.ArrayList<>();
+        List<String> toRemove = new ArrayList<>();
 
         while (cursor.next()) {
-            Slot slot = (Slot) cursor.get();
-            slotsToRemove.add(slot.getName());
+            toRemove.add(cursor.slot().getName());
         }
 
-        for (String slotName : slotsToRemove) {
-            try {
-                pointsFolder.remove(slotName);
-                count++;
-                System.out.println("  Removed: " + slotName);
-            } catch (Exception e) {
-                System.err.println("  Failed to remove " + slotName + ": " + e.getMessage());
-            }
+        for (String s : toRemove) {
+            pointsFolder.remove(s);
         }
+        System.out.println("Cleared " + toRemove.size() + " points.");
+    }
 
-        System.out.println("Cleared " + count + " point(s)");
+    // ... (BACnet Util helpers: parseDeviceId, fetchList, checkObject - keep same as before) ...
+    private int parseDeviceIdFromName(String name) {
+        try { if (name.contains("_")) return Integer.parseInt(name.split("_")[1]); } catch (Exception e) {} return -1;
+    }
+
+    private List<Integer> fetchBACnetObjectList(String ip, int port, int deviceId) {
+        return AccessController.doPrivileged((PrivilegedAction<List<Integer>>) () -> new ArrayList<>()); // Placeholder
+    }
+
+    private boolean checkObjectExists(DatagramSocket s, InetAddress a, int p, int t, int i) {
+        try {
+            byte[] tx = BACnetUtil.buildReadPropertyPacket(t, i, BACnetUtil.PROP_PRESENT_VALUE, (i%255));
+            s.send(new DatagramPacket(tx, tx.length, a, p));
+            byte[] rx = new byte[512];
+            DatagramPacket pkt = new DatagramPacket(rx, rx.length);
+            s.receive(pkt);
+            return (rx[6] & 0xF0) == 0x30;
+        } catch (Exception e) { return false; }
     }
 }
