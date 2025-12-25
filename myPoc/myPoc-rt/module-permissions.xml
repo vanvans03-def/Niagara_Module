@@ -1,18 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <permissions>
   <niagara-permission-groups type="all">
-    <!-- Insert any global permissions here. -->
   </niagara-permission-groups>
 
   <niagara-permission-groups type="workbench">
-    <!-- Insert any workbench specific permissions here. -->
   </niagara-permission-groups>
 
   <niagara-permission-groups type="station">
-    <!-- ✅ Network Communication - For all protocols -->
+
     <req-permission>
       <name>NETWORK_COMMUNICATION</name>
-      <purposeKey>Universal Network Discovery - Allow network scanning</purposeKey>
+      <purposeKey>Universal Network Discovery - Allow network scanning and COV</purposeKey>
       <parameters>
         <parameter name="hosts" value="*"/>
         <parameter name="ports" value="*"/>
@@ -20,32 +18,5 @@
       </parameters>
     </req-permission>
 
-    <!-- ✅ Socket Permission - For BACnet, Modbus, HTTP -->
-    <req-permission>
-      <name>SOCKET_PERMISSION</name>
-      <purposeKey>Socket access for protocol discovery</purposeKey>
-      <parameters>
-        <parameter name="host" value="*"/>
-        <parameter name="port" value="*"/>
-        <parameter name="action" value="connect,listen,accept,resolve"/>
-      </parameters>
-    </req-permission>
-
-    <!-- ✅ Thread Management - For parallel scanning -->
-    <req-permission>
-      <name>RUNTIME_PERMISSION</name>
-      <purposeKey>Thread pool management for concurrent scanning</purposeKey>
-      <parameters>
-        <parameter name="name" value="modifyThread"/>
-      </parameters>
-    </req-permission>
-
-    <req-permission>
-      <name>RUNTIME_PERMISSION</name>
-      <purposeKey>Thread group modification for scanning threads</purposeKey>
-      <parameters>
-        <parameter name="name" value="modifyThreadGroup"/>
-      </parameters>
-    </req-permission>
   </niagara-permission-groups>
 </permissions>
