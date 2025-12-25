@@ -52,144 +52,204 @@ import java.security.PrivilegedAction;
 )
 public class BMyProxyPoint extends BNumericWritable {
 
-    /*+ ------------ BEGIN BAJA AUTO GENERATED CODE ------------ +*/
-    /*@ $com.c.myPoc.BMyProxyPoint(389456721)1.0$ @*/
-    /* Generated Tue Dec 24 10:45:00 ICT 2025 by Slot-o-Matic (c) Tridium, Inc. 2012 */
+
+/*+ ------------ BEGIN BAJA AUTO GENERATED CODE ------------ +*/
+/*@ $com.c.myPoc.BMyProxyPoint(3278483480)1.0$ @*/
+/* Generated Thu Dec 25 15:36:58 ICT 2025 by Slot-o-Matic (c) Tridium, Inc. 2012 */
 
 ////////////////////////////////////////////////////////////////
 // Property "address"
 ////////////////////////////////////////////////////////////////
 
-    public static final Property address = newProperty(0, "", null);
-    public String getAddress() { return getString(address); }
-    public void setAddress(String v) { setString(address, v, null); }
+  /**
+   * Slot for the {@code address} property.
+   * @see #getAddress
+   * @see #setAddress
+   */
+  public static final Property address = newProperty(0, "", null);
+
+  /**
+   * Get the {@code address} property.
+   * @see #address
+   */
+  public String getAddress() { return getString(address); }
+
+  /**
+   * Set the {@code address} property.
+   * @see #address
+   */
+  public void setAddress(String v) { setString(address, v, null); }
 
 ////////////////////////////////////////////////////////////////
 // Property "registerType"
-// Dropdown values: holding, input, coil, discrete, AI, AO, AV, BI, BO, BV
 ////////////////////////////////////////////////////////////////
 
-    public static final Property registerType = newProperty(0,
-            BDynamicEnum.make(
-                    0,
-                    BEnumRange.make(new String[]{"holding", "input", "coil", "discrete", "AI", "AO", "AV", "BI", "BO", "BV"})
-            ),
-            null
-    );
+  /**
+   * Slot for the {@code registerType} property.
+   * @see #getRegisterType
+   * @see #setRegisterType
+   */
+  public static final Property registerType = newProperty(0, BDynamicEnum.make(0, BEnumRange.make(new String[]{"holding","input","coil","discrete","AI","AO","AV","BI","BO","BV"})), null);
 
-    public BDynamicEnum getRegisterType() {
-        return (BDynamicEnum) get(registerType);
-    }
+  /**
+   * Get the {@code registerType} property.
+   * @see #registerType
+   */
+  public BDynamicEnum getRegisterType() { return (BDynamicEnum)get(registerType); }
 
-    public void setRegisterType(BDynamicEnum v) {
-        set(registerType, v, null);
-    }
+  /**
+   * Set the {@code registerType} property.
+   * @see #registerType
+   */
+  public void setRegisterType(BDynamicEnum v) { set(registerType, v, null); }
 
 ////////////////////////////////////////////////////////////////
 // Property "registerAddress"
 ////////////////////////////////////////////////////////////////
 
-    public static final Property registerAddress = newProperty(0, 0, null);
-    public int getRegisterAddress() { return getInt(registerAddress); }
-    public void setRegisterAddress(int v) { setInt(registerAddress, v, null); }
+  /**
+   * Slot for the {@code registerAddress} property.
+   * @see #getRegisterAddress
+   * @see #setRegisterAddress
+   */
+  public static final Property registerAddress = newProperty(0, 0, null);
+
+  /**
+   * Get the {@code registerAddress} property.
+   * @see #registerAddress
+   */
+  public int getRegisterAddress() { return getInt(registerAddress); }
+
+  /**
+   * Set the {@code registerAddress} property.
+   * @see #registerAddress
+   */
+  public void setRegisterAddress(int v) { setInt(registerAddress, v, null); }
 
 ////////////////////////////////////////////////////////////////
 // Property "protocol"
-// Dropdown values: modbus, bacnet, http
 ////////////////////////////////////////////////////////////////
 
-    public static final Property protocol = newProperty(0,
-            BDynamicEnum.make(
-                    0,
-                    BEnumRange.make(new String[]{"modbus", "bacnet", "http"})
-            ),
-            null
-    );
+  /**
+   * Slot for the {@code protocol} property.
+   * @see #getProtocol
+   * @see #setProtocol
+   */
+  public static final Property protocol = newProperty(0, BDynamicEnum.make(0, BEnumRange.make(new String[]{"modbus","bacnet","http"})), null);
 
-    public BDynamicEnum getProtocol() {
-        return (BDynamicEnum) get(protocol);
-    }
+  /**
+   * Get the {@code protocol} property.
+   * @see #protocol
+   */
+  public BDynamicEnum getProtocol() { return (BDynamicEnum)get(protocol); }
 
-    public void setProtocol(BDynamicEnum v) {
-        set(protocol, v, null);
-    }
+  /**
+   * Set the {@code protocol} property.
+   * @see #protocol
+   */
+  public void setProtocol(BDynamicEnum v) { set(protocol, v, null); }
 
 ////////////////////////////////////////////////////////////////
 // Property "pollInterval"
 ////////////////////////////////////////////////////////////////
 
-    public static final Property pollInterval = newProperty(0, 5000, null);
-    public int getPollInterval() { return getInt(pollInterval); }
-    public void setPollInterval(int v) { setInt(pollInterval, v, null); }
+  /**
+   * Slot for the {@code pollInterval} property.
+   * @see #getPollInterval
+   * @see #setPollInterval
+   */
+  public static final Property pollInterval = newProperty(0, 5000, null);
+
+  /**
+   * Get the {@code pollInterval} property.
+   * @see #pollInterval
+   */
+  public int getPollInterval() { return getInt(pollInterval); }
+
+  /**
+   * Set the {@code pollInterval} property.
+   * @see #pollInterval
+   */
+  public void setPollInterval(int v) { setInt(pollInterval, v, null); }
 
 ////////////////////////////////////////////////////////////////
 // Property "dataType"
-// Dropdown values: int16, uint16, int32, uint32, float32
 ////////////////////////////////////////////////////////////////
 
-    public static final Property dataType = newProperty(0,
-            BDynamicEnum.make(
-                    0,
-                    BEnumRange.make(new String[]{"int16", "uint16", "int32", "uint32", "float32"})
-            ),
-            null
-    );
+  /**
+   * Slot for the {@code dataType} property.
+   * @see #getDataType
+   * @see #setDataType
+   */
+  public static final Property dataType = newProperty(0, BDynamicEnum.make(0, BEnumRange.make(new String[]{"int16","uint16","int32","uint32","float32"})), null);
 
-    public BDynamicEnum getDataType() {
-        return (BDynamicEnum) get(dataType);
-    }
+  /**
+   * Get the {@code dataType} property.
+   * @see #dataType
+   */
+  public BDynamicEnum getDataType() { return (BDynamicEnum)get(dataType); }
 
-    public void setDataType(BDynamicEnum v) {
-        set(dataType, v, null);
-    }
+  /**
+   * Set the {@code dataType} property.
+   * @see #dataType
+   */
+  public void setDataType(BDynamicEnum v) { set(dataType, v, null); }
 
 ////////////////////////////////////////////////////////////////
 // Property "byteOrder"
-// Dropdown values: ABCD, CDAB, BADC, DCBA
 ////////////////////////////////////////////////////////////////
 
-    public static final Property byteOrder = newProperty(0,
-            BDynamicEnum.make(
-                    0,
-                    BEnumRange.make(new String[]{"ABCD", "CDAB", "BADC", "DCBA"})
-            ),
-            null
-    );
+  /**
+   * Slot for the {@code byteOrder} property.
+   * @see #getByteOrder
+   * @see #setByteOrder
+   */
+  public static final Property byteOrder = newProperty(0, BDynamicEnum.make(0, BEnumRange.make(new String[]{"ABCD","CDAB","BADC","DCBA"})), null);
 
-    public BDynamicEnum getByteOrder() {
-        return (BDynamicEnum) get(byteOrder);
-    }
+  /**
+   * Get the {@code byteOrder} property.
+   * @see #byteOrder
+   */
+  public BDynamicEnum getByteOrder() { return (BDynamicEnum)get(byteOrder); }
 
-    public void setByteOrder(BDynamicEnum v) {
-        set(byteOrder, v, null);
-    }
+  /**
+   * Set the {@code byteOrder} property.
+   * @see #byteOrder
+   */
+  public void setByteOrder(BDynamicEnum v) { set(byteOrder, v, null); }
 
 ////////////////////////////////////////////////////////////////
 // Type
 ////////////////////////////////////////////////////////////////
 
-    @Override
-    public Type getType() { return TYPE; }
-    public static final Type TYPE = Sys.loadType(BMyProxyPoint.class);
+  @Override
+  public Type getType() { return TYPE; }
+  public static final Type TYPE = Sys.loadType(BMyProxyPoint.class);
 
-    /*+ ------------ END BAJA AUTO GENERATED CODE -------------- +*/
+/*+ ------------ END BAJA AUTO GENERATED CODE -------------- +*/
 
     private Thread pollingThread;
     private volatile boolean isPolling = false;
+    private int consecutiveErrors = 0;
+    private static final int MAX_ERRORS = 3;
 
     @Override
     public void started() throws Exception {
         super.started();
+        System.out.println("🔵 Point Started: " + getName() +
+                " [" + getProtocol().getTag() +
+                " @ " + getRegisterAddress() + "]");
+
         updateVisibility();
         startPolling();
     }
 
     @Override
     public void stopped() throws Exception {
+        System.out.println("🔴 Point Stopped: " + getName());
         stopPolling();
         super.stopped();
     }
-
     @Override
     public void changed(Property p, Context cx) {
         super.changed(p, cx);
@@ -233,24 +293,63 @@ public class BMyProxyPoint extends BNumericWritable {
     }
 
     private void startPolling() {
-        if (isPolling) return;
+        if (isPolling) {
+            System.out.println("⚠️  Polling already running for: " + getName());
+            return;
+        }
+
         isPolling = true;
+        consecutiveErrors = 0;
+
         pollingThread = new Thread(() -> {
+            System.out.println("🔄 Polling thread started: " + getName());
+
             while (isPolling) {
                 try {
                     double value = readFromDevice();
+
                     BStatusNumeric statusValue = new BStatusNumeric(value, BStatus.ok);
                     setFallback(statusValue);
+
+                    if (consecutiveErrors > 0) {
+                        System.out.println("✅ Recovered: " + getName() + " = " + value);
+                    }
+                    consecutiveErrors = 0;
+
+                    if (Math.random() < 0.1) { // 10% chance
+                        System.out.println("📊 Poll [" + getName() + "]: " + value);
+                    }
+
                     Thread.sleep(getPollInterval());
+
+                } catch (InterruptedException e) {
+                    break;
+
                 } catch (Exception e) {
+                    consecutiveErrors++;
+
+                    if (consecutiveErrors == 1 || consecutiveErrors % MAX_ERRORS == 0) {
+                        System.err.println("❌ Poll Error [" + getName() +
+                                "] (x" + consecutiveErrors + "): " +
+                                e.getMessage());
+                    }
+
                     try {
                         setFallback(new BStatusNumeric(0.0, BStatus.fault));
-                        Thread.sleep(getPollInterval());
-                    } catch (Exception ie) {}
+
+                        Thread.sleep(Math.min(getPollInterval(), 5000));
+
+                    } catch (InterruptedException ie) {
+                        break;
+                    }
                 }
             }
+
+            System.out.println("⏹️  Polling thread stopped: " + getName());
         });
+
         pollingThread.setDaemon(true);
+        pollingThread.setName("Poll-" + getName());
         pollingThread.start();
     }
 
@@ -261,11 +360,16 @@ public class BMyProxyPoint extends BNumericWritable {
 
     private double readFromDevice() throws Exception {
         String proto = getProtocol().getTag().toLowerCase();
+
         switch (proto) {
-            case "modbus": return readModbus();
-            case "bacnet": return readBACnet();
-            case "http": return readHTTP();
-            default: throw new Exception("Unsupported protocol: " + proto);
+            case "modbus":
+                return readModbus();
+            case "bacnet":
+                return readBACnet();
+            case "http":
+                return readHTTP();
+            default:
+                throw new Exception("Unsupported protocol: " + proto);
         }
     }
 
@@ -477,14 +581,19 @@ public class BMyProxyPoint extends BNumericWritable {
 
     private double readBACnet() throws Exception {
         BMyPointDevice device = getParentDevice();
-        if (device == null) throw new Exception("Device not found");
+        if (device == null) {
+            throw new Exception("Device not found");
+        }
+
         String[] addrParts = device.getDeviceAddress().split(":");
         String ip = addrParts[0];
         int port = addrParts.length > 1 ? Integer.parseInt(addrParts[1]) : 47808;
 
+        // ✅ ระบุ Object Type จากชื่อ Point
         String typeStr = getRegisterType().getTag().toLowerCase();
         String nameStr = getName().toLowerCase();
-        int objectType = 0;
+        int objectType = 0; // Default = AI
+
         if (typeStr.contains("ai") || nameStr.contains("ai_")) objectType = 0;
         else if (typeStr.contains("ao") || nameStr.contains("ao_")) objectType = 1;
         else if (typeStr.contains("av") || nameStr.contains("av_")) objectType = 2;
@@ -499,37 +608,101 @@ public class BMyProxyPoint extends BNumericWritable {
             DatagramSocket socket = null;
             try {
                 socket = new DatagramSocket();
-                socket.setSoTimeout(2000);
+                socket.setSoTimeout(3000); // ✅ เพิ่ม timeout เป็น 3 วินาที
+
                 int invokeId = (int) (Math.random() * 255);
-                byte[] tx = BACnetUtil.buildReadPropertyPacket(finalObjectType, instance, BACnetUtil.PROP_PRESENT_VALUE, invokeId);
-                socket.send(new DatagramPacket(tx, tx.length, InetAddress.getByName(ip), port));
+
+                // ✅ Build Read Property Request
+                byte[] tx = BACnetUtil.buildReadPropertyPacket(
+                        finalObjectType,
+                        instance,
+                        BACnetUtil.PROP_PRESENT_VALUE,
+                        invokeId
+                );
+
+                InetAddress addr = InetAddress.getByName(ip);
+                socket.send(new DatagramPacket(tx, tx.length, addr, port));
+
+                // ✅ รอรับ Response
                 byte[] rxBuf = new byte[512];
                 DatagramPacket rxPacket = new DatagramPacket(rxBuf, rxBuf.length);
                 socket.receive(rxPacket);
+
                 byte[] data = rxPacket.getData();
-                int offset = 6;
-                if (data[offset] == 0x30) {
-                    offset += 3;
-                    if (data[offset] == 0x0C) offset += 5;
-                    if (data[offset] == 0x19) offset += 2;
-                    if (data[offset] == 0x3E) offset += 1;
-                    byte tag = data[offset];
-                    if (tag == 0x44) {
-                        int bits = ((data[offset + 1] & 0xFF) << 24) | ((data[offset + 2] & 0xFF) << 16) |
-                                ((data[offset + 3] & 0xFF) << 8) | (data[offset + 4] & 0xFF);
-                        return (double) Float.intBitsToFloat(bits);
-                    } else if (tag == (byte) 0x91 || tag == (byte) 0x21) {
+
+                // ✅ Parse Response (ตรงกับ BACnet format)
+                int offset = 6; // Skip BVLC (4) + NPDU (2)
+
+                // Check NPDU Control
+                byte npduControl = data[4];
+                if ((npduControl & 0x20) != 0) {
+                    // Has DNET/DLEN/DADR
+                    offset += 2; // DNET
+                    int dlen = data[offset++] & 0xFF;
+                    offset += dlen; // DADR
+                    offset++; // Hop count
+                }
+
+                // Check APDU Type (should be 0x30 = Complex ACK)
+                byte apduType = data[offset];
+                if ((apduType & 0xF0) != 0x30) {
+                    throw new RuntimeException("Invalid APDU type: 0x" +
+                            Integer.toHexString(apduType & 0xFF));
+                }
+
+                offset += 3; // Skip APDU header (Type + Invoke + Service)
+
+                // Skip Object ID (Tag 0xC)
+                if (data[offset] == (byte) 0x0C) {
+                    offset += 5;
+                }
+
+                // Skip Property ID (Tag 0x19)
+                if (data[offset] == (byte) 0x19) {
+                    offset += 2;
+                }
+
+                // Opening Tag (0x3E)
+                if (data[offset] == (byte) 0x3E) {
+                    offset++;
+                }
+
+                // ✅ อ่านค่าจริง
+                byte tag = data[offset];
+
+                // Float (Tag 0x44)
+                if (tag == (byte) 0x44) {
+                    int bits = ((data[offset + 1] & 0xFF) << 24) |
+                            ((data[offset + 2] & 0xFF) << 16) |
+                            ((data[offset + 3] & 0xFF) << 8) |
+                            (data[offset + 4] & 0xFF);
+                    return (double) Float.intBitsToFloat(bits);
+                }
+                // Boolean/Enum (Tag 0x91 or 0x21)
+                else if (tag == (byte) 0x91 || tag == (byte) 0x21) {
+                    return (double) (data[offset + 1] & 0xFF);
+                }
+                // Unsigned Int (Tag 0x21)
+                else if ((tag & 0xF0) == 0x20) {
+                    int len = tag & 0x0F;
+                    if (len == 1) {
                         return (double) (data[offset + 1] & 0xFF);
                     }
                 }
-                return Double.NaN;
+
+                throw new RuntimeException("Unsupported data type: 0x" +
+                        Integer.toHexString(tag & 0xFF));
+
+            } catch (SocketTimeoutException e) {
+                throw new RuntimeException("Timeout (device not responding)");
             } catch (Exception e) {
-                throw new RuntimeException("Read Failed");
+                throw new RuntimeException("BACnet read failed: " + e.getMessage());
             } finally {
                 if (socket != null) socket.close();
             }
         });
     }
+
 
     private double readHTTP() throws Exception {
         BMyPointDevice device = getParentDevice();

@@ -154,11 +154,13 @@ public class BMyBooleanPoint extends BBooleanWritable {
     @Override
     public void started() throws Exception {
         super.started();
+        System.out.println("🔵 Boolean Point Started: " + getName());
         startPolling();
     }
 
     @Override
     public void stopped() throws Exception {
+        System.out.println("🔴 Boolean Point Stopped: " + getName());
         stopPolling();
         super.stopped();
     }
@@ -185,36 +187,130 @@ public class BMyBooleanPoint extends BBooleanWritable {
     private void startPolling() {
         if (isPolling) return;
         isPolling = true;
+
         pollingThread = new Thread(() -> {
+            System.out.println("🔄 Boolean polling started: " + getName());
+
             while (isPolling) {
                 try {
                     boolean value = readFromDevice();
-                    if (getReverse()) value = !value; // กลับค่าถ้า user ติ๊ก reverse
+                    if (getReverse()) value = !value;
 
                     BStatusBoolean statusValue = new BStatusBoolean(value, BStatus.ok);
                     setFallback(statusValue);
+
+                    if (Math.random() < 0.1) { // 10% logging
+                        System.out.println("📊 Bool Poll [" + getName() + "]: " + value);
+                    }
+
                     Thread.sleep(getPollInterval());
+                } catch (InterruptedException e) {
+                    break;
                 } catch (Exception e) {
+                    System.err.println("❌ Bool Poll Error [" + getName() + "]: " + e.getMessage());
                     try {
                         setFallback(new BStatusBoolean(false, BStatus.fault));
                         Thread.sleep(getPollInterval());
-                    } catch (Exception ie) {}
+                    } catch (InterruptedException ie) {
+                        break;
+                    }
                 }
             }
+
+            System.out.println("⏹️  Boolean polling stopped: " + getName());
         });
+
         pollingThread.setDaemon(true);
+        pollingThread.setName("BoolPoll-" + getName());
         pollingThread.start();
     }
 
+
     private void stopPolling() {
         isPolling = false;
-        if (pollingThread != null) pollingThread.interrupt();
+        if (pollingThread != null) {
+            pollingThread.interrupt();
+        }
     }
 
     private boolean readFromDevice() throws Exception {
         String proto = getProtocol().toLowerCase();
         if ("modbus".equals(proto)) return readModbus();
-        return false; // Default
+        if ("bacnet".equals(proto)) return readBACnet();
+        return false;
+    }
+
+    private boolean readBACnet() throws Exception {
+        BMyPointDevice device = getParentDevice();
+        if (device == null) throw new Exception("Device not found");
+
+        String[] addrParts = device.getDeviceAddress().split(":");
+        String ip = addrParts[0];
+        int port = addrParts.length > 1 ? Integer.parseInt(addrParts[1]) : 47808;
+
+        // Parse object type from point name
+        String nameStr = getName().toLowerCase();
+        int objectType = 3; // Default = BI
+
+        if (nameStr.contains("bi_")) objectType = 3;
+        else if (nameStr.contains("bo_")) objectType = 4;
+        else if (nameStr.contains("bv_")) objectType = 5;
+
+        int instance = getRegisterAddress();
+        int finalObjectType = objectType;
+
+        return AccessController.doPrivileged((PrivilegedAction<Boolean>) () -> {
+            DatagramSocket socket = null;
+            try {
+                socket = new DatagramSocket();
+                socket.setSoTimeout(3000);
+
+                int invokeId = (int) (Math.random() * 255);
+                byte[] tx = BACnetUtil.buildReadPropertyPacket(
+                        finalObjectType, instance, BACnetUtil.PROP_PRESENT_VALUE, invokeId
+                );
+
+                InetAddress addr = InetAddress.getByName(ip);
+                socket.send(new DatagramPacket(tx, tx.length, addr, port));
+
+                byte[] rxBuf = new byte[512];
+                DatagramPacket rxPacket = new DatagramPacket(rxBuf, rxBuf.length);
+                socket.receive(rxPacket);
+
+                byte[] data = rxPacket.getData();
+                int offset = 6;
+
+                byte npduControl = data[4];
+                if ((npduControl & 0x20) != 0) {
+                    offset += 2;
+                    int dlen = data[offset++] & 0xFF;
+                    offset += dlen + 1;
+                }
+
+                if ((data[offset] & 0xF0) != 0x30) {
+                    throw new RuntimeException("Invalid APDU type");
+                }
+
+                offset += 3; // APDU header
+                if (data[offset] == (byte) 0x0C) offset += 5; // Object ID
+                if (data[offset] == (byte) 0x19) offset += 2; // Property ID
+                if (data[offset] == (byte) 0x3E) offset++; // Opening tag
+
+                byte tag = data[offset];
+
+                // Boolean value (Tag 0x11 = INACTIVE, 0x91 = ACTIVE)
+                if ((tag & 0xF0) == 0x10 || (tag & 0xF0) == 0x90) {
+                    return (tag & 0x01) == 1;
+                }
+
+                throw new RuntimeException("Unsupported boolean format");
+
+            } catch (Exception e) {
+                throw new RuntimeException("BACnet bool read failed: " + e.getMessage());
+            } finally {
+                if (socket != null) socket.close();
+            }
+        });
     }
 
     private boolean readModbus() throws Exception {
