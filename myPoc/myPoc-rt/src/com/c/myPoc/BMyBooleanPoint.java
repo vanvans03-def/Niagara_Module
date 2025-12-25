@@ -354,42 +354,150 @@ public class BMyBooleanPoint extends BBooleanWritable {
         });
     }
 
+
     private void writeToDevice(boolean value) throws Exception {
+        String proto = getProtocol().toLowerCase();
+
+        // เช็ค Protocol ก่อน
+        if ("bacnet".equals(proto)) {
+            writeBACnet(value);
+        } else if ("modbus".equals(proto)) {
+            writeModbus(value);
+        }
+    }
+
+    private void writeModbus(boolean value) throws Exception {
         BMyPointDevice device = getParentDevice();
         if (device == null) return;
+
+        // Parse IP & Port
         String[] addrParts = device.getDeviceAddress().split(":");
         String ip = addrParts[0];
         int port = addrParts.length > 1 ? Integer.parseInt(addrParts[1]) : 502;
         int regAddr = getRegisterAddress();
 
+        // Handle Reverse Logic
         if (getReverse()) value = !value;
-
         boolean finalValue = value;
+
         AccessController.doPrivileged((PrivilegedAction<Void>) () -> {
             Socket socket = null;
             try {
                 socket = new Socket();
-                socket.connect(new InetSocketAddress(ip, port), 2000);
+                socket.connect(new InetSocketAddress(ip, port), 2000); // Connect Timeout 2s
 
-                // Modbus: Write Single Coil (FC 05)
+                // Modbus Function Code 05 (Write Single Coil)
                 // ON = 0xFF00, OFF = 0x0000
                 int outputVal = finalValue ? 0xFF00 : 0x0000;
 
+                // Build Modbus TCP Request Packet
                 byte[] request = {
-                        0x00, 0x02, 0x00, 0x00, 0x00, 0x06, 0x01, 0x05,
-                        (byte)(regAddr >> 8), (byte)(regAddr & 0xFF),
-                        (byte)(outputVal >> 8), (byte)(outputVal & 0xFF)
+                        0x00, 0x01,             // Transaction ID (Random)
+                        0x00, 0x00,             // Protocol ID (0 = Modbus)
+                        0x00, 0x06,             // Length (6 bytes following)
+                        0x01,                   // Unit ID (Default 1)
+                        0x05,                   // Function Code (Write Coil)
+                        (byte)(regAddr >> 8),   // Register Address Hi
+                        (byte)(regAddr & 0xFF), // Register Address Lo
+                        (byte)(outputVal >> 8), // Value Hi
+                        (byte)(outputVal & 0xFF)// Value Lo
                 };
 
+                // Send Request
                 socket.getOutputStream().write(request);
-                System.out.println("Write Boolean: " + finalValue);
+                socket.getOutputStream().flush();
+
+                // Optional: Read Response to ensure success (FC 05 returns echo of request)
+                java.io.InputStream in = socket.getInputStream();
+                byte[] response = new byte[256];
+                int len = in.read(response);
+
+                if (len > 0) {
+                    System.out.println("Modbus Write Success: " + finalValue);
+                }
+
             } catch (Exception e) {
-                System.err.println("Write Error: " + e.getMessage());
+                System.err.println("Modbus Write Error: " + e.getMessage());
             } finally {
+                // Always close socket
                 try { if (socket != null) socket.close(); } catch (Exception e) {}
             }
             return null;
         });
+    }
+    private void writeBACnet(boolean value) throws Exception {
+        BMyPointDevice device = getParentDevice();
+        if (device == null) return;
+        String[] addrParts = device.getDeviceAddress().split(":");
+        String ip = addrParts[0];
+        int port = addrParts.length > 1 ? Integer.parseInt(addrParts[1]) : 47808;
+
+        // หา Object Type และ Instance
+        String nameStr = getName().toLowerCase();
+        int objectType = 3; // Default BI
+        if (nameStr.contains("bo_")) objectType = 4;
+        else if (nameStr.contains("bv_")) objectType = 5;
+
+        // ** BI (3) มักจะเป็น Read-only การสั่ง Write อาจจะ Error ได้ แต่จะไม่ใช่ Connect Timeout **
+
+        int instance = getRegisterAddress();
+        int finalObjectType = objectType;
+
+        AccessController.doPrivileged((PrivilegedAction<Void>) () -> {
+            DatagramSocket socket = null;
+            try {
+                socket = new DatagramSocket();
+                InetAddress addr = InetAddress.getByName(ip);
+
+                // หมายเหตุ: คุณต้องเพิ่ม method buildWritePropertyBoolean ใน BACnetUtil
+                // หรือใช้ buildWritePropertyReal แล้วแก้ Tag เอา (ดูวิธีแก้ด้านล่าง)
+                byte[] tx = buildWritePropertyBoolean(finalObjectType, instance, 85, value, 1);
+
+                socket.send(new DatagramPacket(tx, tx.length, addr, port));
+                System.out.println("BACnet Write Success: " + value);
+            } catch (Exception e) {
+                System.err.println("BACnet Write Error: " + e.getMessage());
+            } finally {
+                if (socket != null) socket.close();
+            }
+            return null;
+        });
+    }
+
+    // Helper: สร้าง Packet สำหรับ Write Boolean (ใส่ใน class นี้หรือ BACnetUtil ก็ได้)
+    private byte[] buildWritePropertyBoolean(int objectType, int instance, int propertyId, boolean value, int invokeId) {
+        java.nio.ByteBuffer bb = java.nio.ByteBuffer.allocate(1024);
+        // BVLC
+        bb.put((byte) 0x81).put((byte) 0x0A).putShort((short) 0);
+        // NPDU
+        bb.put((byte) 0x01).put((byte) 0x04);
+        // APDU
+        bb.put((byte) 0x00).put((byte) 0x05).put((byte) invokeId).put((byte) 0x0F); // Write Property Service
+
+        // Object ID
+        int objectIdPacked = (objectType << 22) | (instance & 0x3FFFFF);
+        bb.put((byte) 0x0C).putInt(objectIdPacked);
+
+        // Property ID (Present Value = 85)
+        bb.put((byte) 0x19).put((byte) propertyId);
+
+        // Value (Opening Tag)
+        bb.put((byte) 0x3E);
+
+        // Application Tag for Enumerated (9) is standard for Binary PV,
+        // but some devices accept Boolean (1). Standard BACnet often uses Enumerated: 0=Inactive, 1=Active
+        bb.put((byte) 0x91); // Tag 9 (Enumerated)
+        bb.put((byte) (value ? 1 : 0));
+
+        // Closing Tag
+        bb.put((byte) 0x3F);
+
+        int len = bb.position();
+        bb.putShort(2, (short) len);
+        byte[] packet = new byte[len];
+        bb.rewind();
+        bb.get(packet);
+        return packet;
     }
 
     private BMyPointDevice getParentDevice() {

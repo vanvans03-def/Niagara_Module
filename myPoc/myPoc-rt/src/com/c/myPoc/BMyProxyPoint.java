@@ -302,6 +302,10 @@ public class BMyProxyPoint extends BNumericWritable {
         consecutiveErrors = 0;
 
         pollingThread = new Thread(() -> {
+            try {
+                Thread.sleep((long)(Math.random() * 2000));
+            } catch (InterruptedException e) { return; }
+
             System.out.println("🔄 Polling thread started: " + getName());
 
             while (isPolling) {

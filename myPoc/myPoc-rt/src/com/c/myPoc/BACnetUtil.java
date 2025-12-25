@@ -63,7 +63,7 @@ public class BACnetUtil {
         bb.put((byte) 0x04); // Control (Expecting Reply)
 
         // APDU
-        bb.put((byte) (TYPE_CONFIRMED_REQ | 0x08)); // Segmented Response Accepted
+        bb.put((byte) (TYPE_CONFIRMED_REQ | 0x02)); // 0x02 = Segmented Response Accepted
         bb.put((byte) 0xFF); // Max Segs = More than 64
         bb.put((byte) invokeId);
         bb.put(SERVICE_READ_PROPERTY);

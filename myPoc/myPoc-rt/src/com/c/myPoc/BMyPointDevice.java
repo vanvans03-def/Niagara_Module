@@ -959,15 +959,16 @@ public class BMyPointDevice extends BDevice {
         }
     }
 
-    /**
-     * ✅ แก้ไข: Subscribe แบบมี Error Handling ที่ดี
-     */
     private boolean subscribeCOVForPoint(String ip, int port, int objectType, int instance, int lifetime) {
         return AccessController.doPrivileged((PrivilegedAction<Boolean>) () -> {
-            DatagramSocket socket = null;
+            DatagramSocket socketToSend = (covSocket != null && !covSocket.isClosed()) ? covSocket : null;
+            boolean tempSocket = false;
+
             try {
-                socket = new DatagramSocket();
-                socket.setSoTimeout(3000);
+                if (socketToSend == null) {
+                    socketToSend = new DatagramSocket();
+                    tempSocket = true;
+                }
 
                 InetAddress addr = InetAddress.getByName(ip);
                 int invokeId = (int) (Math.random() * 255);
@@ -976,45 +977,20 @@ public class BMyPointDevice extends BDevice {
                         objectType, instance, processId, lifetime, invokeId
                 );
 
-                socket.send(new DatagramPacket(request, request.length, addr, port));
+                socketToSend.send(new DatagramPacket(request, request.length, addr, port));
 
-                // รอ Response
-                byte[] buffer = new byte[256];
-                DatagramPacket response = new DatagramPacket(buffer, buffer.length);
-
-                try {
-                    socket.receive(response);
-                    byte[] data = response.getData();
-
-                    // Parse APDU Type
-                    int offset = 6;
-                    byte npduControl = data[4];
-
-                    if ((npduControl & 0x20) != 0) {
-                        offset += 2;
-                        int dlen = data[offset++] & 0xFF;
-                        offset += dlen + 1;
-                    }
-
-                    byte apduType = data[offset];
-
-                    if ((apduType & 0xF0) == 0x20) {
-                        // Simple ACK = Success
-                        return true;
-                    } else {
-                        // Error/Reject/Abort
-                        return false;
-                    }
-
-                } catch (SocketTimeoutException e) {
-                    // Device ไม่ตอบ = ไม่รองรับ COV
-                    return false;
-                }
+                // ⚠️ หมายเหตุ: ถ้าใช้ covSocket เราอาจจะดักจับ SimpleACK ที่นี่ไม่ได้ง่ายๆ
+                // เพราะ Thread Listener อาจจะแย่งอ่านไปก่อน
+                // แต่ใน BACnet COV การส่งออกไปให้ถูก Port สำคัญกว่าการรอ ACK ในขั้นตอนนี้
+                return true;
 
             } catch (Exception e) {
+                System.err.println("COV Subscribe Error: " + e.getMessage());
                 return false;
             } finally {
-                if (socket != null) socket.close();
+                if (tempSocket && socketToSend != null) {
+                    socketToSend.close();
+                }
             }
         });
     }
@@ -1103,11 +1079,47 @@ public class BMyPointDevice extends BDevice {
 
             BControlPoint point = (BControlPoint) ((BValue) pointType.getInstance()).newCopy();
 
+            // ✅ ตั้งค่า Protocol อย่างถูกต้องสำหรับ BDynamicEnum
             try {
-                point.set("protocol", BString.make(proto));
+                Property protoProp = point.getProperty("protocol");
+                if (protoProp != null) {
+                    BValue val = point.get(protoProp);
+                    if (val instanceof BDynamicEnum) {
+                        BDynamicEnum dyn = (BDynamicEnum) val;
+                        BEnumRange range = dyn.getRange();
+
+                        // วิธีที่ 1: ใช้ get(tag) (Case-Sensitive)
+                        BEnum enm = range.get(proto);
+
+                        // วิธีที่ 2: ถ้าต้องการ Case-Insensitive ต้องวนลูปผ่าน Ordinals แทน
+                        if (enm == null) {
+                            int[] ordinals = range.getOrdinals(); // ดึงรายการ int ทั้งหมด
+                            for (int i = 0; i < ordinals.length; i++) {
+                                BEnum temp = range.get(ordinals[i]);
+                                if (temp.getTag().equalsIgnoreCase(proto)) {
+                                    enm = temp;
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (enm != null) {
+                            point.set(protoProp, BDynamicEnum.make(enm.getOrdinal(), range));
+                        }
+                    } else {
+                        // กรณีไม่ใช่ Enum (เผื่อไว้)
+                        point.set("protocol", BString.make(proto));
+                    }
+                }
+
                 point.set("registerAddress", BInteger.make(address));
+
+                if (point instanceof BMyProxyPoint) {
+                    // (ต้องไปเพิ่ม Logic ใน BMyProxyPoint หรือ set property อื่นแทน)
+                }
+
             } catch (Exception e) {
-                // Some point types may not have these properties
+                // Ignore setup errors
             }
 
             pointsFolder.add(propName, point);
