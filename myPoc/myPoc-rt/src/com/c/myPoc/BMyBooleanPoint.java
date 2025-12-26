@@ -199,7 +199,7 @@ public class BMyBooleanPoint extends BBooleanWritable {
                     BStatusBoolean statusValue = new BStatusBoolean(value, BStatus.ok);
                     setFallback(statusValue);
 
-                    if (Math.random() < 0.1) { // 10% logging
+                    if (Math.random() < 0.1) {
                         System.out.println("📊 Bool Poll [" + getName() + "]: " + value);
                     }
 
@@ -327,8 +327,6 @@ public class BMyBooleanPoint extends BBooleanWritable {
                 socket = new Socket();
                 socket.connect(new InetSocketAddress(ip, port), 2000);
 
-                // Modbus: อ่าน Coil (FC 01) - อ่านทีละ 1 bit
-                // ถ้าอยากอ่าน Discrete Input ให้แก้ 0x01 เป็น 0x02
                 byte[] request = {
                         0x00, 0x01, 0x00, 0x00, 0x00, 0x06, 0x01, 0x01,
                         (byte)(regAddr >> 8), (byte)(regAddr & 0xFF),

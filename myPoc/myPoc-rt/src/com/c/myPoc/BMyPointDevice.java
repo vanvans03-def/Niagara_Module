@@ -19,250 +19,256 @@ import java.security.*;
 @NiagaraProperty(name = "useCOV", type = "boolean", defaultValue = "true")
 @NiagaraProperty(name = "covLifetime", type = "int", defaultValue = "3600")
 @NiagaraAction(name = "discoverPoints", flags = Flags.ASYNC | Flags.SUMMARY)
-@NiagaraAction(name = "clearPoints", flags = Flags.SUMMARY)
+// ❌ ไม่ใส่ Annotation clearPoints ตรงนี้ (ถูกต้องแล้ว)
 @NiagaraAction(name = "subscribeCOV", flags = Flags.SUMMARY)
 @NiagaraAction(name = "unsubscribeCOV", flags = Flags.SUMMARY)
 public class BMyPointDevice extends BDevice {
 
-    
-/*+ ------------ BEGIN BAJA AUTO GENERATED CODE ------------ +*/
-/*@ $com.c.myPoc.BMyPointDevice(4031087249)1.0$ @*/
-/* Generated Thu Dec 25 15:36:57 ICT 2025 by Slot-o-Matic (c) Tridium, Inc. 2012 */
+    /*+ ------------ BEGIN BAJA AUTO GENERATED CODE ------------ +*/
+    /*@ $com.c.myPoc.BMyPointDevice(396658066)1.0$ @*/
+    /* Generated Fri Dec 26 11:31:41 ICT 2025 by Slot-o-Matic (c) Tridium, Inc. 2012 */
 
 ////////////////////////////////////////////////////////////////
 // Property "deviceName"
 ////////////////////////////////////////////////////////////////
-  
-  /**
-   * Slot for the {@code deviceName} property.
-   * @see #getDeviceName
-   * @see #setDeviceName
-   */
-  public static final Property deviceName = newProperty(0, "", null);
-  
-  /**
-   * Get the {@code deviceName} property.
-   * @see #deviceName
-   */
-  public String getDeviceName() { return getString(deviceName); }
-  
-  /**
-   * Set the {@code deviceName} property.
-   * @see #deviceName
-   */
-  public void setDeviceName(String v) { setString(deviceName, v, null); }
+
+    /**
+     * Slot for the {@code deviceName} property.
+     * @see #getDeviceName
+     * @see #setDeviceName
+     */
+    public static final Property deviceName = newProperty(0, "", null);
+
+    /**
+     * Get the {@code deviceName} property.
+     * @see #deviceName
+     */
+    public String getDeviceName() { return getString(deviceName); }
+
+    /**
+     * Set the {@code deviceName} property.
+     * @see #deviceName
+     */
+    public void setDeviceName(String v) { setString(deviceName, v, null); }
 
 ////////////////////////////////////////////////////////////////
 // Property "deviceAddress"
 ////////////////////////////////////////////////////////////////
-  
-  /**
-   * Slot for the {@code deviceAddress} property.
-   * @see #getDeviceAddress
-   * @see #setDeviceAddress
-   */
-  public static final Property deviceAddress = newProperty(0, "", null);
-  
-  /**
-   * Get the {@code deviceAddress} property.
-   * @see #deviceAddress
-   */
-  public String getDeviceAddress() { return getString(deviceAddress); }
-  
-  /**
-   * Set the {@code deviceAddress} property.
-   * @see #deviceAddress
-   */
-  public void setDeviceAddress(String v) { setString(deviceAddress, v, null); }
+
+    /**
+     * Slot for the {@code deviceAddress} property.
+     * @see #getDeviceAddress
+     * @see #setDeviceAddress
+     */
+    public static final Property deviceAddress = newProperty(0, "", null);
+
+    /**
+     * Get the {@code deviceAddress} property.
+     * @see #deviceAddress
+     */
+    public String getDeviceAddress() { return getString(deviceAddress); }
+
+    /**
+     * Set the {@code deviceAddress} property.
+     * @see #deviceAddress
+     */
+    public void setDeviceAddress(String v) { setString(deviceAddress, v, null); }
 
 ////////////////////////////////////////////////////////////////
 // Property "deviceDescription"
 ////////////////////////////////////////////////////////////////
-  
-  /**
-   * Slot for the {@code deviceDescription} property.
-   * @see #getDeviceDescription
-   * @see #setDeviceDescription
-   */
-  public static final Property deviceDescription = newProperty(0, "", null);
-  
-  /**
-   * Get the {@code deviceDescription} property.
-   * @see #deviceDescription
-   */
-  public String getDeviceDescription() { return getString(deviceDescription); }
-  
-  /**
-   * Set the {@code deviceDescription} property.
-   * @see #deviceDescription
-   */
-  public void setDeviceDescription(String v) { setString(deviceDescription, v, null); }
+
+    /**
+     * Slot for the {@code deviceDescription} property.
+     * @see #getDeviceDescription
+     * @see #setDeviceDescription
+     */
+    public static final Property deviceDescription = newProperty(0, "", null);
+
+    /**
+     * Get the {@code deviceDescription} property.
+     * @see #deviceDescription
+     */
+    public String getDeviceDescription() { return getString(deviceDescription); }
+
+    /**
+     * Set the {@code deviceDescription} property.
+     * @see #deviceDescription
+     */
+    public void setDeviceDescription(String v) { setString(deviceDescription, v, null); }
 
 ////////////////////////////////////////////////////////////////
 // Property "protocol"
 ////////////////////////////////////////////////////////////////
-  
-  /**
-   * Slot for the {@code protocol} property.
-   * @see #getProtocol
-   * @see #setProtocol
-   */
-  public static final Property protocol = newProperty(Flags.READONLY, "", null);
-  
-  /**
-   * Get the {@code protocol} property.
-   * @see #protocol
-   */
-  public String getProtocol() { return getString(protocol); }
-  
-  /**
-   * Set the {@code protocol} property.
-   * @see #protocol
-   */
-  public void setProtocol(String v) { setString(protocol, v, null); }
+
+    /**
+     * Slot for the {@code protocol} property.
+     * @see #getProtocol
+     * @see #setProtocol
+     */
+    public static final Property protocol = newProperty(Flags.READONLY, "", null);
+
+    /**
+     * Get the {@code protocol} property.
+     * @see #protocol
+     */
+    public String getProtocol() { return getString(protocol); }
+
+    /**
+     * Set the {@code protocol} property.
+     * @see #protocol
+     */
+    public void setProtocol(String v) { setString(protocol, v, null); }
 
 ////////////////////////////////////////////////////////////////
 // Property "deviceId"
 ////////////////////////////////////////////////////////////////
-  
-  /**
-   * Slot for the {@code deviceId} property.
-   * @see #getDeviceId
-   * @see #setDeviceId
-   */
-  public static final Property deviceId = newProperty(Flags.READONLY, -1, null);
-  
-  /**
-   * Get the {@code deviceId} property.
-   * @see #deviceId
-   */
-  public int getDeviceId() { return getInt(deviceId); }
-  
-  /**
-   * Set the {@code deviceId} property.
-   * @see #deviceId
-   */
-  public void setDeviceId(int v) { setInt(deviceId, v, null); }
+
+    /**
+     * Slot for the {@code deviceId} property.
+     * @see #getDeviceId
+     * @see #setDeviceId
+     */
+    public static final Property deviceId = newProperty(Flags.READONLY, -1, null);
+
+    /**
+     * Get the {@code deviceId} property.
+     * @see #deviceId
+     */
+    public int getDeviceId() { return getInt(deviceId); }
+
+    /**
+     * Set the {@code deviceId} property.
+     * @see #deviceId
+     */
+    public void setDeviceId(int v) { setInt(deviceId, v, null); }
 
 ////////////////////////////////////////////////////////////////
 // Property "useCOV"
 ////////////////////////////////////////////////////////////////
-  
-  /**
-   * Slot for the {@code useCOV} property.
-   * @see #getUseCOV
-   * @see #setUseCOV
-   */
-  public static final Property useCOV = newProperty(0, true, null);
-  
-  /**
-   * Get the {@code useCOV} property.
-   * @see #useCOV
-   */
-  public boolean getUseCOV() { return getBoolean(useCOV); }
-  
-  /**
-   * Set the {@code useCOV} property.
-   * @see #useCOV
-   */
-  public void setUseCOV(boolean v) { setBoolean(useCOV, v, null); }
+
+    /**
+     * Slot for the {@code useCOV} property.
+     * @see #getUseCOV
+     * @see #setUseCOV
+     */
+    public static final Property useCOV = newProperty(0, true, null);
+
+    /**
+     * Get the {@code useCOV} property.
+     * @see #useCOV
+     */
+    public boolean getUseCOV() { return getBoolean(useCOV); }
+
+    /**
+     * Set the {@code useCOV} property.
+     * @see #useCOV
+     */
+    public void setUseCOV(boolean v) { setBoolean(useCOV, v, null); }
 
 ////////////////////////////////////////////////////////////////
 // Property "covLifetime"
 ////////////////////////////////////////////////////////////////
-  
-  /**
-   * Slot for the {@code covLifetime} property.
-   * @see #getCovLifetime
-   * @see #setCovLifetime
-   */
-  public static final Property covLifetime = newProperty(0, 3600, null);
-  
-  /**
-   * Get the {@code covLifetime} property.
-   * @see #covLifetime
-   */
-  public int getCovLifetime() { return getInt(covLifetime); }
-  
-  /**
-   * Set the {@code covLifetime} property.
-   * @see #covLifetime
-   */
-  public void setCovLifetime(int v) { setInt(covLifetime, v, null); }
+
+    /**
+     * Slot for the {@code covLifetime} property.
+     * @see #getCovLifetime
+     * @see #setCovLifetime
+     */
+    public static final Property covLifetime = newProperty(0, 3600, null);
+
+    /**
+     * Get the {@code covLifetime} property.
+     * @see #covLifetime
+     */
+    public int getCovLifetime() { return getInt(covLifetime); }
+
+    /**
+     * Set the {@code covLifetime} property.
+     * @see #covLifetime
+     */
+    public void setCovLifetime(int v) { setInt(covLifetime, v, null); }
 
 ////////////////////////////////////////////////////////////////
 // Action "discoverPoints"
 ////////////////////////////////////////////////////////////////
-  
-  /**
-   * Slot for the {@code discoverPoints} action.
-   * @see #discoverPoints()
-   */
-  public static final Action discoverPoints = newAction(Flags.ASYNC | Flags.SUMMARY, null);
-  
-  /**
-   * Invoke the {@code discoverPoints} action.
-   * @see #discoverPoints
-   */
-  public void discoverPoints() { invoke(discoverPoints, null, null); }
+
+    /**
+     * Slot for the {@code discoverPoints} action.
+     * @see #discoverPoints()
+     */
+    public static final Action discoverPoints = newAction(Flags.ASYNC | Flags.SUMMARY, null);
+
+    /**
+     * Invoke the {@code discoverPoints} action.
+     * @see #discoverPoints
+     */
+    public void discoverPoints() { invoke(discoverPoints, null, null); }
 
 ////////////////////////////////////////////////////////////////
-// Action "clearPoints"
+// Action "clearPoints" (MANUAL DEFINITION - MOVED HERE)
 ////////////////////////////////////////////////////////////////
-  
-  /**
-   * Slot for the {@code clearPoints} action.
-   * @see #clearPoints()
-   */
-  public static final Action clearPoints = newAction(Flags.SUMMARY, null);
-  
-  /**
-   * Invoke the {@code clearPoints} action.
-   * @see #clearPoints
-   */
-  public void clearPoints() { invoke(clearPoints, null, null); }
+
+    /**
+     * Slot for the {@code clearPoints} action with Custom Facets.
+     * ✅ ต้องวางไว้ตรงนี้ (ก่อน Type TYPE) เท่านั้น!
+     */
+    public static final Action clearPoints = newAction(
+            Flags.SUMMARY,
+            BBoolean.FALSE,
+            BFacets.make(
+                    BFacets.TRUE_TEXT, BString.make("Yes, Clear All Points"),
+                    BFacets.FALSE_TEXT, BString.make("Cancel")
+            )
+    );
+
+    /**
+     * Invoke the {@code clearPoints} action.
+     * @see #clearPoints
+     */
+    public void clearPoints(BBoolean confirm) { invoke(clearPoints, confirm, null); }
 
 ////////////////////////////////////////////////////////////////
 // Action "subscribeCOV"
 ////////////////////////////////////////////////////////////////
-  
-  /**
-   * Slot for the {@code subscribeCOV} action.
-   * @see #subscribeCOV()
-   */
-  public static final Action subscribeCOV = newAction(Flags.SUMMARY, null);
-  
-  /**
-   * Invoke the {@code subscribeCOV} action.
-   * @see #subscribeCOV
-   */
-  public void subscribeCOV() { invoke(subscribeCOV, null, null); }
+
+    /**
+     * Slot for the {@code subscribeCOV} action.
+     * @see #subscribeCOV()
+     */
+    public static final Action subscribeCOV = newAction(Flags.SUMMARY, null);
+
+    /**
+     * Invoke the {@code subscribeCOV} action.
+     * @see #subscribeCOV
+     */
+    public void subscribeCOV() { invoke(subscribeCOV, null, null); }
 
 ////////////////////////////////////////////////////////////////
 // Action "unsubscribeCOV"
 ////////////////////////////////////////////////////////////////
-  
-  /**
-   * Slot for the {@code unsubscribeCOV} action.
-   * @see #unsubscribeCOV()
-   */
-  public static final Action unsubscribeCOV = newAction(Flags.SUMMARY, null);
-  
-  /**
-   * Invoke the {@code unsubscribeCOV} action.
-   * @see #unsubscribeCOV
-   */
-  public void unsubscribeCOV() { invoke(unsubscribeCOV, null, null); }
+
+    /**
+     * Slot for the {@code unsubscribeCOV} action.
+     * @see #unsubscribeCOV()
+     */
+    public static final Action unsubscribeCOV = newAction(Flags.SUMMARY, null);
+
+    /**
+     * Invoke the {@code unsubscribeCOV} action.
+     * @see #unsubscribeCOV
+     */
+    public void unsubscribeCOV() { invoke(unsubscribeCOV, null, null); }
 
 ////////////////////////////////////////////////////////////////
 // Type
 ////////////////////////////////////////////////////////////////
-  
-  @Override
-  public Type getType() { return TYPE; }
-  public static final Type TYPE = Sys.loadType(BMyPointDevice.class);
 
-/*+ ------------ END BAJA AUTO GENERATED CODE -------------- +*/
+    @Override
+    public Type getType() { return TYPE; }
+    public static final Type TYPE = Sys.loadType(BMyPointDevice.class);
+
+    /*+ ------------ END BAJA AUTO GENERATED CODE -------------- +*/
 
     // ==================== COV Management ====================
 
@@ -284,7 +290,6 @@ public class BMyPointDevice extends BDevice {
     public void started() throws Exception {
         super.started();
         System.out.println("MyPointDevice: Device started - " + getDeviceName());
-
         setCovStatus("Disabled (Polling only)");
     }
 
@@ -362,9 +367,6 @@ public class BMyPointDevice extends BDevice {
         }
     }
 
-    /**
-     * Enhanced BACnet Discovery with Debug
-     */
     private int discoverBACnetPointsEnhanced() throws Exception {
         System.out.println("");
         System.out.println("📡 BACnet Discovery Process:");
@@ -388,7 +390,6 @@ public class BMyPointDevice extends BDevice {
         System.out.println("   Device ID: " + targetDeviceId);
         setDeviceId(targetDeviceId);
 
-        // Step 1: อ่าน Object List Count
         System.out.println("");
         System.out.println("Step 1: Reading Object List Count...");
         int objectCount = readObjectListCount(ip, port, targetDeviceId);
@@ -401,7 +402,6 @@ public class BMyPointDevice extends BDevice {
 
         System.out.println("   ✓ Found " + objectCount + " objects in list");
 
-        // Step 2: อ่าน Objects ทีละตัว
         System.out.println("");
         System.out.println("Step 2: Reading individual objects...");
 
@@ -410,7 +410,6 @@ public class BMyPointDevice extends BDevice {
 
         for (int i = 1; i <= objectCount; i++) {
             System.out.print("   [" + i + "/" + objectCount + "] ");
-
             int objectId = readObjectListItem(ip, port, targetDeviceId, i);
 
             if (objectId > 0) {
@@ -439,12 +438,8 @@ public class BMyPointDevice extends BDevice {
                 System.out.println("✗ Failed to read object");
             }
 
-            // Delay เล็กน้อย
-            if (i % 10 == 0) {
-                Thread.sleep(100);
-            } else {
-                Thread.sleep(50);
-            }
+            if (i % 10 == 0) Thread.sleep(100);
+            else Thread.sleep(50);
         }
 
         System.out.println("");
@@ -456,9 +451,6 @@ public class BMyPointDevice extends BDevice {
         return created;
     }
 
-    /**
-     * เลือก Point Type ตาม Object Type
-     */
     private Type selectPointType(String typeName) {
         if (typeName.contains("Binary") || typeName.equals("BI") || typeName.equals("BO") || typeName.equals("BV")) {
             return BMyBooleanPoint.TYPE;
@@ -469,16 +461,12 @@ public class BMyPointDevice extends BDevice {
         }
     }
 
-    /**
-     * อ่าน Object List Count
-     */
     private int readObjectListCount(String ip, int port, int deviceId) {
         return AccessController.doPrivileged((PrivilegedAction<Integer>) () -> {
             DatagramSocket socket = null;
             try {
                 socket = new DatagramSocket();
-                socket.setSoTimeout(5000); // เพิ่ม timeout
-
+                socket.setSoTimeout(5000);
                 InetAddress addr = InetAddress.getByName(ip);
                 int invokeId = (int) (Math.random() * 255);
 
@@ -489,12 +477,9 @@ public class BMyPointDevice extends BDevice {
                 byte[] buffer = new byte[512];
                 DatagramPacket response = new DatagramPacket(buffer, buffer.length);
                 socket.receive(response);
-
                 System.out.println("   → Response received (" + response.getLength() + " bytes)");
 
-                int count = BACnetUtil.parseObjectCount(response.getData());
-                return count;
-
+                return BACnetUtil.parseObjectCount(response.getData());
             } catch (SocketTimeoutException e) {
                 System.err.println("   ✗ Timeout waiting for response");
                 return 0;
@@ -508,16 +493,12 @@ public class BMyPointDevice extends BDevice {
         });
     }
 
-    /**
-     * อ่าน Object List Item
-     */
     private int readObjectListItem(String ip, int port, int deviceId, int index) {
         return AccessController.doPrivileged((PrivilegedAction<Integer>) () -> {
             DatagramSocket socket = null;
             try {
                 socket = new DatagramSocket();
                 socket.setSoTimeout(3000);
-
                 InetAddress addr = InetAddress.getByName(ip);
                 int invokeId = (int) (Math.random() * 255);
 
@@ -529,13 +510,11 @@ public class BMyPointDevice extends BDevice {
                 socket.receive(response);
 
                 byte[] data = response.getData();
-
                 if (BACnetUtil.isSegmentedResponse(data)) {
                     return handleSegmentedResponse(socket, addr, port, data, invokeId);
                 } else {
                     return BACnetUtil.parseObjectId(data);
                 }
-
             } catch (Exception e) {
                 return -1;
             } finally {
@@ -544,19 +523,8 @@ public class BMyPointDevice extends BDevice {
         });
     }
 
-    /**
-     * จัดการ Segmented Response
-     */
-    private int handleSegmentedResponse(
-            DatagramSocket socket,
-            InetAddress addr,
-            int port,
-            byte[] firstSegment,
-            int invokeId
-    ) throws Exception {
-
+    private int handleSegmentedResponse(DatagramSocket socket, InetAddress addr, int port, byte[] firstSegment, int invokeId) throws Exception {
         System.out.println("      [Segmented response detected]");
-
         BACnetUtil.SegmentAssembler assembler = new BACnetUtil.SegmentAssembler();
 
         if (!assembler.addSegment(firstSegment)) {
@@ -566,7 +534,6 @@ public class BMyPointDevice extends BDevice {
 
         while (!assembler.isComplete()) {
             int seq = BACnetUtil.getSegmentSequence(firstSegment);
-
             byte[] ack = BACnetUtil.buildSegmentACK(seq, invokeId);
             socket.send(new DatagramPacket(ack, ack.length, addr, port));
 
@@ -578,32 +545,23 @@ public class BMyPointDevice extends BDevice {
                 System.err.println("      ✗ Failed to add segment");
                 break;
             }
-
             firstSegment = response.getData();
         }
-
         return BACnetUtil.parseObjectId(assembler.getData());
     }
 
-    /**
-     * 🔥 Fallback: Scan Common Objects (FIXED)
-     */
     private int scanCommonObjects(String ip, int port) {
         System.out.println("");
         System.out.println("📡 Fallback Scan Method:");
         System.out.println("-------------------------------------------");
         System.out.println("   Scanning common BACnet objects (0-10 of each type)...");
 
-        int created = 0;
-
-        // Object Types: AI=0, AO=1, AV=2, BI=3, BO=4, BV=5
         int[] types = {0, 1, 2, 3, 4, 5};
         String[] typeNames = {"AI", "AO", "AV", "BI", "BO", "BV"};
 
         return AccessController.doPrivileged((PrivilegedAction<Integer>) () -> {
             DatagramSocket socket = null;
             int totalCreated = 0;
-
             try {
                 socket = new DatagramSocket();
                 socket.setSoTimeout(500);
@@ -612,7 +570,6 @@ public class BMyPointDevice extends BDevice {
                 for (int t = 0; t < types.length; t++) {
                     int objectType = types[t];
                     String typeName = typeNames[t];
-
                     System.out.println("");
                     System.out.println("   Scanning " + typeName + " objects...");
 
@@ -631,63 +588,44 @@ public class BMyPointDevice extends BDevice {
                         }
                     }
                 }
-
             } catch (Exception e) {
                 System.err.println("   ✗ Scan error: " + e.getMessage());
             } finally {
                 if (socket != null) socket.close();
             }
-
             System.out.println("");
             System.out.println("   Total objects found: " + totalCreated);
             return totalCreated;
         });
     }
 
-    /**
-     * ตรวจสอบว่า Object มีอยู่จริงหรือไม่
-     */
     private boolean checkObjectExists(DatagramSocket socket, InetAddress addr, int port, int objectType, int instance) {
         try {
             int invokeId = (int) (Math.random() * 255);
-            byte[] request = BACnetUtil.buildReadPropertyPacket(
-                    objectType,
-                    instance,
-                    BACnetUtil.PROP_PRESENT_VALUE,
-                    invokeId
-            );
-
+            byte[] request = BACnetUtil.buildReadPropertyPacket(objectType, instance, BACnetUtil.PROP_PRESENT_VALUE, invokeId);
             socket.send(new DatagramPacket(request, request.length, addr, port));
 
             byte[] buffer = new byte[512];
             DatagramPacket response = new DatagramPacket(buffer, buffer.length);
             socket.receive(response);
 
-            // ตรวจสอบว่าได้ Complex ACK กลับมา (0x30)
             byte[] data = response.getData();
             int offset = 6;
-
             byte npduControl = data[4];
             if ((npduControl & 0x20) != 0) {
                 offset += 2;
                 int dlen = data[offset++] & 0xFF;
                 offset += dlen + 1;
             }
-
-            return (data[offset] & 0xF0) == 0x30; // Complex ACK
-
+            return (data[offset] & 0xF0) == 0x30;
         } catch (Exception e) {
             return false;
         }
     }
 
-    /**
-     * Modbus Discovery
-     */
     private int discoverModbusPoints() throws Exception {
         System.out.println("   Scanning Modbus registers...");
         int count = 0;
-
         for (int i = 0; i < 10; i++) {
             String propName = "HR" + i;
             if (addDynamicPoint(propName, "modbus", i, BMyProxyPoint.TYPE)) {
@@ -695,7 +633,6 @@ public class BMyPointDevice extends BDevice {
                 System.out.println("   ✓ Created: " + propName);
             }
         }
-
         for (int i = 0; i < 10; i++) {
             String propName = "Coil" + i;
             if (addDynamicPoint(propName, "modbus", i, BMyBooleanPoint.TYPE)) {
@@ -704,18 +641,13 @@ public class BMyPointDevice extends BDevice {
                 System.out.println("   ✓ Created: " + propName);
             }
         }
-
         return count;
     }
 
-    /**
-     * HTTP Discovery
-     */
     private int discoverHTTPPoints() throws Exception {
         System.out.println("   Scanning HTTP endpoints...");
         int count = 0;
         String[] endpoints = {"temp", "humid", "pressure"};
-
         for (int i = 0; i < endpoints.length; i++) {
             if (addDynamicPoint(endpoints[i], "http", i, BMyProxyPoint.TYPE)) {
                 count++;
@@ -725,13 +657,9 @@ public class BMyPointDevice extends BDevice {
         return count;
     }
 
-    /**
-     * Test Points
-     */
     private int createTestPoints() throws Exception {
         System.out.println("   Creating test points...");
         int count = 0;
-
         for (int i = 0; i < 5; i++) {
             if (addDynamicPoint("TestPoint" + i, "test", i, BMyProxyPoint.TYPE)) {
                 count++;
@@ -747,27 +675,20 @@ public class BMyPointDevice extends BDevice {
             System.out.println("⚠️  COV Listener already running");
             return;
         }
-
         System.out.println("Starting COV Listener...");
         isCOVRunning = true;
 
         covListenerThread = new Thread(() -> {
             AccessController.doPrivileged((PrivilegedAction<Void>) () -> {
                 try {
-                    // ✅ ใช้ Port ที่ระบุชัดเจน (47808 หรือ 47809)
-                    // ถ้า 47808 ถูกใช้โดย BACnet service อื่น ให้ลอง 47809
                     covPort = 47809;
-
                     try {
                         covSocket = new DatagramSocket(covPort);
                     } catch (BindException e) {
-                        // ถ้า 47809 ไม่ว่าง ลอง 47810
                         covPort = 47810;
                         covSocket = new DatagramSocket(covPort);
                     }
-
                     covSocket.setSoTimeout(1000);
-
                     System.out.println("✓ COV Listener started on port " + covPort);
                     setCovStatus("Active on port " + covPort);
 
@@ -778,45 +699,30 @@ public class BMyPointDevice extends BDevice {
                             covSocket.receive(packet);
                             processCOVNotification(packet.getData());
                         } catch (SocketTimeoutException e) {
-                            // Normal timeout - continue
                         } catch (Exception e) {
-                            if (isCOVRunning) {
-                                System.err.println("COV Listener error: " + e.getMessage());
-                            }
+                            if (isCOVRunning) System.err.println("COV Listener error: " + e.getMessage());
                         }
                     }
                 } catch (Exception e) {
                     System.err.println("❌ Failed to start COV Listener: " + e.getMessage());
-                    e.printStackTrace();
                     setCovStatus("Failed: " + e.getMessage());
                     isCOVRunning = false;
                 } finally {
-                    if (covSocket != null && !covSocket.isClosed()) {
-                        covSocket.close();
-                    }
+                    if (covSocket != null && !covSocket.isClosed()) covSocket.close();
                 }
                 return null;
             });
         });
-
         covListenerThread.setDaemon(true);
         covListenerThread.start();
     }
 
     private void stopCOVListener() {
         if (!isCOVRunning) return;
-
         System.out.println("Stopping COV Listener...");
         isCOVRunning = false;
-
-        if (covSocket != null && !covSocket.isClosed()) {
-            covSocket.close();
-        }
-
-        if (covListenerThread != null) {
-            covListenerThread.interrupt();
-        }
-
+        if (covSocket != null && !covSocket.isClosed()) covSocket.close();
+        if (covListenerThread != null) covListenerThread.interrupt();
         setCovStatus("Disabled");
     }
 
@@ -835,7 +741,6 @@ public class BMyPointDevice extends BDevice {
 
             updatePointValue(pointName, value);
             System.out.println("📬 COV Update: " + pointName + " = " + value);
-
         } catch (Exception e) {
             System.err.println("Failed to process COV: " + e.getMessage());
         }
@@ -853,8 +758,7 @@ public class BMyPointDevice extends BDevice {
                 double numValue = ((Number) value).doubleValue();
                 BNumericWritable np = (BNumericWritable) point;
                 np.setFallback(new BStatusNumeric(numValue, BStatus.ok));
-            }
-            else if (point instanceof BBooleanWritable) {
+            } else if (point instanceof BBooleanWritable) {
                 boolean boolValue = ((Number) value).intValue() != 0;
                 BBooleanWritable bp = (BBooleanWritable) point;
                 bp.setFallback(new BStatusBoolean(boolValue, BStatus.ok));
@@ -864,9 +768,6 @@ public class BMyPointDevice extends BDevice {
         }
     }
 
-    /**
-     * ✅ แก้ไข: Subscribe COV (Manual Only)
-     */
     public void doSubscribeCOV() throws Exception {
         if (!"bacnet".equalsIgnoreCase(getProtocol())) {
             System.err.println("❌ COV is only supported for BACnet");
@@ -874,10 +775,9 @@ public class BMyPointDevice extends BDevice {
             return;
         }
 
-        // ✅ เริ่ม COV Listener ก่อน
         if (!isCOVRunning) {
             startCOVListener();
-            Thread.sleep(500); // รอให้ listener พร้อม
+            Thread.sleep(500);
         }
 
         if (covPort == 0) {
@@ -918,9 +818,7 @@ public class BMyPointDevice extends BDevice {
 
                 System.out.print("   [" + total + "] " + pointName + " ... ");
 
-                boolean success = subscribeCOVForPoint(
-                        ip, port, objectType, instance, getCovLifetime()
-                );
+                boolean success = subscribeCOVForPoint(ip, port, objectType, instance, getCovLifetime());
 
                 if (success) {
                     covSubscriptions.put(pointName, objectType);
@@ -930,9 +828,7 @@ public class BMyPointDevice extends BDevice {
                     failed++;
                     System.out.println("❌");
                 }
-
                 Thread.sleep(150);
-
             } catch (Exception e) {
                 failed++;
                 System.err.println("❌ Error: " + e.getMessage());
@@ -949,12 +845,9 @@ public class BMyPointDevice extends BDevice {
 
         if (subscribed > 0) {
             setCovStatus("Active (" + subscribed + "/" + total + " points)");
-            System.out.println("");
             System.out.println("💡 Points will now update via COV notifications");
-            System.out.println("   Polling is still active as fallback");
         } else {
             setCovStatus("Failed - Using polling only");
-            System.out.println("");
             System.out.println("⚠️  No points subscribed - using polling only");
         }
     }
@@ -973,24 +866,14 @@ public class BMyPointDevice extends BDevice {
                 InetAddress addr = InetAddress.getByName(ip);
                 int invokeId = (int) (Math.random() * 255);
 
-                byte[] request = BACnetUtil.buildSubscribeCOVPacket(
-                        objectType, instance, processId, lifetime, invokeId
-                );
-
+                byte[] request = BACnetUtil.buildSubscribeCOVPacket(objectType, instance, processId, lifetime, invokeId);
                 socketToSend.send(new DatagramPacket(request, request.length, addr, port));
-
-                // ⚠️ หมายเหตุ: ถ้าใช้ covSocket เราอาจจะดักจับ SimpleACK ที่นี่ไม่ได้ง่ายๆ
-                // เพราะ Thread Listener อาจจะแย่งอ่านไปก่อน
-                // แต่ใน BACnet COV การส่งออกไปให้ถูก Port สำคัญกว่าการรอ ACK ในขั้นตอนนี้
                 return true;
-
             } catch (Exception e) {
                 System.err.println("COV Subscribe Error: " + e.getMessage());
                 return false;
             } finally {
-                if (tempSocket && socketToSend != null) {
-                    socketToSend.close();
-                }
+                if (tempSocket && socketToSend != null) socketToSend.close();
             }
         });
     }
@@ -1012,12 +895,11 @@ public class BMyPointDevice extends BDevice {
                 String[] nameParts = pointName.split("_");
                 int instance = Integer.parseInt(nameParts[1]);
                 int objectType = entry.getValue();
-                subscribeCOVForPoint(ip, port, objectType, instance, 0); // lifetime=0 = unsubscribe
+                subscribeCOVForPoint(ip, port, objectType, instance, 0);
             } catch (Exception e) {
                 System.err.println("Failed to unsubscribe " + pointName);
             }
         }
-
         covSubscriptions.clear();
         stopCOVListener();
         setCovStatus("Disabled - Polling only");
@@ -1035,8 +917,6 @@ public class BMyPointDevice extends BDevice {
             default: return -1;
         }
     }
-
-    // ==================== Helper Methods ====================
 
     private String detectProtocol() {
         String desc = getDeviceDescription().toLowerCase();
@@ -1060,26 +940,19 @@ public class BMyPointDevice extends BDevice {
         }
     }
 
-    // ✅ เพิ่ม helper method
     private void setCovStatus(String status) {
         try {
             set("covStatus", BString.make(status));
-        } catch (Exception e) {
-            // Ignore if property doesn't exist yet
-        }
+        } catch (Exception e) { }
     }
-
 
     private boolean addDynamicPoint(String propName, String proto, int address, Type pointType) {
         try {
             BComponent pointsFolder = getPointsFolder();
-            if (pointsFolder.get(propName) != null) {
-                return false;
-            }
+            if (pointsFolder.get(propName) != null) return false;
 
             BControlPoint point = (BControlPoint) ((BValue) pointType.getInstance()).newCopy();
 
-            // ✅ ตั้งค่า Protocol อย่างถูกต้องสำหรับ BDynamicEnum
             try {
                 Property protoProp = point.getProperty("protocol");
                 if (protoProp != null) {
@@ -1087,13 +960,10 @@ public class BMyPointDevice extends BDevice {
                     if (val instanceof BDynamicEnum) {
                         BDynamicEnum dyn = (BDynamicEnum) val;
                         BEnumRange range = dyn.getRange();
-
-                        // วิธีที่ 1: ใช้ get(tag) (Case-Sensitive)
                         BEnum enm = range.get(proto);
 
-                        // วิธีที่ 2: ถ้าต้องการ Case-Insensitive ต้องวนลูปผ่าน Ordinals แทน
                         if (enm == null) {
-                            int[] ordinals = range.getOrdinals(); // ดึงรายการ int ทั้งหมด
+                            int[] ordinals = range.getOrdinals();
                             for (int i = 0; i < ordinals.length; i++) {
                                 BEnum temp = range.get(ordinals[i]);
                                 if (temp.getTag().equalsIgnoreCase(proto)) {
@@ -1102,29 +972,18 @@ public class BMyPointDevice extends BDevice {
                                 }
                             }
                         }
-
                         if (enm != null) {
                             point.set(protoProp, BDynamicEnum.make(enm.getOrdinal(), range));
                         }
                     } else {
-                        // กรณีไม่ใช่ Enum (เผื่อไว้)
                         point.set("protocol", BString.make(proto));
                     }
                 }
-
                 point.set("registerAddress", BInteger.make(address));
-
-                if (point instanceof BMyProxyPoint) {
-                    // (ต้องไปเพิ่ม Logic ใน BMyProxyPoint หรือ set property อื่นแทน)
-                }
-
-            } catch (Exception e) {
-                // Ignore setup errors
-            }
+            } catch (Exception e) { }
 
             pointsFolder.add(propName, point);
             return true;
-
         } catch (Exception e) {
             System.err.println("Failed to create point " + propName + ": " + e.getMessage());
             e.printStackTrace();
@@ -1139,16 +998,30 @@ public class BMyPointDevice extends BDevice {
             if (point != null) {
                 try {
                     point.set("registerType", BString.make(typeName));
-                } catch(Exception e) {
-                    // Point may not have registerType property
-                }
+                } catch (Exception e) { }
             }
-        } catch (Exception e) {}
+        } catch (Exception e) { }
     }
 
+    private int parseDeviceIdFromName(String name) {
+        try {
+            if (name.contains("_")) {
+                String[] parts = name.split("_");
+                return Integer.parseInt(parts[parts.length - 1]);
+            }
+        } catch (Exception e) { }
+        return -1;
+    }
 
+    /**
+     * Implementation of Clear Points
+     */
+    public void doClearPoints(BBoolean confirm) throws Exception {
+        // ✅ เช็คก่อนว่า User กด Yes หรือไม่
+        if (!confirm.getBoolean()) {
+            return; // ถ้า Cancel ก็จบการทำงาน
+        }
 
-    public void doClearPoints() throws Exception {
         System.out.println("Clearing all points...");
         BComponent pointsFolder = getPointsFolder();
         if (pointsFolder == null) return;
@@ -1165,15 +1038,5 @@ public class BMyPointDevice extends BDevice {
         }
 
         System.out.println("✅ Cleared " + toRemove.size() + " points.");
-    }
-
-    private int parseDeviceIdFromName(String name) {
-        try {
-            if (name.contains("_")) {
-                String[] parts = name.split("_");
-                return Integer.parseInt(parts[parts.length - 1]);
-            }
-        } catch (Exception e) {}
-        return -1;
     }
 }
