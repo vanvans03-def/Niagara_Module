@@ -13,16 +13,10 @@ import java.security.*;
 
 /**
  * Universal Multi-Protocol Network Discovery
- *
- * รองรับ 3 Protocols:
- * 1. BACnet/IP - Who-Is broadcast (Port 47808)
- * 2. Modbus TCP - Port scan (Port 502)
- * 3. HTTP/REST - Web server detection (Port 80/443/8080)
  */
 @NiagaraType
 @NiagaraProperty(name = "version", type = "String", defaultValue = "3.0.0", flags = Flags.READONLY)
-@NiagaraProperty(name = "subnet", type = "String", defaultValue = "192.168.1.0/24",
-        flags = Flags.SUMMARY)
+@NiagaraProperty(name = "subnet", type = "String", defaultValue = "192.168.1.0/24", flags = Flags.SUMMARY)
 @NiagaraProperty(name = "enableBACnet", type = "boolean", defaultValue = "true")
 @NiagaraProperty(name = "enableModbus", type = "boolean", defaultValue = "true")
 @NiagaraProperty(name = "enableHTTP", type = "boolean", defaultValue = "true")
@@ -35,351 +29,357 @@ import java.security.*;
 @NiagaraAction(name = "discoverBACnet", flags = Flags.ASYNC)
 @NiagaraAction(name = "discoverModbus", flags = Flags.ASYNC)
 @NiagaraAction(name = "discoverHTTP", flags = Flags.ASYNC)
-@NiagaraAction(name = "clearDevices", flags = Flags.SUMMARY)
+// ❌ ลบ Annotation clearDevices ออก เพื่อใช้ Manual Action ด้านล่าง
 @NiagaraAction(name = "ping")
 
 public class BMyUniversalNetwork extends BDeviceNetwork {
 
-    
-/*+ ------------ BEGIN BAJA AUTO GENERATED CODE ------------ +*/
-/*@ $com.c.myPoc.BMyUniversalNetwork(1074625821)1.0$ @*/
-/* Generated Fri Dec 19 13:56:49 ICT 2025 by Slot-o-Matic (c) Tridium, Inc. 2012 */
+    /*+ ------------ BEGIN BAJA AUTO GENERATED CODE ------------ +*/
+    /*@ $com.c.myPoc.BMyUniversalNetwork(3133649692)1.0$ @*/
+    /* Generated Fri Dec 19 13:56:49 ICT 2025 by Slot-o-Matic (c) Tridium, Inc. 2012 */
 
 ////////////////////////////////////////////////////////////////
 // Property "version"
 ////////////////////////////////////////////////////////////////
-  
-  /**
-   * Slot for the {@code version} property.
-   * @see #getVersion
-   * @see #setVersion
-   */
-  public static final Property version = newProperty(Flags.READONLY, "3.0.0", null);
-  
-  /**
-   * Get the {@code version} property.
-   * @see #version
-   */
-  public String getVersion() { return getString(version); }
-  
-  /**
-   * Set the {@code version} property.
-   * @see #version
-   */
-  public void setVersion(String v) { setString(version, v, null); }
+
+    /**
+     * Slot for the {@code version} property.
+     * @see #getVersion
+     * @see #setVersion
+     */
+    public static final Property version = newProperty(Flags.READONLY, "3.0.0", null);
+
+    /**
+     * Get the {@code version} property.
+     * @see #version
+     */
+    public String getVersion() { return getString(version); }
+
+    /**
+     * Set the {@code version} property.
+     * @see #version
+     */
+    public void setVersion(String v) { setString(version, v, null); }
 
 ////////////////////////////////////////////////////////////////
 // Property "subnet"
 ////////////////////////////////////////////////////////////////
-  
-  /**
-   * Slot for the {@code subnet} property.
-   * @see #getSubnet
-   * @see #setSubnet
-   */
-  public static final Property subnet = newProperty(Flags.SUMMARY, "192.168.1.0/24", null);
-  
-  /**
-   * Get the {@code subnet} property.
-   * @see #subnet
-   */
-  public String getSubnet() { return getString(subnet); }
-  
-  /**
-   * Set the {@code subnet} property.
-   * @see #subnet
-   */
-  public void setSubnet(String v) { setString(subnet, v, null); }
+
+    /**
+     * Slot for the {@code subnet} property.
+     * @see #getSubnet
+     * @see #setSubnet
+     */
+    public static final Property subnet = newProperty(Flags.SUMMARY, "192.168.1.0/24", null);
+
+    /**
+     * Get the {@code subnet} property.
+     * @see #subnet
+     */
+    public String getSubnet() { return getString(subnet); }
+
+    /**
+     * Set the {@code subnet} property.
+     * @see #subnet
+     */
+    public void setSubnet(String v) { setString(subnet, v, null); }
 
 ////////////////////////////////////////////////////////////////
 // Property "enableBACnet"
 ////////////////////////////////////////////////////////////////
-  
-  /**
-   * Slot for the {@code enableBACnet} property.
-   * @see #getEnableBACnet
-   * @see #setEnableBACnet
-   */
-  public static final Property enableBACnet = newProperty(0, true, null);
-  
-  /**
-   * Get the {@code enableBACnet} property.
-   * @see #enableBACnet
-   */
-  public boolean getEnableBACnet() { return getBoolean(enableBACnet); }
-  
-  /**
-   * Set the {@code enableBACnet} property.
-   * @see #enableBACnet
-   */
-  public void setEnableBACnet(boolean v) { setBoolean(enableBACnet, v, null); }
+
+    /**
+     * Slot for the {@code enableBACnet} property.
+     * @see #getEnableBACnet
+     * @see #setEnableBACnet
+     */
+    public static final Property enableBACnet = newProperty(0, true, null);
+
+    /**
+     * Get the {@code enableBACnet} property.
+     * @see #enableBACnet
+     */
+    public boolean getEnableBACnet() { return getBoolean(enableBACnet); }
+
+    /**
+     * Set the {@code enableBACnet} property.
+     * @see #enableBACnet
+     */
+    public void setEnableBACnet(boolean v) { setBoolean(enableBACnet, v, null); }
 
 ////////////////////////////////////////////////////////////////
 // Property "enableModbus"
 ////////////////////////////////////////////////////////////////
-  
-  /**
-   * Slot for the {@code enableModbus} property.
-   * @see #getEnableModbus
-   * @see #setEnableModbus
-   */
-  public static final Property enableModbus = newProperty(0, true, null);
-  
-  /**
-   * Get the {@code enableModbus} property.
-   * @see #enableModbus
-   */
-  public boolean getEnableModbus() { return getBoolean(enableModbus); }
-  
-  /**
-   * Set the {@code enableModbus} property.
-   * @see #enableModbus
-   */
-  public void setEnableModbus(boolean v) { setBoolean(enableModbus, v, null); }
+
+    /**
+     * Slot for the {@code enableModbus} property.
+     * @see #getEnableModbus
+     * @see #setEnableModbus
+     */
+    public static final Property enableModbus = newProperty(0, true, null);
+
+    /**
+     * Get the {@code enableModbus} property.
+     * @see #enableModbus
+     */
+    public boolean getEnableModbus() { return getBoolean(enableModbus); }
+
+    /**
+     * Set the {@code enableModbus} property.
+     * @see #enableModbus
+     */
+    public void setEnableModbus(boolean v) { setBoolean(enableModbus, v, null); }
 
 ////////////////////////////////////////////////////////////////
 // Property "enableHTTP"
 ////////////////////////////////////////////////////////////////
-  
-  /**
-   * Slot for the {@code enableHTTP} property.
-   * @see #getEnableHTTP
-   * @see #setEnableHTTP
-   */
-  public static final Property enableHTTP = newProperty(0, true, null);
-  
-  /**
-   * Get the {@code enableHTTP} property.
-   * @see #enableHTTP
-   */
-  public boolean getEnableHTTP() { return getBoolean(enableHTTP); }
-  
-  /**
-   * Set the {@code enableHTTP} property.
-   * @see #enableHTTP
-   */
-  public void setEnableHTTP(boolean v) { setBoolean(enableHTTP, v, null); }
+
+    /**
+     * Slot for the {@code enableHTTP} property.
+     * @see #getEnableHTTP
+     * @see #setEnableHTTP
+     */
+    public static final Property enableHTTP = newProperty(0, true, null);
+
+    /**
+     * Get the {@code enableHTTP} property.
+     * @see #enableHTTP
+     */
+    public boolean getEnableHTTP() { return getBoolean(enableHTTP); }
+
+    /**
+     * Set the {@code enableHTTP} property.
+     * @see #enableHTTP
+     */
+    public void setEnableHTTP(boolean v) { setBoolean(enableHTTP, v, null); }
 
 ////////////////////////////////////////////////////////////////
 // Property "scanTimeout"
 ////////////////////////////////////////////////////////////////
-  
-  /**
-   * Slot for the {@code scanTimeout} property.
-   * @see #getScanTimeout
-   * @see #setScanTimeout
-   */
-  public static final Property scanTimeout = newProperty(0, 2000, null);
-  
-  /**
-   * Get the {@code scanTimeout} property.
-   * @see #scanTimeout
-   */
-  public int getScanTimeout() { return getInt(scanTimeout); }
-  
-  /**
-   * Set the {@code scanTimeout} property.
-   * @see #scanTimeout
-   */
-  public void setScanTimeout(int v) { setInt(scanTimeout, v, null); }
+
+    /**
+     * Slot for the {@code scanTimeout} property.
+     * @see #getScanTimeout
+     * @see #setScanTimeout
+     */
+    public static final Property scanTimeout = newProperty(0, 2000, null);
+
+    /**
+     * Get the {@code scanTimeout} property.
+     * @see #scanTimeout
+     */
+    public int getScanTimeout() { return getInt(scanTimeout); }
+
+    /**
+     * Set the {@code scanTimeout} property.
+     * @see #scanTimeout
+     */
+    public void setScanTimeout(int v) { setInt(scanTimeout, v, null); }
 
 ////////////////////////////////////////////////////////////////
 // Property "maxThreads"
 ////////////////////////////////////////////////////////////////
-  
-  /**
-   * Slot for the {@code maxThreads} property.
-   * @see #getMaxThreads
-   * @see #setMaxThreads
-   */
-  public static final Property maxThreads = newProperty(0, 50, null);
-  
-  /**
-   * Get the {@code maxThreads} property.
-   * @see #maxThreads
-   */
-  public int getMaxThreads() { return getInt(maxThreads); }
-  
-  /**
-   * Set the {@code maxThreads} property.
-   * @see #maxThreads
-   */
-  public void setMaxThreads(int v) { setInt(maxThreads, v, null); }
+
+    /**
+     * Slot for the {@code maxThreads} property.
+     * @see #getMaxThreads
+     * @see #setMaxThreads
+     */
+    public static final Property maxThreads = newProperty(0, 50, null);
+
+    /**
+     * Get the {@code maxThreads} property.
+     * @see #maxThreads
+     */
+    public int getMaxThreads() { return getInt(maxThreads); }
+
+    /**
+     * Set the {@code maxThreads} property.
+     * @see #maxThreads
+     */
+    public void setMaxThreads(int v) { setInt(maxThreads, v, null); }
 
 ////////////////////////////////////////////////////////////////
 // Property "lastDiscoveryCount"
 ////////////////////////////////////////////////////////////////
-  
-  /**
-   * Slot for the {@code lastDiscoveryCount} property.
-   * @see #getLastDiscoveryCount
-   * @see #setLastDiscoveryCount
-   */
-  public static final Property lastDiscoveryCount = newProperty(Flags.READONLY, 0, null);
-  
-  /**
-   * Get the {@code lastDiscoveryCount} property.
-   * @see #lastDiscoveryCount
-   */
-  public int getLastDiscoveryCount() { return getInt(lastDiscoveryCount); }
-  
-  /**
-   * Set the {@code lastDiscoveryCount} property.
-   * @see #lastDiscoveryCount
-   */
-  public void setLastDiscoveryCount(int v) { setInt(lastDiscoveryCount, v, null); }
+
+    /**
+     * Slot for the {@code lastDiscoveryCount} property.
+     * @see #getLastDiscoveryCount
+     * @see #setLastDiscoveryCount
+     */
+    public static final Property lastDiscoveryCount = newProperty(Flags.READONLY, 0, null);
+
+    /**
+     * Get the {@code lastDiscoveryCount} property.
+     * @see #lastDiscoveryCount
+     */
+    public int getLastDiscoveryCount() { return getInt(lastDiscoveryCount); }
+
+    /**
+     * Set the {@code lastDiscoveryCount} property.
+     * @see #lastDiscoveryCount
+     */
+    public void setLastDiscoveryCount(int v) { setInt(lastDiscoveryCount, v, null); }
 
 ////////////////////////////////////////////////////////////////
 // Property "lastDiscoveryTime"
 ////////////////////////////////////////////////////////////////
-  
-  /**
-   * Slot for the {@code lastDiscoveryTime} property.
-   * @see #getLastDiscoveryTime
-   * @see #setLastDiscoveryTime
-   */
-  public static final Property lastDiscoveryTime = newProperty(Flags.READONLY, "", null);
-  
-  /**
-   * Get the {@code lastDiscoveryTime} property.
-   * @see #lastDiscoveryTime
-   */
-  public String getLastDiscoveryTime() { return getString(lastDiscoveryTime); }
-  
-  /**
-   * Set the {@code lastDiscoveryTime} property.
-   * @see #lastDiscoveryTime
-   */
-  public void setLastDiscoveryTime(String v) { setString(lastDiscoveryTime, v, null); }
+
+    /**
+     * Slot for the {@code lastDiscoveryTime} property.
+     * @see #getLastDiscoveryTime
+     * @see #setLastDiscoveryTime
+     */
+    public static final Property lastDiscoveryTime = newProperty(Flags.READONLY, "", null);
+
+    /**
+     * Get the {@code lastDiscoveryTime} property.
+     * @see #lastDiscoveryTime
+     */
+    public String getLastDiscoveryTime() { return getString(lastDiscoveryTime); }
+
+    /**
+     * Set the {@code lastDiscoveryTime} property.
+     * @see #lastDiscoveryTime
+     */
+    public void setLastDiscoveryTime(String v) { setString(lastDiscoveryTime, v, null); }
 
 ////////////////////////////////////////////////////////////////
 // Property "localDeviceId"
 ////////////////////////////////////////////////////////////////
-  
-  /**
-   * Slot for the {@code localDeviceId} property.
-   * @see #getLocalDeviceId
-   * @see #setLocalDeviceId
-   */
-  public static final Property localDeviceId = newProperty(0, 12345, null);
-  
-  /**
-   * Get the {@code localDeviceId} property.
-   * @see #localDeviceId
-   */
-  public int getLocalDeviceId() { return getInt(localDeviceId); }
-  
-  /**
-   * Set the {@code localDeviceId} property.
-   * @see #localDeviceId
-   */
-  public void setLocalDeviceId(int v) { setInt(localDeviceId, v, null); }
+
+    /**
+     * Slot for the {@code localDeviceId} property.
+     * @see #getLocalDeviceId
+     * @see #setLocalDeviceId
+     */
+    public static final Property localDeviceId = newProperty(0, 12345, null);
+
+    /**
+     * Get the {@code localDeviceId} property.
+     * @see #localDeviceId
+     */
+    public int getLocalDeviceId() { return getInt(localDeviceId); }
+
+    /**
+     * Set the {@code localDeviceId} property.
+     * @see #localDeviceId
+     */
+    public void setLocalDeviceId(int v) { setInt(localDeviceId, v, null); }
 
 ////////////////////////////////////////////////////////////////
 // Action "discoverAll"
 ////////////////////////////////////////////////////////////////
-  
-  /**
-   * Slot for the {@code discoverAll} action.
-   * @see #discoverAll()
-   */
-  public static final Action discoverAll = newAction(Flags.ASYNC | Flags.SUMMARY, null);
-  
-  /**
-   * Invoke the {@code discoverAll} action.
-   * @see #discoverAll
-   */
-  public void discoverAll() { invoke(discoverAll, null, null); }
+
+    /**
+     * Slot for the {@code discoverAll} action.
+     * @see #discoverAll()
+     */
+    public static final Action discoverAll = newAction(Flags.ASYNC | Flags.SUMMARY, null);
+
+    /**
+     * Invoke the {@code discoverAll} action.
+     * @see #discoverAll
+     */
+    public void discoverAll() { invoke(discoverAll, null, null); }
 
 ////////////////////////////////////////////////////////////////
 // Action "discoverBACnet"
 ////////////////////////////////////////////////////////////////
-  
-  /**
-   * Slot for the {@code discoverBACnet} action.
-   * @see #discoverBACnet()
-   */
-  public static final Action discoverBACnet = newAction(Flags.ASYNC, null);
-  
-  /**
-   * Invoke the {@code discoverBACnet} action.
-   * @see #discoverBACnet
-   */
-  public void discoverBACnet() { invoke(discoverBACnet, null, null); }
+
+    /**
+     * Slot for the {@code discoverBACnet} action.
+     * @see #discoverBACnet()
+     */
+    public static final Action discoverBACnet = newAction(Flags.ASYNC, null);
+
+    /**
+     * Invoke the {@code discoverBACnet} action.
+     * @see #discoverBACnet
+     */
+    public void discoverBACnet() { invoke(discoverBACnet, null, null); }
 
 ////////////////////////////////////////////////////////////////
 // Action "discoverModbus"
 ////////////////////////////////////////////////////////////////
-  
-  /**
-   * Slot for the {@code discoverModbus} action.
-   * @see #discoverModbus()
-   */
-  public static final Action discoverModbus = newAction(Flags.ASYNC, null);
-  
-  /**
-   * Invoke the {@code discoverModbus} action.
-   * @see #discoverModbus
-   */
-  public void discoverModbus() { invoke(discoverModbus, null, null); }
+
+    /**
+     * Slot for the {@code discoverModbus} action.
+     * @see #discoverModbus()
+     */
+    public static final Action discoverModbus = newAction(Flags.ASYNC, null);
+
+    /**
+     * Invoke the {@code discoverModbus} action.
+     * @see #discoverModbus
+     */
+    public void discoverModbus() { invoke(discoverModbus, null, null); }
 
 ////////////////////////////////////////////////////////////////
 // Action "discoverHTTP"
 ////////////////////////////////////////////////////////////////
-  
-  /**
-   * Slot for the {@code discoverHTTP} action.
-   * @see #discoverHTTP()
-   */
-  public static final Action discoverHTTP = newAction(Flags.ASYNC, null);
-  
-  /**
-   * Invoke the {@code discoverHTTP} action.
-   * @see #discoverHTTP
-   */
-  public void discoverHTTP() { invoke(discoverHTTP, null, null); }
+
+    /**
+     * Slot for the {@code discoverHTTP} action.
+     * @see #discoverHTTP()
+     */
+    public static final Action discoverHTTP = newAction(Flags.ASYNC, null);
+
+    /**
+     * Invoke the {@code discoverHTTP} action.
+     * @see #discoverHTTP
+     */
+    public void discoverHTTP() { invoke(discoverHTTP, null, null); }
 
 ////////////////////////////////////////////////////////////////
-// Action "clearDevices"
+// Action "clearDevices" (MANUAL DEFINITION)
 ////////////////////////////////////////////////////////////////
-  
-  /**
-   * Slot for the {@code clearDevices} action.
-   * @see #clearDevices()
-   */
-  public static final Action clearDevices = newAction(Flags.SUMMARY, null);
-  
-  /**
-   * Invoke the {@code clearDevices} action.
-   * @see #clearDevices
-   */
-  public void clearDevices() { invoke(clearDevices, null, null); }
+
+    /**
+     * Slot for the {@code clearDevices} action with Custom Facets.
+     * ✅ วางไว้ตรงนี้ (ก่อน Type TYPE) เพื่อป้องกันปัญหา loadType
+     */
+    public static final Action clearDevices = newAction(
+            Flags.SUMMARY,
+            BBoolean.FALSE,
+            BFacets.make(
+                    BFacets.TRUE_TEXT, BString.make("Yes, Clear All Devices"),
+                    BFacets.FALSE_TEXT, BString.make("Cancel")
+            )
+    );
+
+    /**
+     * Invoke the {@code clearDevices} action.
+     * @see #clearDevices
+     */
+    public void clearDevices(BBoolean confirm) { invoke(clearDevices, confirm, null); }
 
 ////////////////////////////////////////////////////////////////
 // Action "ping"
 ////////////////////////////////////////////////////////////////
-  
-  /**
-   * Slot for the {@code ping} action.
-   * @see #ping()
-   */
-  public static final Action ping = newAction(0, null);
-  
-  /**
-   * Invoke the {@code ping} action.
-   * @see #ping
-   */
-  public void ping() { invoke(ping, null, null); }
+
+    /**
+     * Slot for the {@code ping} action.
+     * @see #ping()
+     */
+    public static final Action ping = newAction(0, null);
+
+    /**
+     * Invoke the {@code ping} action.
+     * @see #ping
+     */
+    public void ping() { invoke(ping, null, null); }
 
 ////////////////////////////////////////////////////////////////
 // Type
 ////////////////////////////////////////////////////////////////
-  
-  @Override
-  public Type getType() { return TYPE; }
-  public static final Type TYPE = Sys.loadType(BMyUniversalNetwork.class);
 
-/*+ ------------ END BAJA AUTO GENERATED CODE -------------- +*/
+    @Override
+    public Type getType() { return TYPE; }
+    public static final Type TYPE = Sys.loadType(BMyUniversalNetwork.class);
+
+    /*+ ------------ END BAJA AUTO GENERATED CODE -------------- +*/
 
     // ==================== Constants ====================
 
@@ -406,9 +406,6 @@ public class BMyUniversalNetwork extends BDeviceNetwork {
 
     // ==================== Discovery Actions ====================
 
-    /**
-     * Discover All Protocols
-     */
     public void doDiscoverAll() throws Exception {
         System.out.println("═══════════════════════════════════════════");
         System.out.println("Universal Discovery: Starting All Protocols");
@@ -421,25 +418,21 @@ public class BMyUniversalNetwork extends BDeviceNetwork {
         List<DiscoveredDevice> allDevices = new ArrayList<>();
 
         try {
-            // 1. BACnet Discovery
             if (getEnableBACnet()) {
                 System.out.println("🔍 [1/3] BACnet Discovery...");
                 allDevices.addAll(scanBACnet());
             }
 
-            // 2. Modbus Discovery
             if (getEnableModbus()) {
                 System.out.println("🔍 [2/3] Modbus Discovery...");
                 allDevices.addAll(scanModbus());
             }
 
-            // 3. HTTP Discovery
             if (getEnableHTTP()) {
                 System.out.println("🔍 [3/3] HTTP Discovery...");
                 allDevices.addAll(scanHTTP());
             }
 
-            // Create devices
             int createdCount = createDevicesFromList(allDevices);
 
             long duration = System.currentTimeMillis() - startTime;
@@ -462,9 +455,6 @@ public class BMyUniversalNetwork extends BDeviceNetwork {
         }
     }
 
-    /**
-     * Discover BACnet Only
-     */
     public void doDiscoverBACnet() throws Exception {
         System.out.println("🔍 BACnet Discovery Starting...");
         List<DiscoveredDevice> devices = scanBACnet();
@@ -472,9 +462,6 @@ public class BMyUniversalNetwork extends BDeviceNetwork {
         System.out.println("✅ BACnet Discovery: Found " + devices.size() + ", Created " + created);
     }
 
-    /**
-     * Discover Modbus Only
-     */
     public void doDiscoverModbus() throws Exception {
         System.out.println("🔍 Modbus Discovery Starting...");
         List<DiscoveredDevice> devices = scanModbus();
@@ -482,9 +469,6 @@ public class BMyUniversalNetwork extends BDeviceNetwork {
         System.out.println("✅ Modbus Discovery: Found " + devices.size() + ", Created " + created);
     }
 
-    /**
-     * Discover HTTP Only
-     */
     public void doDiscoverHTTP() throws Exception {
         System.out.println("🔍 HTTP Discovery Starting...");
         List<DiscoveredDevice> devices = scanHTTP();
@@ -494,12 +478,8 @@ public class BMyUniversalNetwork extends BDeviceNetwork {
 
     // ==================== Protocol Scanners ====================
 
-    /**
-     * Scan BACnet/IP Devices (Who-Is Broadcast)
-     */
     private List<DiscoveredDevice> scanBACnet() {
         List<DiscoveredDevice> devices = new ArrayList<>();
-
         return AccessController.doPrivileged((PrivilegedAction<List<DiscoveredDevice>>) () -> {
             DatagramSocket socket = null;
             try {
@@ -507,20 +487,13 @@ public class BMyUniversalNetwork extends BDeviceNetwork {
                 socket.setBroadcast(true);
                 socket.setSoTimeout(getScanTimeout());
 
-                // Build Who-Is message
                 byte[] whoIs = buildBACnetWhoIs();
-
-                // Send broadcast
                 String broadcastAddr = calculateBroadcast(getSubnet());
                 InetAddress broadcast = InetAddress.getByName(broadcastAddr);
-                DatagramPacket sendPacket = new DatagramPacket(
-                        whoIs, whoIs.length, broadcast, BACNET_PORT
-                );
+                DatagramPacket sendPacket = new DatagramPacket(whoIs, whoIs.length, broadcast, BACNET_PORT);
                 socket.send(sendPacket);
-
                 System.out.println("   → Who-Is broadcast sent to " + broadcastAddr);
 
-                // Listen for I-Am responses
                 byte[] buffer = new byte[1024];
                 long startTime = System.currentTimeMillis();
 
@@ -532,20 +505,11 @@ public class BMyUniversalNetwork extends BDeviceNetwork {
                         int deviceId = parseBACnetIAm(receivePacket.getData(), receivePacket.getLength());
                         if (deviceId > 0) {
                             String ip = receivePacket.getAddress().getHostAddress();
-                            devices.add(new DiscoveredDevice(
-                                    "BACnet_" + deviceId,
-                                    "BACnet/IP",
-                                    ip,
-                                    BACNET_PORT,
-                                    "BACnet Device ID: " + deviceId
-                            ));
+                            devices.add(new DiscoveredDevice("BACnet_" + deviceId, "BACnet/IP", ip, BACNET_PORT, "BACnet Device ID: " + deviceId));
                             System.out.println("   ✓ Found: BACnet Device " + deviceId + " at " + ip);
                         }
-                    } catch (SocketTimeoutException e) {
-                        break;
-                    }
+                    } catch (SocketTimeoutException e) { break; }
                 }
-
             } catch (Exception e) {
                 System.err.println("   ✗ BACnet scan error: " + e.getMessage());
             } finally {
@@ -555,25 +519,18 @@ public class BMyUniversalNetwork extends BDeviceNetwork {
         });
     }
 
-    /**
-     * Scan Modbus TCP Devices (Port Scan)
-     */
     private List<DiscoveredDevice> scanModbus() {
         return AccessController.doPrivileged((PrivilegedAction<List<DiscoveredDevice>>) () -> {
             List<DiscoveredDevice> devices = new ArrayList<>();
             List<String> ipList = generateIPList(getSubnet());
-
             System.out.println("   → Scanning " + ipList.size() + " IP addresses...");
 
             try {
                 executor = Executors.newFixedThreadPool(getMaxThreads());
                 List<Future<DiscoveredDevice>> futures = new ArrayList<>();
-
                 for (String ip : ipList) {
                     futures.add(executor.submit(() -> scanModbusDevice(ip)));
                 }
-
-                // Collect results
                 for (Future<DiscoveredDevice> future : futures) {
                     try {
                         DiscoveredDevice device = future.get();
@@ -581,64 +538,33 @@ public class BMyUniversalNetwork extends BDeviceNetwork {
                             devices.add(device);
                             System.out.println("   ✓ Found: Modbus device at " + device.getAddress());
                         }
-                    } catch (Exception e) {
-                        // Ignore timeout/connection errors
-                    }
+                    } catch (Exception e) {}
                 }
-
                 executor.shutdown();
-
             } catch (Exception e) {
                 System.err.println("   ✗ Modbus scan error: " + e.getMessage());
             }
-
             return devices;
         });
     }
 
-    /**
-     * Scan single Modbus device
-     */
     private DiscoveredDevice scanModbusDevice(String ip) {
         return AccessController.doPrivileged((PrivilegedAction<DiscoveredDevice>) () -> {
             Socket socket = null;
             try {
                 socket = new Socket();
                 socket.connect(new InetSocketAddress(ip, MODBUS_PORT), getScanTimeout());
-
-                // Send Modbus Read Holding Registers (Function 03)
-                byte[] modbusRequest = {
-                        0x00, 0x01,  // Transaction ID
-                        0x00, 0x00,  // Protocol ID
-                        0x00, 0x06,  // Length
-                        0x01,        // Unit ID
-                        0x03,        // Function Code (Read Holding Registers)
-                        0x00, 0x00,  // Start Address
-                        0x00, 0x01   // Quantity
-                };
-
+                byte[] modbusRequest = {0x00, 0x01, 0x00, 0x00, 0x00, 0x06, 0x01, 0x03, 0x00, 0x00, 0x00, 0x01};
                 OutputStream out = socket.getOutputStream();
                 out.write(modbusRequest);
                 out.flush();
-
-                // Read response
                 InputStream in = socket.getInputStream();
                 byte[] response = new byte[256];
                 int len = in.read(response);
-
                 if (len > 0 && response[7] == 0x03) {
-                    // Valid Modbus response
-                    return new DiscoveredDevice(
-                            "Modbus_" + ip.replace(".", "_"),
-                            "Modbus TCP",
-                            ip,
-                            MODBUS_PORT,
-                            "Modbus TCP Device"
-                    );
+                    return new DiscoveredDevice("Modbus_" + ip.replace(".", "_"), "Modbus TCP", ip, MODBUS_PORT, "Modbus TCP Device");
                 }
-
             } catch (Exception e) {
-                // Device not responding
             } finally {
                 try { if (socket != null) socket.close(); } catch (Exception e) {}
             }
@@ -646,27 +572,20 @@ public class BMyUniversalNetwork extends BDeviceNetwork {
         });
     }
 
-    /**
-     * Scan HTTP/REST Devices (Web Server Detection)
-     */
     private List<DiscoveredDevice> scanHTTP() {
         return AccessController.doPrivileged((PrivilegedAction<List<DiscoveredDevice>>) () -> {
             List<DiscoveredDevice> devices = new ArrayList<>();
             List<String> ipList = generateIPList(getSubnet());
-
             System.out.println("   → Scanning " + ipList.size() + " IP addresses...");
 
             try {
                 executor = Executors.newFixedThreadPool(getMaxThreads());
                 List<Future<DiscoveredDevice>> futures = new ArrayList<>();
-
                 for (String ip : ipList) {
                     for (int port : HTTP_PORTS) {
                         futures.add(executor.submit(() -> scanHTTPDevice(ip, port)));
                     }
                 }
-
-                // Collect results
                 for (Future<DiscoveredDevice> future : futures) {
                     try {
                         DiscoveredDevice device = future.get();
@@ -674,43 +593,29 @@ public class BMyUniversalNetwork extends BDeviceNetwork {
                             devices.add(device);
                             System.out.println("   ✓ Found: HTTP server at " + device.getAddress() + ":" + device.getPort());
                         }
-                    } catch (Exception e) {
-                        // Ignore
-                    }
+                    } catch (Exception e) {}
                 }
-
                 executor.shutdown();
-
             } catch (Exception e) {
                 System.err.println("   ✗ HTTP scan error: " + e.getMessage());
             }
-
             return devices;
         });
     }
 
-    /**
-     * Scan single HTTP device
-     */
     private DiscoveredDevice scanHTTPDevice(String ip, int port) {
         return AccessController.doPrivileged((PrivilegedAction<DiscoveredDevice>) () -> {
             Socket socket = null;
             try {
                 socket = new Socket();
                 socket.connect(new InetSocketAddress(ip, port), getScanTimeout());
-
-                // Send HTTP HEAD request
                 OutputStream out = socket.getOutputStream();
                 String request = "HEAD / HTTP/1.1\r\nHost: " + ip + "\r\nConnection: close\r\n\r\n";
                 out.write(request.getBytes());
                 out.flush();
-
-                // Read response
                 BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 String line = in.readLine();
-
                 if (line != null && line.startsWith("HTTP")) {
-                    // Extract server info
                     String serverInfo = "";
                     while ((line = in.readLine()) != null && !line.isEmpty()) {
                         if (line.toLowerCase().startsWith("server:")) {
@@ -718,18 +623,9 @@ public class BMyUniversalNetwork extends BDeviceNetwork {
                             break;
                         }
                     }
-
-                    return new DiscoveredDevice(
-                            "HTTP_" + ip.replace(".", "_") + "_" + port,
-                            "HTTP/REST",
-                            ip,
-                            port,
-                            "Web Server" + (serverInfo.isEmpty() ? "" : " (" + serverInfo + ")")
-                    );
+                    return new DiscoveredDevice("HTTP_" + ip.replace(".", "_") + "_" + port, "HTTP/REST", ip, port, "Web Server" + (serverInfo.isEmpty() ? "" : " (" + serverInfo + ")"));
                 }
-
             } catch (Exception e) {
-                // Not a web server
             } finally {
                 try { if (socket != null) socket.close(); } catch (Exception e) {}
             }
@@ -739,43 +635,26 @@ public class BMyUniversalNetwork extends BDeviceNetwork {
 
     // ==================== Helper Methods ====================
 
-    /**
-     * Build BACnet Who-Is message
-     */
     private byte[] buildBACnetWhoIs() {
-        return new byte[] {
-                (byte) 0x81, (byte) 0x0A, (byte) 0x00, (byte) 0x0C,  // BVLC
-                (byte) 0x01, (byte) 0x20, (byte) 0xFF, (byte) 0xFF,  // NPDU (Broadcast)
-                (byte) 0x00, (byte) 0xFF,
-                (byte) 0x10, (byte) 0x08
-        };
+        return new byte[]{(byte) 0x81, (byte) 0x0A, (byte) 0x00, (byte) 0x0C, (byte) 0x01, (byte) 0x20, (byte) 0xFF, (byte) 0xFF, (byte) 0x00, (byte) 0xFF, (byte) 0x10, (byte) 0x08};
     }
 
-    /**
-     * Parse BACnet I-Am response
-     */
     private int parseBACnetIAm(byte[] data, int length) {
         try {
-            // Simple parsing - look for device instance
-            int offset = 4; // Skip BVLC
-            if (data[offset] == 0x01) { // NPDU version
+            int offset = 4;
+            if (data[offset] == 0x01) {
                 offset++;
                 byte control = data[offset++];
-
                 if ((control & 0x20) != 0) {
                     offset += 2;
                     int dlen = data[offset++] & 0xFF;
-                    offset += dlen;
-                    offset++;
+                    offset += dlen + 1;
                 }
-
                 if (data[offset] == 0x10 && data[offset + 1] == 0x00) {
                     offset += 2;
                     if (data[offset] == (byte) 0xC4) {
                         offset++;
-                        return ((data[offset] & 0xFF) << 16) |
-                                ((data[offset + 1] & 0xFF) << 8) |
-                                (data[offset + 2] & 0xFF);
+                        return ((data[offset] & 0xFF) << 16) | ((data[offset + 1] & 0xFF) << 8) | (data[offset + 2] & 0xFF);
                     }
                 }
             }
@@ -783,35 +662,23 @@ public class BMyUniversalNetwork extends BDeviceNetwork {
         return -1;
     }
 
-    /**
-     * Generate IP list from subnet (e.g., "192.168.1.0/24")
-     */
     private List<String> generateIPList(String subnet) {
         List<String> ips = new ArrayList<>();
         try {
             String[] parts = subnet.split("/");
             String baseIP = parts[0];
             int cidr = Integer.parseInt(parts[1]);
-
             String[] octets = baseIP.split("\\.");
             String network = octets[0] + "." + octets[1] + "." + octets[2] + ".";
-
             int hosts = (int) Math.pow(2, 32 - cidr) - 2;
-            hosts = Math.min(hosts, 254); // Limit to 254
-
-            for (int i = 1; i <= hosts; i++) {
-                ips.add(network + i);
-            }
-
+            hosts = Math.min(hosts, 254);
+            for (int i = 1; i <= hosts; i++) ips.add(network + i);
         } catch (Exception e) {
             System.err.println("Invalid subnet format: " + subnet);
         }
         return ips;
     }
 
-    /**
-     * Calculate broadcast address
-     */
     private String calculateBroadcast(String subnet) {
         try {
             String[] parts = subnet.split("/");
@@ -822,12 +689,6 @@ public class BMyUniversalNetwork extends BDeviceNetwork {
         }
     }
 
-    /**
-     * Create devices from discovered list
-     */
-    /**
-     * Create devices from discovered list
-     */
     private int createDevicesFromList(List<DiscoveredDevice> discovered) throws Exception {
         int created = 0;
         for (DiscoveredDevice disc : discovered) {
@@ -840,7 +701,6 @@ public class BMyUniversalNetwork extends BDeviceNetwork {
                 addDeviceToNetwork(disc.getName(), device);
                 created++;
 
-                // ✅ Auto-discover points after creating device
                 try {
                     System.out.println("");
                     System.out.println("🔍 Auto-discovering points for " + disc.getName() + "...");
@@ -866,32 +726,44 @@ public class BMyUniversalNetwork extends BDeviceNetwork {
     }
 
     private boolean deviceExists(String name) {
+        if (get(name) != null) return true;
         for (BDevice device : devicesList) {
             if (device instanceof BMyPointDevice) {
                 BMyPointDevice d = (BMyPointDevice) device;
-                if (d.getDeviceName().equals(name)) {
-                    return true;
-                }
+                if (d.getDeviceName().equals(name)) return true;
             }
         }
         return false;
     }
 
     /**
-     * Clear all devices
+     * Clear all devices (Updated logic)
      */
-    public void doClearDevices() throws Exception {
-        System.out.println("Clearing all devices...");
-        int count = devicesList.size();
+    public void doClearDevices(BBoolean confirm) throws Exception {
+        if (!confirm.getBoolean()) {
+            System.out.println("❌ Clear devices cancelled.");
+            return;
+        }
 
-        for (BDevice device : devicesList) {
-            remove(device.getName());
+        System.out.println("Clearing all devices...");
+
+        List<String> toRemove = new ArrayList<>();
+        SlotCursor cursor = getSlots();
+
+        while (cursor.next()) {
+            if (cursor.slot().isProperty() && (cursor.get() instanceof BDevice)) {
+                toRemove.add(cursor.slot().getName());
+            }
+        }
+
+        for (String name : toRemove) {
+            remove(name);
         }
 
         devicesList.clear();
         setLastDiscoveryCount(0);
 
-        System.out.println("✅ Cleared " + count + " device(s)");
+        System.out.println("✅ Cleared " + toRemove.size() + " device(s)");
     }
 
     // ==================== Action Handlers ====================
@@ -922,6 +794,13 @@ public class BMyUniversalNetwork extends BDeviceNetwork {
     public void started() throws Exception {
         super.started();
         System.out.println("✅ Universal Network: Started");
+        devicesList.clear();
+        SlotCursor cursor = getSlots();
+        while (cursor.next()) {
+            if (cursor.get() instanceof BDevice) {
+                devicesList.add((BDevice) cursor.get());
+            }
+        }
     }
 
     @Override
@@ -935,9 +814,6 @@ public class BMyUniversalNetwork extends BDeviceNetwork {
 
     // ==================== Helper Classes ====================
 
-    /**
-     * Container for discovered device info
-     */
     private static class DiscoveredDevice {
         private String name;
         private String protocol;
