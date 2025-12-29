@@ -1,27 +1,28 @@
 package com.c.myPoc;
 
-import javax.baja.nre.annotations.NiagaraProperty;
-import javax.baja.nre.annotations.NiagaraType;
+import javax.baja.nre.annotations.*;
 import javax.baja.sys.*;
 import javax.baja.control.*;
 import javax.baja.status.*;
 import java.io.*;
 import java.net.*;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
+import java.security.*;
 
 @NiagaraType
 @NiagaraProperty(name = "address", type = "String", defaultValue = "")
 @NiagaraProperty(name = "registerAddress", type = "int", defaultValue = "0")
 @NiagaraProperty(name = "protocol", type = "String", defaultValue = "modbus")
 @NiagaraProperty(name = "pollInterval", type = "int", defaultValue = "5000")
-@NiagaraProperty(name = "reverse", type = "boolean", defaultValue = "false") // เพิ่มฟังชั่นกลับค่า True/False
+@NiagaraProperty(name = "reverse", type = "boolean", defaultValue = "false")
+@NiagaraProperty(name = "useBooleanTag", type = "boolean", defaultValue = "false")
+@NiagaraAction(name = "forceActive", flags = Flags.SUMMARY)
+@NiagaraAction(name = "forceInactive", flags = Flags.SUMMARY)
 public class BMyBooleanPoint extends BBooleanWritable {
 
     
 /*+ ------------ BEGIN BAJA AUTO GENERATED CODE ------------ +*/
-/*@ $com.c.myPoc.BMyBooleanPoint(754008503)1.0$ @*/
-/* Generated Tue Dec 23 15:19:13 ICT 2025 by Slot-o-Matic (c) Tridium, Inc. 2012 */
+/*@ $com.c.myPoc.BMyBooleanPoint(4262909873)1.0$ @*/
+/* Generated Mon Dec 29 16:57:39 ICT 2025 by Slot-o-Matic (c) Tridium, Inc. 2012 */
 
 ////////////////////////////////////////////////////////////////
 // Property "address"
@@ -139,6 +140,61 @@ public class BMyBooleanPoint extends BBooleanWritable {
   public void setReverse(boolean v) { setBoolean(reverse, v, null); }
 
 ////////////////////////////////////////////////////////////////
+// Property "useBooleanTag"
+////////////////////////////////////////////////////////////////
+  
+  /**
+   * Slot for the {@code useBooleanTag} property.
+   * @see #getUseBooleanTag
+   * @see #setUseBooleanTag
+   */
+  public static final Property useBooleanTag = newProperty(0, false, null);
+  
+  /**
+   * Get the {@code useBooleanTag} property.
+   * @see #useBooleanTag
+   */
+  public boolean getUseBooleanTag() { return getBoolean(useBooleanTag); }
+  
+  /**
+   * Set the {@code useBooleanTag} property.
+   * @see #useBooleanTag
+   */
+  public void setUseBooleanTag(boolean v) { setBoolean(useBooleanTag, v, null); }
+
+////////////////////////////////////////////////////////////////
+// Action "forceActive"
+////////////////////////////////////////////////////////////////
+  
+  /**
+   * Slot for the {@code forceActive} action.
+   * @see #forceActive()
+   */
+  public static final Action forceActive = newAction(Flags.SUMMARY, null);
+  
+  /**
+   * Invoke the {@code forceActive} action.
+   * @see #forceActive
+   */
+  public void forceActive() { invoke(forceActive, null, null); }
+
+////////////////////////////////////////////////////////////////
+// Action "forceInactive"
+////////////////////////////////////////////////////////////////
+  
+  /**
+   * Slot for the {@code forceInactive} action.
+   * @see #forceInactive()
+   */
+  public static final Action forceInactive = newAction(Flags.SUMMARY, null);
+  
+  /**
+   * Invoke the {@code forceInactive} action.
+   * @see #forceInactive
+   */
+  public void forceInactive() { invoke(forceInactive, null, null); }
+
+////////////////////////////////////////////////////////////////
 // Type
 ////////////////////////////////////////////////////////////////
   
@@ -150,6 +206,7 @@ public class BMyBooleanPoint extends BBooleanWritable {
 
     private Thread pollingThread;
     private volatile boolean isPolling = false;
+    private volatile boolean forceWriteInProgress = false; // ✅ Flag เพื่อป้องกัน loop
 
     @Override
     public void started() throws Exception {
@@ -165,264 +222,178 @@ public class BMyBooleanPoint extends BBooleanWritable {
         super.stopped();
     }
 
+    /**
+     * ✅ แก้ไข changed() ให้มี logging ชัดเจน
+     */
     @Override
     public void changed(Property p, Context cx) {
         super.changed(p, cx);
+
         if (p == out) {
+            System.out.println("📢 changed() triggered for: " + getName());
+
+            // ✅ ป้องกัน recursive call จาก force write
+            if (forceWriteInProgress) {
+                System.out.println("   ⏭️  Skipping (force write in progress)");
+                return;
+            }
+
             BStatusBoolean outVal = getOut();
             BStatusBoolean fbVal = getFallback();
-            if (outVal.getStatus().isNull()) return;
 
-            // เช็คว่าค่าเปลี่ยนหรือไม่ (boolean เทียบกันง่ายๆ)
-            if (outVal.getValue() != fbVal.getValue()) {
+            // ✅ แสดง debug info
+            System.out.println("   📊 Out: " + outVal);
+            System.out.println("   📊 Fallback: " + fbVal);
+
+            // ✅ ตรวจสอบ status ก่อน
+            if (outVal.getStatus().isNull()) {
+                System.out.println("   ⚠️  Out status is null, skipping write");
+                return;
+            }
+
+            // ✅ ตรวจสอบว่าค่าต่างกันจริงหรือไม่
+            boolean outValue = outVal.getValue();
+            boolean fbValue = fbVal.getValue();
+
+            System.out.println("   🔍 Comparing: out=" + outValue + " vs fb=" + fbValue);
+
+            if (outValue != fbValue) {
+                System.out.println("   ⚡ Values different! Writing to device...");
                 try {
-                    writeToDevice(outVal.getValue());
+                    writeToDevice(outValue);
                 } catch (Exception e) {
-                    System.err.println("Write failed: " + e.getMessage());
+                    System.err.println("   ❌ Write failed: " + e.getMessage());
+                    e.printStackTrace();
                 }
+            } else {
+                System.out.println("   ✅ Values same, no write needed");
             }
         }
     }
 
-    private void startPolling() {
-        if (isPolling) return;
-        isPolling = true;
+    // ================= Action Handlers (Fixed) =================
 
-        pollingThread = new Thread(() -> {
-            System.out.println("🔄 Boolean polling started: " + getName());
+    /**
+     * ✅ แก้ไข: Force Active - Update out property
+     */
+    public void doForceActive() {
+        System.out.println("═══════════════════════════════════════════");
+        System.out.println("🔧 Force Active Action Called");
+        System.out.println("   Point: " + getName());
+        System.out.println("   Current Out: " + getOut());
+        System.out.println("   Current Fallback: " + getFallback());
 
-            while (isPolling) {
-                try {
-                    boolean value = readFromDevice();
-                    if (getReverse()) value = !value;
+        try {
+            forceWriteInProgress = true;
 
-                    BStatusBoolean statusValue = new BStatusBoolean(value, BStatus.ok);
-                    setFallback(statusValue);
+            // ✅ 1. เขียนไปที่ device ทันที
+            System.out.println("   → Step 1: Writing to device...");
+            writeToDevice(true);
 
-                    if (Math.random() < 0.1) {
-                        System.out.println("📊 Bool Poll [" + getName() + "]: " + value);
-                    }
+            // ✅ 2. Update out property เพื่อให้ UI แสดงค่าใหม่
+            System.out.println("   → Step 2: Updating out property...");
+            BStatusBoolean newOut = new BStatusBoolean(true, BStatus.ok);
+            setOut(newOut);
 
-                    Thread.sleep(getPollInterval());
-                } catch (InterruptedException e) {
-                    break;
-                } catch (Exception e) {
-                    System.err.println("❌ Bool Poll Error [" + getName() + "]: " + e.getMessage());
-                    try {
-                        setFallback(new BStatusBoolean(false, BStatus.fault));
-                        Thread.sleep(getPollInterval());
-                    } catch (InterruptedException ie) {
-                        break;
-                    }
-                }
-            }
+            // ✅ 3. Update fallback ด้วย (เพื่อให้ polling เห็นค่าที่ถูกต้อง)
+            System.out.println("   → Step 3: Updating fallback...");
+            setFallback(newOut);
 
-            System.out.println("⏹️  Boolean polling stopped: " + getName());
-        });
+            System.out.println("✅ Force Active completed successfully");
+            System.out.println("   New Out: " + getOut());
+            System.out.println("   New Fallback: " + getFallback());
 
-        pollingThread.setDaemon(true);
-        pollingThread.setName("BoolPoll-" + getName());
-        pollingThread.start();
-    }
-
-
-    private void stopPolling() {
-        isPolling = false;
-        if (pollingThread != null) {
-            pollingThread.interrupt();
+        } catch (Exception e) {
+            System.err.println("❌ Force Active failed: " + e.getMessage());
+            e.printStackTrace();
+        } finally {
+            forceWriteInProgress = false;
+            System.out.println("═══════════════════════════════════════════");
         }
     }
 
-    private boolean readFromDevice() throws Exception {
-        String proto = getProtocol().toLowerCase();
-        if ("modbus".equals(proto)) return readModbus();
-        if ("bacnet".equals(proto)) return readBACnet();
-        return false;
+    /**
+     * ✅ แก้ไข: Force Inactive - Update out property
+     */
+    public void doForceInactive() {
+        System.out.println("═══════════════════════════════════════════");
+        System.out.println("🔧 Force Inactive Action Called");
+        System.out.println("   Point: " + getName());
+        System.out.println("   Current Out: " + getOut());
+        System.out.println("   Current Fallback: " + getFallback());
+
+        try {
+            forceWriteInProgress = true;
+
+            System.out.println("   → Step 1: Writing to device...");
+            writeToDevice(false);
+
+            System.out.println("   → Step 2: Updating out property...");
+            BStatusBoolean newOut = new BStatusBoolean(false, BStatus.ok);
+            setOut(newOut);
+
+            System.out.println("   → Step 3: Updating fallback...");
+            setFallback(newOut);
+
+            System.out.println("✅ Force Inactive completed successfully");
+            System.out.println("   New Out: " + getOut());
+            System.out.println("   New Fallback: " + getFallback());
+
+        } catch (Exception e) {
+            System.err.println("❌ Force Inactive failed: " + e.getMessage());
+            e.printStackTrace();
+        } finally {
+            forceWriteInProgress = false;
+            System.out.println("═══════════════════════════════════════════");
+        }
     }
 
-    private boolean readBACnet() throws Exception {
-        BMyPointDevice device = getParentDevice();
-        if (device == null) throw new Exception("Device not found");
+    // ================= Core Logic =================
 
-        String[] addrParts = device.getDeviceAddress().split(":");
-        String ip = addrParts[0];
-        int port = addrParts.length > 1 ? Integer.parseInt(addrParts[1]) : 47808;
-
-        // Parse object type from point name
-        String nameStr = getName().toLowerCase();
-        int objectType = 3; // Default = BI
-
-        if (nameStr.contains("bi_")) objectType = 3;
-        else if (nameStr.contains("bo_")) objectType = 4;
-        else if (nameStr.contains("bv_")) objectType = 5;
-
-        int instance = getRegisterAddress();
-        int finalObjectType = objectType;
-
-        return AccessController.doPrivileged((PrivilegedAction<Boolean>) () -> {
-            DatagramSocket socket = null;
-            try {
-                socket = new DatagramSocket();
-                socket.setSoTimeout(3000);
-
-                int invokeId = (int) (Math.random() * 255);
-                byte[] tx = BACnetUtil.buildReadPropertyPacket(
-                        finalObjectType, instance, BACnetUtil.PROP_PRESENT_VALUE, invokeId
-                );
-
-                InetAddress addr = InetAddress.getByName(ip);
-                socket.send(new DatagramPacket(tx, tx.length, addr, port));
-
-                byte[] rxBuf = new byte[512];
-                DatagramPacket rxPacket = new DatagramPacket(rxBuf, rxBuf.length);
-                socket.receive(rxPacket);
-
-                byte[] data = rxPacket.getData();
-                int offset = 6;
-
-                byte npduControl = data[4];
-                if ((npduControl & 0x20) != 0) {
-                    offset += 2;
-                    int dlen = data[offset++] & 0xFF;
-                    offset += dlen + 1;
-                }
-
-                if ((data[offset] & 0xF0) != 0x30) {
-                    throw new RuntimeException("Invalid APDU type");
-                }
-
-                offset += 3; // APDU header
-                if (data[offset] == (byte) 0x0C) offset += 5; // Object ID
-                if (data[offset] == (byte) 0x19) offset += 2; // Property ID
-                if (data[offset] == (byte) 0x3E) offset++; // Opening tag
-
-                byte tag = data[offset];
-
-                // Boolean value (Tag 0x11 = INACTIVE, 0x91 = ACTIVE)
-                if ((tag & 0xF0) == 0x10 || (tag & 0xF0) == 0x90) {
-                    return (tag & 0x01) == 1;
-                }
-
-                throw new RuntimeException("Unsupported boolean format");
-
-            } catch (Exception e) {
-                throw new RuntimeException("BACnet bool read failed: " + e.getMessage());
-            } finally {
-                if (socket != null) socket.close();
-            }
-        });
+    private BMyPointDevice getParentDevice() {
+        BComplex parent = getParent();
+        int retry = 0;
+        while (parent != null && retry < 5) {
+            if (parent instanceof BMyPointDevice) return (BMyPointDevice) parent;
+            if (parent instanceof BComponent) parent = ((BComponent) parent).getParent();
+            else break;
+            retry++;
+        }
+        return null;
     }
 
-    private boolean readModbus() throws Exception {
-        BMyPointDevice device = getParentDevice();
-        if (device == null) throw new Exception("Device not found");
-        String[] addrParts = device.getDeviceAddress().split(":");
-        String ip = addrParts[0];
-        int port = addrParts.length > 1 ? Integer.parseInt(addrParts[1]) : 502;
-        int regAddr = getRegisterAddress();
-
-        return AccessController.doPrivileged((PrivilegedAction<Boolean>) () -> {
-            Socket socket = null;
-            try {
-                socket = new Socket();
-                socket.connect(new InetSocketAddress(ip, port), 2000);
-
-                byte[] request = {
-                        0x00, 0x01, 0x00, 0x00, 0x00, 0x06, 0x01, 0x01,
-                        (byte)(regAddr >> 8), (byte)(regAddr & 0xFF),
-                        0x00, 0x01 // Quantity 1
-                };
-
-                socket.getOutputStream().write(request);
-
-                InputStream in = socket.getInputStream();
-                byte[] response = new byte[256];
-                int len = in.read(response);
-
-                if (len < 9) throw new RuntimeException("Response too short");
-
-                // ข้อมูลอยู่ที่ Byte ที่ 9 (1 byte เก็บได้ 8 coils, bit แรกคือค่าของเรา)
-                return (response[9] & 0x01) == 1;
-
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            } finally {
-                try { if (socket != null) socket.close(); } catch (Exception e) {}
-            }
-        });
-    }
-
-
+    /**
+     * ✅ แก้ไข: เพิ่ม debug logging
+     */
     private void writeToDevice(boolean value) throws Exception {
-        String proto = getProtocol().toLowerCase();
+        System.out.println("───────────────────────────────────────────");
+        System.out.println("📤 writeToDevice() called");
+        System.out.println("   Input value: " + value);
+        System.out.println("   Reverse enabled: " + getReverse());
 
-        // เช็ค Protocol ก่อน
+        if (getReverse()) {
+            value = !value;
+            System.out.println("   🔄 After reverse: " + value);
+        }
+
+        String proto = getProtocol().toLowerCase();
+        System.out.println("   📡 Protocol: " + proto);
+        System.out.println("   📍 Register: " + getRegisterAddress());
+
         if ("bacnet".equals(proto)) {
             writeBACnet(value);
         } else if ("modbus".equals(proto)) {
             writeModbus(value);
+        } else {
+            System.err.println("   ❌ Unsupported protocol: " + proto);
         }
+
+        System.out.println("───────────────────────────────────────────");
     }
 
-    private void writeModbus(boolean value) throws Exception {
-        BMyPointDevice device = getParentDevice();
-        if (device == null) return;
-
-        // Parse IP & Port
-        String[] addrParts = device.getDeviceAddress().split(":");
-        String ip = addrParts[0];
-        int port = addrParts.length > 1 ? Integer.parseInt(addrParts[1]) : 502;
-        int regAddr = getRegisterAddress();
-
-        // Handle Reverse Logic
-        if (getReverse()) value = !value;
-        boolean finalValue = value;
-
-        AccessController.doPrivileged((PrivilegedAction<Void>) () -> {
-            Socket socket = null;
-            try {
-                socket = new Socket();
-                socket.connect(new InetSocketAddress(ip, port), 2000); // Connect Timeout 2s
-
-                // Modbus Function Code 05 (Write Single Coil)
-                // ON = 0xFF00, OFF = 0x0000
-                int outputVal = finalValue ? 0xFF00 : 0x0000;
-
-                // Build Modbus TCP Request Packet
-                byte[] request = {
-                        0x00, 0x01,             // Transaction ID (Random)
-                        0x00, 0x00,             // Protocol ID (0 = Modbus)
-                        0x00, 0x06,             // Length (6 bytes following)
-                        0x01,                   // Unit ID (Default 1)
-                        0x05,                   // Function Code (Write Coil)
-                        (byte)(regAddr >> 8),   // Register Address Hi
-                        (byte)(regAddr & 0xFF), // Register Address Lo
-                        (byte)(outputVal >> 8), // Value Hi
-                        (byte)(outputVal & 0xFF)// Value Lo
-                };
-
-                // Send Request
-                socket.getOutputStream().write(request);
-                socket.getOutputStream().flush();
-
-                // Optional: Read Response to ensure success (FC 05 returns echo of request)
-                java.io.InputStream in = socket.getInputStream();
-                byte[] response = new byte[256];
-                int len = in.read(response);
-
-                if (len > 0) {
-                    System.out.println("Modbus Write Success: " + finalValue);
-                }
-
-            } catch (Exception e) {
-                System.err.println("Modbus Write Error: " + e.getMessage());
-            } finally {
-                // Always close socket
-                try { if (socket != null) socket.close(); } catch (Exception e) {}
-            }
-            return null;
-        });
-    }
+    /**
+     * ✅ BACnet Write with enhanced logging
+     */
     private void writeBACnet(boolean value) throws Exception {
         BMyPointDevice device = getParentDevice();
         if (device == null) return;
@@ -436,10 +407,9 @@ public class BMyBooleanPoint extends BBooleanWritable {
         if (nameStr.contains("bo_")) objectType = 4;
         else if (nameStr.contains("bv_")) objectType = 5;
 
-        // ** BI (3) มักจะเป็น Read-only การสั่ง Write อาจจะ Error ได้ แต่จะไม่ใช่ Connect Timeout **
-
         int instance = getRegisterAddress();
         int finalObjectType = objectType;
+        boolean finalValue = value;
 
         AccessController.doPrivileged((PrivilegedAction<Void>) () -> {
             DatagramSocket socket = null;
@@ -447,12 +417,14 @@ public class BMyBooleanPoint extends BBooleanWritable {
                 socket = new DatagramSocket();
                 InetAddress addr = InetAddress.getByName(ip);
 
-                // หมายเหตุ: คุณต้องเพิ่ม method buildWritePropertyBoolean ใน BACnetUtil
-                // หรือใช้ buildWritePropertyReal แล้วแก้ Tag เอา (ดูวิธีแก้ด้านล่าง)
-                byte[] tx = buildWritePropertyBoolean(finalObjectType, instance, 85, value, 1);
-
+                int invokeId = (int) (Math.random() * 255);
+                byte[] tx = BACnetUtil.buildWritePropertyBoolean(finalObjectType, instance, 85, finalValue, invokeId, 16);
                 socket.send(new DatagramPacket(tx, tx.length, addr, port));
-                System.out.println("BACnet Write Success: " + value);
+
+                // ✅ อัพเดท Fallback ทันทีหลังเขียนสำเร็จ
+                setFallback(new BStatusBoolean(finalValue, BStatus.ok));
+
+                System.out.println("BACnet Write Success: " + finalValue);
             } catch (Exception e) {
                 System.err.println("BACnet Write Error: " + e.getMessage());
             } finally {
@@ -462,48 +434,181 @@ public class BMyBooleanPoint extends BBooleanWritable {
         });
     }
 
-    // Helper: สร้าง Packet สำหรับ Write Boolean (ใส่ใน class นี้หรือ BACnetUtil ก็ได้)
-    private byte[] buildWritePropertyBoolean(int objectType, int instance, int propertyId, boolean value, int invokeId) {
-        java.nio.ByteBuffer bb = java.nio.ByteBuffer.allocate(1024);
-        // BVLC
-        bb.put((byte) 0x81).put((byte) 0x0A).putShort((short) 0);
-        // NPDU
-        bb.put((byte) 0x01).put((byte) 0x04);
-        // APDU
-        bb.put((byte) 0x00).put((byte) 0x05).put((byte) invokeId).put((byte) 0x0F); // Write Property Service
+    /**
+     * ✅ Modbus Write with enhanced logging
+     */
+    private void writeModbus(boolean value) throws Exception {
+        BMyPointDevice device = getParentDevice();
+        if (device == null) {
+            throw new Exception("Device not found");
+        }
 
-        // Object ID
-        int objectIdPacked = (objectType << 22) | (instance & 0x3FFFFF);
-        bb.put((byte) 0x0C).putInt(objectIdPacked);
+        String[] addrParts = device.getDeviceAddress().split(":");
+        String ip = addrParts[0];
+        int port = addrParts.length > 1 ? Integer.parseInt(addrParts[1]) : 502;
+        int regAddr = getRegisterAddress();
 
-        // Property ID (Present Value = 85)
-        bb.put((byte) 0x19).put((byte) propertyId);
+        System.out.println("   🌐 Target: " + ip + ":" + port);
+        System.out.println("   📋 Register: " + regAddr);
+        System.out.println("   💾 Value: " + value);
 
-        // Value (Opening Tag)
-        bb.put((byte) 0x3E);
+        AccessController.doPrivileged((PrivilegedAction<Void>) () -> {
+            Socket socket = null;
+            try {
+                socket = new Socket();
+                socket.connect(new InetSocketAddress(ip, port), 2000);
 
-        // Application Tag for Enumerated (9) is standard for Binary PV,
-        // but some devices accept Boolean (1). Standard BACnet often uses Enumerated: 0=Inactive, 1=Active
-        bb.put((byte) 0x91); // Tag 9 (Enumerated)
-        bb.put((byte) (value ? 1 : 0));
+                int outputVal = value ? 0xFF00 : 0x0000;
+                System.out.println("   → Modbus value: 0x" +
+                        Integer.toHexString(outputVal));
 
-        // Closing Tag
-        bb.put((byte) 0x3F);
+                byte[] request = {
+                        0x00, 0x02, 0x00, 0x00, 0x00, 0x06, 0x01, 0x05,
+                        (byte)(regAddr >> 8), (byte)(regAddr & 0xFF),
+                        (byte)(outputVal >> 8), (byte)(outputVal & 0xFF)
+                };
 
-        int len = bb.position();
-        bb.putShort(2, (short) len);
-        byte[] packet = new byte[len];
-        bb.rewind();
-        bb.get(packet);
-        return packet;
+                socket.getOutputStream().write(request);
+                System.out.println("   ✅ Modbus Write sent successfully");
+
+            } catch (Exception e) {
+                System.err.println("   ❌ Modbus Write Error: " + e.getMessage());
+                e.printStackTrace();
+            } finally {
+                try {
+                    if (socket != null) socket.close();
+                } catch (Exception e) {}
+            }
+            return null;
+        });
     }
 
-    private BMyPointDevice getParentDevice() {
-        BComplex parent = getParent();
-        while (parent != null && !(parent instanceof BMyPointDevice)) {
-            if (parent instanceof BComponent) parent = ((BComponent) parent).getParent();
-            else break;
-        }
-        return (BMyPointDevice) parent;
+    // ================= Polling (ไม่เปลี่ยน) =================
+
+    private void startPolling() {
+        if (isPolling) return;
+        isPolling = true;
+        pollingThread = new Thread(() -> {
+            System.out.println("🔄 Polling started: " + getName());
+            while (isPolling) {
+                try {
+                    boolean val = readFromDevice();
+                    if (getReverse()) val = !val;
+
+                    // ✅ แสดง log เฉพาะเมื่อค่าเปลี่ยน
+                    BStatusBoolean currentFb = getFallback();
+                    if (currentFb.getValue() != val || !currentFb.getStatus().isOk()) {
+                        System.out.println("📊 Poll update [" + getName() + "]: " + val);
+                    }
+
+                    setFallback(new BStatusBoolean(val, BStatus.ok));
+                    Thread.sleep(getPollInterval());
+                } catch (InterruptedException e) {
+                    break;
+                } catch (Exception e) {
+                    System.err.println("❌ Poll error [" + getName() + "]: " + e.getMessage());
+                    setFallback(new BStatusBoolean(false, BStatus.fault));
+                    try { Thread.sleep(getPollInterval()); } catch (InterruptedException ie) { break; }
+                }
+            }
+            System.out.println("⏹️  Polling stopped: " + getName());
+        });
+        pollingThread.setDaemon(true);
+        pollingThread.setName("BoolPoll-" + getName());
+        pollingThread.start();
+    }
+
+    private void stopPolling() {
+        isPolling = false;
+        if (pollingThread != null) pollingThread.interrupt();
+    }
+
+    private boolean readFromDevice() throws Exception {
+        String proto = getProtocol().toLowerCase();
+        if ("modbus".equals(proto)) return readModbus();
+        if ("bacnet".equals(proto)) return readBACnet();
+        return false;
+    }
+
+
+    private boolean readBACnet() throws Exception {
+        BMyPointDevice device = getParentDevice();
+        if (device == null) throw new Exception("Device not found");
+        String[] addrParts = device.getDeviceAddress().split(":");
+        String ip = addrParts[0];
+        int port = addrParts.length > 1 ? Integer.parseInt(addrParts[1]) : 47808;
+        String nameStr = getName().toLowerCase();
+        int objectType = 3;
+        if (nameStr.contains("bo_")) objectType = 4;
+        else if (nameStr.contains("bv_")) objectType = 5;
+        int instance = getRegisterAddress();
+        int finalObjectType = objectType;
+        return AccessController.doPrivileged((PrivilegedAction<Boolean>) () -> {
+            DatagramSocket socket = null;
+            try {
+                socket = new DatagramSocket();
+                socket.setSoTimeout(3000);
+                int invokeId = (int) (Math.random() * 255);
+                byte[] tx = BACnetUtil.buildReadPropertyPacket(finalObjectType, instance, 85, invokeId);
+                InetAddress addr = InetAddress.getByName(ip);
+                socket.send(new DatagramPacket(tx, tx.length, addr, port));
+                byte[] rxBuf = new byte[512];
+                DatagramPacket rxPacket = new DatagramPacket(rxBuf, rxBuf.length);
+                socket.receive(rxPacket);
+                byte[] data = rxPacket.getData();
+                int offset = 6;
+                byte npduControl = data[4];
+                if ((npduControl & 0x20) != 0) {
+                    offset += 2;
+                    int dlen = data[offset++] & 0xFF;
+                    offset += dlen + 1;
+                }
+                if ((data[offset] & 0xF0) != 0x30) throw new RuntimeException("Invalid APDU");
+                offset += 3;
+                if (data[offset] == 0x0C) offset += 5;
+                if (data[offset] == 0x19) offset += 2;
+                if (data[offset] == 0x3E) offset++;
+                byte tag = data[offset];
+                if ((tag & 0xF0) == 0x10 || (tag & 0xF0) == 0x90) return (tag & 0x01) == 1;
+                throw new RuntimeException("Unsupported boolean format");
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            } finally {
+                if (socket != null) socket.close();
+            }
+        });
+    }
+
+    private boolean readModbus() throws Exception {
+        BMyPointDevice device = getParentDevice();
+        if (device == null) throw new Exception("Device not found");
+        String[] addrParts = device.getDeviceAddress().split(":");
+        String ip = addrParts[0];
+        int port = addrParts.length > 1 ? Integer.parseInt(addrParts[1]) : 502;
+        int regAddr = getRegisterAddress();
+        return AccessController.doPrivileged((PrivilegedAction<Boolean>) () -> {
+            Socket socket = null;
+            try {
+                socket = new Socket();
+                socket.connect(new InetSocketAddress(ip, port), 2000);
+                byte[] request = {
+                        0x00, 0x01, 0x00, 0x00, 0x00, 0x06, 0x01, 0x01,
+                        (byte)(regAddr >> 8), (byte)(regAddr & 0xFF),
+                        0x00, 0x01
+                };
+                socket.getOutputStream().write(request);
+                InputStream in = socket.getInputStream();
+                byte[] response = new byte[256];
+                int len = in.read(response);
+                if (len < 9) throw new RuntimeException("Response too short");
+                return (response[9] & 0x01) == 1;
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            } finally {
+                try {
+                    if (socket != null) socket.close();
+                } catch (Exception e) {}
+            }
+        });
     }
 }

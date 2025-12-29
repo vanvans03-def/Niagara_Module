@@ -337,13 +337,13 @@ public class BACnetUtil {
         bb.put(TAG_OBJECT_ID).putInt(objectIdPacked);
         bb.put(TAG_PROP_ID).put((byte) propertyId);
 
-        // Value (Boolean/Enum)
+        // Value (Enum)
         bb.put(TAG_OPEN);
-        bb.put((byte) 0x91); // Tag Enumerated (Standard for Binary PV)
+        bb.put((byte) 0x91); // Tag 9 (Enumerated)
         bb.put((byte) (value ? 1 : 0));
         bb.put(TAG_CLOSE);
 
-        // Priority (Optional)
+        // Priority
         if (priority >= 1 && priority <= 16) {
             bb.put(TAG_PRIORITY).put((byte) priority);
         }
@@ -355,6 +355,36 @@ public class BACnetUtil {
         bb.get(packet);
         return packet;
     }
+
+    public static byte[] buildWritePropertyBooleanTag(int objectType, int instance, int propertyId, boolean value, int invokeId, int priority) {
+        ByteBuffer bb = ByteBuffer.allocate(1024);
+        bb.put((byte) 0x81).put((byte) 0x0A).putShort((short)0);
+        bb.put((byte) 0x01).put((byte) 0x04);
+        bb.put((byte) (TYPE_CONFIRMED_REQ | 0x02)).put((byte) 0x05).put((byte) invokeId).put(SERVICE_WRITE_PROPERTY);
+
+        int objectIdPacked = (objectType << 22) | (instance & 0x3FFFFF);
+        bb.put(TAG_OBJECT_ID).putInt(objectIdPacked);
+        bb.put(TAG_PROP_ID).put((byte) propertyId);
+
+        // Value (Boolean Tag)
+        bb.put(TAG_OPEN);
+        // Tag 1 Boolean: 0x10 = False, 0x11 = True
+        bb.put((byte) (value ? 0x11 : 0x10));
+        bb.put(TAG_CLOSE);
+
+        // Priority
+        if (priority >= 1 && priority <= 16) {
+            bb.put(TAG_PRIORITY).put((byte) priority);
+        }
+
+        int len = bb.position();
+        bb.putShort(2, (short) len);
+        byte[] packet = new byte[len];
+        bb.rewind();
+        bb.get(packet);
+        return packet;
+    }
+
 
     public static String getObjectTypeName(int rawId) {
         int type = (rawId >> 22) & 0x3FF;
