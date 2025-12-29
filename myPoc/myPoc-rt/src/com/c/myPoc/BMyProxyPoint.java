@@ -11,7 +11,8 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 
 /**
- * Proxy Point
+ * Proxy Point with Last Value Retention
+ * ✅ Keep last value on disconnect instead of resetting to 0
  */
 @NiagaraType
 @NiagaraProperty(name = "address", type = "String", defaultValue = "")
@@ -22,81 +23,189 @@ import java.security.PrivilegedAction;
 @NiagaraProperty(name = "dataType", type = "BDynamicEnum", defaultValue = "BDynamicEnum.make(0, BEnumRange.make(new String[]{\"int16\",\"uint16\",\"int32\",\"uint32\",\"float32\"}))")
 @NiagaraProperty(name = "byteOrder", type = "BDynamicEnum", defaultValue = "BDynamicEnum.make(0, BEnumRange.make(new String[]{\"ABCD\",\"CDAB\",\"BADC\",\"DCBA\"}))")
 public class BMyProxyPoint extends BNumericWritable {
-
-    /*+ ------------ BEGIN BAJA AUTO GENERATED CODE ------------ +*/
-    /*@ $com.c.myPoc.BMyProxyPoint(3278483480)1.0$ @*/
-    /* Generated Thu Dec 25 15:36:58 ICT 2025 by Slot-o-Matic (c) Tridium, Inc. 2012 */
+/*+ ------------ BEGIN BAJA AUTO GENERATED CODE ------------ +*/
+/*@ $com.c.myPoc.BMyProxyPoint(3278483480)1.0$ @*/
+/* Generated Mon Dec 29 17:56:23 ICT 2025 by Slot-o-Matic (c) Tridium, Inc. 2012 */
 
 ////////////////////////////////////////////////////////////////
 // Property "address"
 ////////////////////////////////////////////////////////////////
-
-    public static final Property address = newProperty(0, "", null);
-    public String getAddress() { return getString(address); }
-    public void setAddress(String v) { setString(address, v, null); }
+  
+  /**
+   * Slot for the {@code address} property.
+   * @see #getAddress
+   * @see #setAddress
+   */
+  public static final Property address = newProperty(0, "", null);
+  
+  /**
+   * Get the {@code address} property.
+   * @see #address
+   */
+  public String getAddress() { return getString(address); }
+  
+  /**
+   * Set the {@code address} property.
+   * @see #address
+   */
+  public void setAddress(String v) { setString(address, v, null); }
 
 ////////////////////////////////////////////////////////////////
 // Property "registerType"
 ////////////////////////////////////////////////////////////////
-
-    public static final Property registerType = newProperty(0, BDynamicEnum.make(0, BEnumRange.make(new String[]{"holding","input","coil","discrete","AI","AO","AV","BI","BO","BV"})), null);
-    public BDynamicEnum getRegisterType() { return (BDynamicEnum)get(registerType); }
-    public void setRegisterType(BDynamicEnum v) { set(registerType, v, null); }
+  
+  /**
+   * Slot for the {@code registerType} property.
+   * @see #getRegisterType
+   * @see #setRegisterType
+   */
+  public static final Property registerType = newProperty(0, BDynamicEnum.make(0, BEnumRange.make(new String[]{"holding","input","coil","discrete","AI","AO","AV","BI","BO","BV"})), null);
+  
+  /**
+   * Get the {@code registerType} property.
+   * @see #registerType
+   */
+  public BDynamicEnum getRegisterType() { return (BDynamicEnum)get(registerType); }
+  
+  /**
+   * Set the {@code registerType} property.
+   * @see #registerType
+   */
+  public void setRegisterType(BDynamicEnum v) { set(registerType, v, null); }
 
 ////////////////////////////////////////////////////////////////
 // Property "registerAddress"
 ////////////////////////////////////////////////////////////////
-
-    public static final Property registerAddress = newProperty(0, 0, null);
-    public int getRegisterAddress() { return getInt(registerAddress); }
-    public void setRegisterAddress(int v) { setInt(registerAddress, v, null); }
+  
+  /**
+   * Slot for the {@code registerAddress} property.
+   * @see #getRegisterAddress
+   * @see #setRegisterAddress
+   */
+  public static final Property registerAddress = newProperty(0, 0, null);
+  
+  /**
+   * Get the {@code registerAddress} property.
+   * @see #registerAddress
+   */
+  public int getRegisterAddress() { return getInt(registerAddress); }
+  
+  /**
+   * Set the {@code registerAddress} property.
+   * @see #registerAddress
+   */
+  public void setRegisterAddress(int v) { setInt(registerAddress, v, null); }
 
 ////////////////////////////////////////////////////////////////
 // Property "protocol"
 ////////////////////////////////////////////////////////////////
-
-    public static final Property protocol = newProperty(0, BDynamicEnum.make(0, BEnumRange.make(new String[]{"modbus","bacnet","http"})), null);
-    public BDynamicEnum getProtocol() { return (BDynamicEnum)get(protocol); }
-    public void setProtocol(BDynamicEnum v) { set(protocol, v, null); }
+  
+  /**
+   * Slot for the {@code protocol} property.
+   * @see #getProtocol
+   * @see #setProtocol
+   */
+  public static final Property protocol = newProperty(0, BDynamicEnum.make(0, BEnumRange.make(new String[]{"modbus","bacnet","http"})), null);
+  
+  /**
+   * Get the {@code protocol} property.
+   * @see #protocol
+   */
+  public BDynamicEnum getProtocol() { return (BDynamicEnum)get(protocol); }
+  
+  /**
+   * Set the {@code protocol} property.
+   * @see #protocol
+   */
+  public void setProtocol(BDynamicEnum v) { set(protocol, v, null); }
 
 ////////////////////////////////////////////////////////////////
 // Property "pollInterval"
 ////////////////////////////////////////////////////////////////
-
-    public static final Property pollInterval = newProperty(0, 5000, null);
-    public int getPollInterval() { return getInt(pollInterval); }
-    public void setPollInterval(int v) { setInt(pollInterval, v, null); }
+  
+  /**
+   * Slot for the {@code pollInterval} property.
+   * @see #getPollInterval
+   * @see #setPollInterval
+   */
+  public static final Property pollInterval = newProperty(0, 5000, null);
+  
+  /**
+   * Get the {@code pollInterval} property.
+   * @see #pollInterval
+   */
+  public int getPollInterval() { return getInt(pollInterval); }
+  
+  /**
+   * Set the {@code pollInterval} property.
+   * @see #pollInterval
+   */
+  public void setPollInterval(int v) { setInt(pollInterval, v, null); }
 
 ////////////////////////////////////////////////////////////////
 // Property "dataType"
 ////////////////////////////////////////////////////////////////
-
-    public static final Property dataType = newProperty(0, BDynamicEnum.make(0, BEnumRange.make(new String[]{"int16","uint16","int32","uint32","float32"})), null);
-    public BDynamicEnum getDataType() { return (BDynamicEnum)get(dataType); }
-    public void setDataType(BDynamicEnum v) { set(dataType, v, null); }
+  
+  /**
+   * Slot for the {@code dataType} property.
+   * @see #getDataType
+   * @see #setDataType
+   */
+  public static final Property dataType = newProperty(0, BDynamicEnum.make(0, BEnumRange.make(new String[]{"int16","uint16","int32","uint32","float32"})), null);
+  
+  /**
+   * Get the {@code dataType} property.
+   * @see #dataType
+   */
+  public BDynamicEnum getDataType() { return (BDynamicEnum)get(dataType); }
+  
+  /**
+   * Set the {@code dataType} property.
+   * @see #dataType
+   */
+  public void setDataType(BDynamicEnum v) { set(dataType, v, null); }
 
 ////////////////////////////////////////////////////////////////
 // Property "byteOrder"
 ////////////////////////////////////////////////////////////////
-
-    public static final Property byteOrder = newProperty(0, BDynamicEnum.make(0, BEnumRange.make(new String[]{"ABCD","CDAB","BADC","DCBA"})), null);
-    public BDynamicEnum getByteOrder() { return (BDynamicEnum)get(byteOrder); }
-    public void setByteOrder(BDynamicEnum v) { set(byteOrder, v, null); }
+  
+  /**
+   * Slot for the {@code byteOrder} property.
+   * @see #getByteOrder
+   * @see #setByteOrder
+   */
+  public static final Property byteOrder = newProperty(0, BDynamicEnum.make(0, BEnumRange.make(new String[]{"ABCD","CDAB","BADC","DCBA"})), null);
+  
+  /**
+   * Get the {@code byteOrder} property.
+   * @see #byteOrder
+   */
+  public BDynamicEnum getByteOrder() { return (BDynamicEnum)get(byteOrder); }
+  
+  /**
+   * Set the {@code byteOrder} property.
+   * @see #byteOrder
+   */
+  public void setByteOrder(BDynamicEnum v) { set(byteOrder, v, null); }
 
 ////////////////////////////////////////////////////////////////
 // Type
 ////////////////////////////////////////////////////////////////
+  
+  @Override
+  public Type getType() { return TYPE; }
+  public static final Type TYPE = Sys.loadType(BMyProxyPoint.class);
 
-    @Override
-    public Type getType() { return TYPE; }
-    public static final Type TYPE = Sys.loadType(BMyProxyPoint.class);
-
-    /*+ ------------ END BAJA AUTO GENERATED CODE -------------- +*/
+/*+ ------------ END BAJA AUTO GENERATED CODE -------------- +*/
 
     private Thread pollingThread;
     private volatile boolean isPolling = false;
     private int consecutiveErrors = 0;
     private static final int MAX_ERRORS = 3;
+
+    // ✅ เก็บค่าสุดท้ายที่อ่านได้สำเร็จ
+    private double lastValidValue = 0.0;
+    private boolean hasValidValue = false;
 
     @Override
     public void started() throws Exception {
@@ -155,31 +264,57 @@ public class BMyProxyPoint extends BNumericWritable {
                 Thread.sleep((long)(Math.random() * 2000));
             } catch (InterruptedException e) { return; }
 
-            System.out.println("🔄 Polling thread started: " + getName());
+            System.out.println("🔄 Polling started: " + getName());
 
             while (isPolling) {
                 try {
                     double value = readFromDevice();
+
+                    // ✅ บันทึกค่าที่อ่านได้สำเร็จ
+                    lastValidValue = value;
+                    hasValidValue = true;
+
                     setFallback(new BStatusNumeric(value, BStatus.ok));
 
-                    if (consecutiveErrors > 0) consecutiveErrors = 0;
-                    if (Math.random() < 0.1) System.out.println("📊 Poll [" + getName() + "]: " + value);
+                    if (consecutiveErrors > 0) {
+                        System.out.println("✅ Connection restored [" + getName() + "]");
+                        consecutiveErrors = 0;
+                    }
+
+                    if (Math.random() < 0.1) {
+                        System.out.println("📊 Poll [" + getName() + "]: " + value);
+                    }
 
                     Thread.sleep(getPollInterval());
+
                 } catch (InterruptedException e) {
                     break;
                 } catch (Exception e) {
                     consecutiveErrors++;
+
                     if (consecutiveErrors == 1 || consecutiveErrors % MAX_ERRORS == 0) {
-                        System.err.println("❌ Poll Error [" + getName() + "] (x" + consecutiveErrors + "): " + e.getMessage());
+                        System.err.println("❌ Connection lost [" + getName() + "] (x" + consecutiveErrors + "): " + e.getMessage());
                     }
-                    try {
+
+                    // ✅ ใช้ค่าสุดท้ายที่มี + Status Down แทนการใส่ 0 + Fault
+                    if (hasValidValue) {
+                        if (consecutiveErrors == 1) {
+                            System.out.println("💾 Keeping last value [" + getName() + "]: " + lastValidValue);
+                        }
+                        setFallback(new BStatusNumeric(lastValidValue, BStatus.down));
+                    } else {
+                        // กรณียังไม่เคยอ่านสำเร็จเลย ให้ใช้ fault
                         setFallback(new BStatusNumeric(0.0, BStatus.fault));
+                    }
+
+                    try {
                         Thread.sleep(Math.min(getPollInterval(), 5000));
-                    } catch (InterruptedException ie) { break; }
+                    } catch (InterruptedException ie) {
+                        break;
+                    }
                 }
             }
-            System.out.println("⏹️  Polling thread stopped: " + getName());
+            System.out.println("⏹️  Polling stopped: " + getName());
         });
 
         pollingThread.setDaemon(true);
@@ -201,6 +336,9 @@ public class BMyProxyPoint extends BNumericWritable {
             default: throw new Exception("Unsupported protocol: " + proto);
         }
     }
+
+    // ... (เก็บ methods เดิม: readModbus, readBACnet, readHTTP, writeToDevice, etc.)
+    // Copy จากไฟล์เดิมทั้งหมด
 
     private double readModbus() throws Exception {
         BMyPointDevice device = getParentDevice();
@@ -281,7 +419,6 @@ public class BMyProxyPoint extends BNumericWritable {
         else if ("modbus".equals(proto)) writeModbus(value);
     }
 
-    // ✅✅✅ แก้ไขส่วน Write BACnet ให้สมบูรณ์ ✅✅✅
     private void writeBACnet(double val) throws Exception {
         BMyPointDevice device = getParentDevice();
         if (device == null) return;
@@ -291,9 +428,8 @@ public class BMyProxyPoint extends BNumericWritable {
 
         String typeStr = getRegisterType().getTag().toLowerCase();
         String nameStr = getName().toLowerCase();
-        int objectType = 1; // Default AO
+        int objectType = 1;
 
-        // ตรวจสอบ Object Type
         if (typeStr.contains("ai") || nameStr.contains("ai_")) objectType = 0;
         else if (typeStr.contains("ao") || nameStr.contains("ao_")) objectType = 1;
         else if (typeStr.contains("av") || nameStr.contains("av_")) objectType = 2;
@@ -301,7 +437,6 @@ public class BMyProxyPoint extends BNumericWritable {
         else if (typeStr.contains("bo") || nameStr.contains("bo_")) objectType = 4;
         else if (typeStr.contains("bv") || nameStr.contains("bv_")) objectType = 5;
 
-        // ❌ Block การเขียน AI (Analog Input)
         if (objectType == 0) {
             System.err.println("❌ Write blocked: Cannot write to Analog Input (AI) - Read Only");
             return;
@@ -323,7 +458,7 @@ public class BMyProxyPoint extends BNumericWritable {
                         BACnetUtil.PROP_PRESENT_VALUE,
                         (float) val,
                         invokeId,
-                        16 // Priority 16 (Manual Operator)
+                        16
                 );
 
                 socket.send(new DatagramPacket(tx, tx.length, addr, port));

@@ -11,18 +11,20 @@ import java.nio.charset.StandardCharsets;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 
+/**
+ * String Point with Last Value Retention
+ * ✅ Keep last value on disconnect
+ */
 @NiagaraType
 @NiagaraProperty(name = "address", type = "String", defaultValue = "")
 @NiagaraProperty(name = "registerAddress", type = "int", defaultValue = "0")
-@NiagaraProperty(name = "stringLength", type = "int", defaultValue = "10") // จำนวนตัวอักษรที่ต้องการอ่าน
+@NiagaraProperty(name = "stringLength", type = "int", defaultValue = "10")
 @NiagaraProperty(name = "protocol", type = "String", defaultValue = "modbus")
-@NiagaraProperty(name = "pollInterval", type = "int", defaultValue = "10000") // String ไม่ต้อง Poll บ่อย
+@NiagaraProperty(name = "pollInterval", type = "int", defaultValue = "10000")
 public class BMyStringPoint extends BStringWritable {
-
-    
 /*+ ------------ BEGIN BAJA AUTO GENERATED CODE ------------ +*/
 /*@ $com.c.myPoc.BMyStringPoint(2345069566)1.0$ @*/
-/* Generated Tue Dec 23 15:19:27 ICT 2025 by Slot-o-Matic (c) Tridium, Inc. 2012 */
+/* Generated Mon Dec 29 17:57:01 ICT 2025 by Slot-o-Matic (c) Tridium, Inc. 2012 */
 
 ////////////////////////////////////////////////////////////////
 // Property "address"
@@ -152,6 +154,12 @@ public class BMyStringPoint extends BStringWritable {
     private Thread pollingThread;
     private volatile boolean isPolling = false;
 
+    // ✅ เก็บค่าสุดท้ายที่อ่านได้สำเร็จ
+    private String lastValidValue = "";
+    private boolean hasValidValue = false;
+    private int consecutiveErrors = 0;
+    private static final int MAX_ERRORS = 3;
+
     @Override
     public void started() throws Exception {
         super.started();
@@ -167,16 +175,45 @@ public class BMyStringPoint extends BStringWritable {
     private void startPolling() {
         if (isPolling) return;
         isPolling = true;
+        consecutiveErrors = 0;
+
         pollingThread = new Thread(() -> {
             while (isPolling) {
                 try {
                     String value = readFromDevice();
+
+                    // ✅ บันทึกค่าที่อ่านได้สำเร็จ
+                    lastValidValue = value;
+                    hasValidValue = true;
+
                     BStatusString statusValue = new BStatusString(value, BStatus.ok);
                     setFallback(statusValue);
+
+                    if (consecutiveErrors > 0) {
+                        System.out.println("✅ Connection restored [" + getName() + "]");
+                        consecutiveErrors = 0;
+                    }
+
                     Thread.sleep(getPollInterval());
+
                 } catch (Exception e) {
-                    try {
+                    consecutiveErrors++;
+
+                    if (consecutiveErrors == 1 || consecutiveErrors % MAX_ERRORS == 0) {
+                        System.err.println("❌ Connection lost [" + getName() + "] (x" + consecutiveErrors + "): " + e.getMessage());
+                    }
+
+                    // ✅ ใช้ค่าสุดท้าย + Status Down
+                    if (hasValidValue) {
+                        if (consecutiveErrors == 1) {
+                            System.out.println("💾 Keeping last value [" + getName() + "]: " + lastValidValue);
+                        }
+                        setFallback(new BStatusString(lastValidValue, BStatus.down));
+                    } else {
                         setFallback(new BStatusString("", BStatus.fault));
+                    }
+
+                    try {
                         Thread.sleep(getPollInterval());
                     } catch (Exception ie) {}
                 }
@@ -204,8 +241,6 @@ public class BMyStringPoint extends BStringWritable {
         int port = addrParts.length > 1 ? Integer.parseInt(addrParts[1]) : 502;
         int regAddr = getRegisterAddress();
 
-        // 1 Register = 2 Bytes = 2 Characters
-        // ดังนั้นถ้าจะอ่าน 10 ตัวอักษร ต้องอ่าน 5 Register
         int chars = getStringLength();
         int quantity = (chars / 2) + (chars % 2);
 
@@ -215,7 +250,6 @@ public class BMyStringPoint extends BStringWritable {
                 socket = new Socket();
                 socket.connect(new InetSocketAddress(ip, port), 2000);
 
-                // Modbus: Read Holding Registers (FC 03)
                 byte[] request = {
                         0x00, 0x01, 0x00, 0x00, 0x00, 0x06, 0x01, 0x03,
                         (byte)(regAddr >> 8), (byte)(regAddr & 0xFF),
@@ -230,12 +264,9 @@ public class BMyStringPoint extends BStringWritable {
 
                 if (len < 9) throw new RuntimeException("Response too short");
 
-                // แปลง Byte Array เป็น String
-                // ข้อมูลเริ่มที่ Byte 9
                 byte[] strBytes = new byte[quantity * 2];
                 System.arraycopy(response, 9, strBytes, 0, quantity * 2);
 
-                // แปลง ASCII -> String (ตัดตัว Null \0 ออกถ้ามี)
                 return new String(strBytes, StandardCharsets.US_ASCII).trim();
 
             } catch (Exception e) {

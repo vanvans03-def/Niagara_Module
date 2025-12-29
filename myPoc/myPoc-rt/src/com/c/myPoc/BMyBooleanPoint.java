@@ -8,6 +8,10 @@ import java.io.*;
 import java.net.*;
 import java.security.*;
 
+/**
+ * Boolean Point with Last Value Retention
+ * ✅ Keep last value on disconnect
+ */
 @NiagaraType
 @NiagaraProperty(name = "address", type = "String", defaultValue = "")
 @NiagaraProperty(name = "registerAddress", type = "int", defaultValue = "0")
@@ -18,11 +22,9 @@ import java.security.*;
 @NiagaraAction(name = "forceActive", flags = Flags.SUMMARY)
 @NiagaraAction(name = "forceInactive", flags = Flags.SUMMARY)
 public class BMyBooleanPoint extends BBooleanWritable {
-
-    
 /*+ ------------ BEGIN BAJA AUTO GENERATED CODE ------------ +*/
 /*@ $com.c.myPoc.BMyBooleanPoint(4262909873)1.0$ @*/
-/* Generated Mon Dec 29 16:57:39 ICT 2025 by Slot-o-Matic (c) Tridium, Inc. 2012 */
+/* Generated Mon Dec 29 17:57:30 ICT 2025 by Slot-o-Matic (c) Tridium, Inc. 2012 */
 
 ////////////////////////////////////////////////////////////////
 // Property "address"
@@ -206,7 +208,13 @@ public class BMyBooleanPoint extends BBooleanWritable {
 
     private Thread pollingThread;
     private volatile boolean isPolling = false;
-    private volatile boolean forceWriteInProgress = false; // ✅ Flag เพื่อป้องกัน loop
+    private volatile boolean forceWriteInProgress = false;
+
+    // ✅ เก็บค่าสุดท้ายที่อ่านได้สำเร็จ
+    private boolean lastValidValue = false;
+    private boolean hasValidValue = false;
+    private int consecutiveErrors = 0;
+    private static final int MAX_ERRORS = 3;
 
     @Override
     public void started() throws Exception {
@@ -222,133 +230,66 @@ public class BMyBooleanPoint extends BBooleanWritable {
         super.stopped();
     }
 
-    /**
-     * ✅ แก้ไข changed() ให้มี logging ชัดเจน
-     */
     @Override
     public void changed(Property p, Context cx) {
         super.changed(p, cx);
 
         if (p == out) {
-            System.out.println("📢 changed() triggered for: " + getName());
-
-            // ✅ ป้องกัน recursive call จาก force write
             if (forceWriteInProgress) {
-                System.out.println("   ⏭️  Skipping (force write in progress)");
                 return;
             }
 
             BStatusBoolean outVal = getOut();
             BStatusBoolean fbVal = getFallback();
 
-            // ✅ แสดง debug info
-            System.out.println("   📊 Out: " + outVal);
-            System.out.println("   📊 Fallback: " + fbVal);
-
-            // ✅ ตรวจสอบ status ก่อน
             if (outVal.getStatus().isNull()) {
-                System.out.println("   ⚠️  Out status is null, skipping write");
                 return;
             }
 
-            // ✅ ตรวจสอบว่าค่าต่างกันจริงหรือไม่
             boolean outValue = outVal.getValue();
             boolean fbValue = fbVal.getValue();
 
-            System.out.println("   🔍 Comparing: out=" + outValue + " vs fb=" + fbValue);
-
             if (outValue != fbValue) {
-                System.out.println("   ⚡ Values different! Writing to device...");
                 try {
                     writeToDevice(outValue);
                 } catch (Exception e) {
-                    System.err.println("   ❌ Write failed: " + e.getMessage());
-                    e.printStackTrace();
+                    System.err.println("❌ Write failed: " + e.getMessage());
                 }
-            } else {
-                System.out.println("   ✅ Values same, no write needed");
             }
         }
     }
 
-    // ================= Action Handlers (Fixed) =================
-
-    /**
-     * ✅ แก้ไข: Force Active - Update out property
-     */
     public void doForceActive() {
-        System.out.println("═══════════════════════════════════════════");
-        System.out.println("🔧 Force Active Action Called");
-        System.out.println("   Point: " + getName());
-        System.out.println("   Current Out: " + getOut());
-        System.out.println("   Current Fallback: " + getFallback());
-
+        System.out.println("🔧 Force Active: " + getName());
         try {
             forceWriteInProgress = true;
-
-            // ✅ 1. เขียนไปที่ device ทันที
-            System.out.println("   → Step 1: Writing to device...");
             writeToDevice(true);
-
-            // ✅ 2. Update out property เพื่อให้ UI แสดงค่าใหม่
-            System.out.println("   → Step 2: Updating out property...");
             BStatusBoolean newOut = new BStatusBoolean(true, BStatus.ok);
             setOut(newOut);
-
-            // ✅ 3. Update fallback ด้วย (เพื่อให้ polling เห็นค่าที่ถูกต้อง)
-            System.out.println("   → Step 3: Updating fallback...");
             setFallback(newOut);
-
-            System.out.println("✅ Force Active completed successfully");
-            System.out.println("   New Out: " + getOut());
-            System.out.println("   New Fallback: " + getFallback());
-
+            System.out.println("✅ Force Active completed");
         } catch (Exception e) {
             System.err.println("❌ Force Active failed: " + e.getMessage());
-            e.printStackTrace();
         } finally {
             forceWriteInProgress = false;
-            System.out.println("═══════════════════════════════════════════");
         }
     }
 
-    /**
-     * ✅ แก้ไข: Force Inactive - Update out property
-     */
     public void doForceInactive() {
-        System.out.println("═══════════════════════════════════════════");
-        System.out.println("🔧 Force Inactive Action Called");
-        System.out.println("   Point: " + getName());
-        System.out.println("   Current Out: " + getOut());
-        System.out.println("   Current Fallback: " + getFallback());
-
+        System.out.println("🔧 Force Inactive: " + getName());
         try {
             forceWriteInProgress = true;
-
-            System.out.println("   → Step 1: Writing to device...");
             writeToDevice(false);
-
-            System.out.println("   → Step 2: Updating out property...");
             BStatusBoolean newOut = new BStatusBoolean(false, BStatus.ok);
             setOut(newOut);
-
-            System.out.println("   → Step 3: Updating fallback...");
             setFallback(newOut);
-
-            System.out.println("✅ Force Inactive completed successfully");
-            System.out.println("   New Out: " + getOut());
-            System.out.println("   New Fallback: " + getFallback());
-
+            System.out.println("✅ Force Inactive completed");
         } catch (Exception e) {
             System.err.println("❌ Force Inactive failed: " + e.getMessage());
-            e.printStackTrace();
         } finally {
             forceWriteInProgress = false;
-            System.out.println("═══════════════════════════════════════════");
         }
     }
-
-    // ================= Core Logic =================
 
     private BMyPointDevice getParentDevice() {
         BComplex parent = getParent();
@@ -362,38 +303,20 @@ public class BMyBooleanPoint extends BBooleanWritable {
         return null;
     }
 
-    /**
-     * ✅ แก้ไข: เพิ่ม debug logging
-     */
     private void writeToDevice(boolean value) throws Exception {
-        System.out.println("───────────────────────────────────────────");
-        System.out.println("📤 writeToDevice() called");
-        System.out.println("   Input value: " + value);
-        System.out.println("   Reverse enabled: " + getReverse());
-
         if (getReverse()) {
             value = !value;
-            System.out.println("   🔄 After reverse: " + value);
         }
 
         String proto = getProtocol().toLowerCase();
-        System.out.println("   📡 Protocol: " + proto);
-        System.out.println("   📍 Register: " + getRegisterAddress());
 
         if ("bacnet".equals(proto)) {
             writeBACnet(value);
         } else if ("modbus".equals(proto)) {
             writeModbus(value);
-        } else {
-            System.err.println("   ❌ Unsupported protocol: " + proto);
         }
-
-        System.out.println("───────────────────────────────────────────");
     }
 
-    /**
-     * ✅ BACnet Write with enhanced logging
-     */
     private void writeBACnet(boolean value) throws Exception {
         BMyPointDevice device = getParentDevice();
         if (device == null) return;
@@ -401,9 +324,8 @@ public class BMyBooleanPoint extends BBooleanWritable {
         String ip = addrParts[0];
         int port = addrParts.length > 1 ? Integer.parseInt(addrParts[1]) : 47808;
 
-        // หา Object Type และ Instance
         String nameStr = getName().toLowerCase();
-        int objectType = 3; // Default BI
+        int objectType = 3;
         if (nameStr.contains("bo_")) objectType = 4;
         else if (nameStr.contains("bv_")) objectType = 5;
 
@@ -421,7 +343,6 @@ public class BMyBooleanPoint extends BBooleanWritable {
                 byte[] tx = BACnetUtil.buildWritePropertyBoolean(finalObjectType, instance, 85, finalValue, invokeId, 16);
                 socket.send(new DatagramPacket(tx, tx.length, addr, port));
 
-                // ✅ อัพเดท Fallback ทันทีหลังเขียนสำเร็จ
                 setFallback(new BStatusBoolean(finalValue, BStatus.ok));
 
                 System.out.println("BACnet Write Success: " + finalValue);
@@ -434,9 +355,6 @@ public class BMyBooleanPoint extends BBooleanWritable {
         });
     }
 
-    /**
-     * ✅ Modbus Write with enhanced logging
-     */
     private void writeModbus(boolean value) throws Exception {
         BMyPointDevice device = getParentDevice();
         if (device == null) {
@@ -448,10 +366,6 @@ public class BMyBooleanPoint extends BBooleanWritable {
         int port = addrParts.length > 1 ? Integer.parseInt(addrParts[1]) : 502;
         int regAddr = getRegisterAddress();
 
-        System.out.println("   🌐 Target: " + ip + ":" + port);
-        System.out.println("   📋 Register: " + regAddr);
-        System.out.println("   💾 Value: " + value);
-
         AccessController.doPrivileged((PrivilegedAction<Void>) () -> {
             Socket socket = null;
             try {
@@ -459,8 +373,6 @@ public class BMyBooleanPoint extends BBooleanWritable {
                 socket.connect(new InetSocketAddress(ip, port), 2000);
 
                 int outputVal = value ? 0xFF00 : 0x0000;
-                System.out.println("   → Modbus value: 0x" +
-                        Integer.toHexString(outputVal));
 
                 byte[] request = {
                         0x00, 0x02, 0x00, 0x00, 0x00, 0x06, 0x01, 0x05,
@@ -469,11 +381,10 @@ public class BMyBooleanPoint extends BBooleanWritable {
                 };
 
                 socket.getOutputStream().write(request);
-                System.out.println("   ✅ Modbus Write sent successfully");
+                System.out.println("✅ Modbus Write sent successfully");
 
             } catch (Exception e) {
-                System.err.println("   ❌ Modbus Write Error: " + e.getMessage());
-                e.printStackTrace();
+                System.err.println("❌ Modbus Write Error: " + e.getMessage());
             } finally {
                 try {
                     if (socket != null) socket.close();
@@ -483,11 +394,11 @@ public class BMyBooleanPoint extends BBooleanWritable {
         });
     }
 
-    // ================= Polling (ไม่เปลี่ยน) =================
-
     private void startPolling() {
         if (isPolling) return;
         isPolling = true;
+        consecutiveErrors = 0;
+
         pollingThread = new Thread(() -> {
             System.out.println("🔄 Polling started: " + getName());
             while (isPolling) {
@@ -495,20 +406,48 @@ public class BMyBooleanPoint extends BBooleanWritable {
                     boolean val = readFromDevice();
                     if (getReverse()) val = !val;
 
-                    // ✅ แสดง log เฉพาะเมื่อค่าเปลี่ยน
+                    // ✅ บันทึกค่าที่อ่านได้สำเร็จ
+                    lastValidValue = val;
+                    hasValidValue = true;
+
                     BStatusBoolean currentFb = getFallback();
                     if (currentFb.getValue() != val || !currentFb.getStatus().isOk()) {
                         System.out.println("📊 Poll update [" + getName() + "]: " + val);
                     }
 
                     setFallback(new BStatusBoolean(val, BStatus.ok));
+
+                    if (consecutiveErrors > 0) {
+                        System.out.println("✅ Connection restored [" + getName() + "]");
+                        consecutiveErrors = 0;
+                    }
+
                     Thread.sleep(getPollInterval());
+
                 } catch (InterruptedException e) {
                     break;
                 } catch (Exception e) {
-                    System.err.println("❌ Poll error [" + getName() + "]: " + e.getMessage());
-                    setFallback(new BStatusBoolean(false, BStatus.fault));
-                    try { Thread.sleep(getPollInterval()); } catch (InterruptedException ie) { break; }
+                    consecutiveErrors++;
+
+                    if (consecutiveErrors == 1 || consecutiveErrors % MAX_ERRORS == 0) {
+                        System.err.println("❌ Connection lost [" + getName() + "] (x" + consecutiveErrors + "): " + e.getMessage());
+                    }
+
+                    // ✅ ใช้ค่าสุดท้าย + Status Down แทนการใส่ false + Fault
+                    if (hasValidValue) {
+                        if (consecutiveErrors == 1) {
+                            System.out.println("💾 Keeping last value [" + getName() + "]: " + lastValidValue);
+                        }
+                        setFallback(new BStatusBoolean(lastValidValue, BStatus.down));
+                    } else {
+                        setFallback(new BStatusBoolean(false, BStatus.fault));
+                    }
+
+                    try {
+                        Thread.sleep(getPollInterval());
+                    } catch (InterruptedException ie) {
+                        break;
+                    }
                 }
             }
             System.out.println("⏹️  Polling stopped: " + getName());
@@ -529,7 +468,6 @@ public class BMyBooleanPoint extends BBooleanWritable {
         if ("bacnet".equals(proto)) return readBACnet();
         return false;
     }
-
 
     private boolean readBACnet() throws Exception {
         BMyPointDevice device = getParentDevice();
