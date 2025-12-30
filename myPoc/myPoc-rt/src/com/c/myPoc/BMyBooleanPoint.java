@@ -9,8 +9,10 @@ import java.net.*;
 import java.security.*;
 
 /**
- * Boolean Point with Last Value Retention
- * ✅ Keep last value on disconnect
+ * Boolean Point with Last Value Retention + Automatic Reconnection
+ * ✅ Exponential Backoff Retry Strategy
+ * ✅ Connection Health Monitoring
+ * ✅ Smart Recovery Logic
  */
 @NiagaraType
 @NiagaraProperty(name = "address", type = "String", defaultValue = "")
@@ -19,207 +21,333 @@ import java.security.*;
 @NiagaraProperty(name = "pollInterval", type = "int", defaultValue = "5000")
 @NiagaraProperty(name = "reverse", type = "boolean", defaultValue = "false")
 @NiagaraProperty(name = "useBooleanTag", type = "boolean", defaultValue = "false")
+// ✅ Reconnection Properties
+@NiagaraProperty(name = "enableAutoReconnect", type = "boolean", defaultValue = "true")
+@NiagaraProperty(name = "maxRetries", type = "int", defaultValue = "10")
+@NiagaraProperty(name = "initialRetryDelay", type = "int", defaultValue = "1000")
+@NiagaraProperty(name = "maxRetryDelay", type = "int", defaultValue = "60000")
+@NiagaraProperty(name = "connectionStatus", type = "String", defaultValue = "Disconnected", flags = Flags.READONLY)
 @NiagaraAction(name = "forceActive", flags = Flags.SUMMARY)
 @NiagaraAction(name = "forceInactive", flags = Flags.SUMMARY)
 public class BMyBooleanPoint extends BBooleanWritable {
-/*+ ------------ BEGIN BAJA AUTO GENERATED CODE ------------ +*/
-/*@ $com.c.myPoc.BMyBooleanPoint(4262909873)1.0$ @*/
-/* Generated Mon Dec 29 17:57:30 ICT 2025 by Slot-o-Matic (c) Tridium, Inc. 2012 */
+    /*+ ------------ BEGIN BAJA AUTO GENERATED CODE ------------ +*/
+    /*@ $com.c.myPoc.BMyBooleanPoint(3658249652)1.0$ @*/
+    /* Generated Mon Dec 29 18:10:00 ICT 2025 by Slot-o-Matic (c) Tridium, Inc. 2012 */
 
 ////////////////////////////////////////////////////////////////
 // Property "address"
 ////////////////////////////////////////////////////////////////
-  
-  /**
-   * Slot for the {@code address} property.
-   * @see #getAddress
-   * @see #setAddress
-   */
-  public static final Property address = newProperty(0, "", null);
-  
-  /**
-   * Get the {@code address} property.
-   * @see #address
-   */
-  public String getAddress() { return getString(address); }
-  
-  /**
-   * Set the {@code address} property.
-   * @see #address
-   */
-  public void setAddress(String v) { setString(address, v, null); }
+
+    /**
+     * Slot for the {@code address} property.
+     * @see #getAddress
+     * @see #setAddress
+     */
+    public static final Property address = newProperty(0, "", null);
+
+    /**
+     * Get the {@code address} property.
+     * @see #address
+     */
+    public String getAddress() { return getString(address); }
+
+    /**
+     * Set the {@code address} property.
+     * @see #address
+     */
+    public void setAddress(String v) { setString(address, v, null); }
 
 ////////////////////////////////////////////////////////////////
 // Property "registerAddress"
 ////////////////////////////////////////////////////////////////
-  
-  /**
-   * Slot for the {@code registerAddress} property.
-   * @see #getRegisterAddress
-   * @see #setRegisterAddress
-   */
-  public static final Property registerAddress = newProperty(0, 0, null);
-  
-  /**
-   * Get the {@code registerAddress} property.
-   * @see #registerAddress
-   */
-  public int getRegisterAddress() { return getInt(registerAddress); }
-  
-  /**
-   * Set the {@code registerAddress} property.
-   * @see #registerAddress
-   */
-  public void setRegisterAddress(int v) { setInt(registerAddress, v, null); }
+
+    /**
+     * Slot for the {@code registerAddress} property.
+     * @see #getRegisterAddress
+     * @see #setRegisterAddress
+     */
+    public static final Property registerAddress = newProperty(0, 0, null);
+
+    /**
+     * Get the {@code registerAddress} property.
+     * @see #registerAddress
+     */
+    public int getRegisterAddress() { return getInt(registerAddress); }
+
+    /**
+     * Set the {@code registerAddress} property.
+     * @see #registerAddress
+     */
+    public void setRegisterAddress(int v) { setInt(registerAddress, v, null); }
 
 ////////////////////////////////////////////////////////////////
 // Property "protocol"
 ////////////////////////////////////////////////////////////////
-  
-  /**
-   * Slot for the {@code protocol} property.
-   * @see #getProtocol
-   * @see #setProtocol
-   */
-  public static final Property protocol = newProperty(0, "modbus", null);
-  
-  /**
-   * Get the {@code protocol} property.
-   * @see #protocol
-   */
-  public String getProtocol() { return getString(protocol); }
-  
-  /**
-   * Set the {@code protocol} property.
-   * @see #protocol
-   */
-  public void setProtocol(String v) { setString(protocol, v, null); }
+
+    /**
+     * Slot for the {@code protocol} property.
+     * @see #getProtocol
+     * @see #setProtocol
+     */
+    public static final Property protocol = newProperty(0, "modbus", null);
+
+    /**
+     * Get the {@code protocol} property.
+     * @see #protocol
+     */
+    public String getProtocol() { return getString(protocol); }
+
+    /**
+     * Set the {@code protocol} property.
+     * @see #protocol
+     */
+    public void setProtocol(String v) { setString(protocol, v, null); }
 
 ////////////////////////////////////////////////////////////////
 // Property "pollInterval"
 ////////////////////////////////////////////////////////////////
-  
-  /**
-   * Slot for the {@code pollInterval} property.
-   * @see #getPollInterval
-   * @see #setPollInterval
-   */
-  public static final Property pollInterval = newProperty(0, 5000, null);
-  
-  /**
-   * Get the {@code pollInterval} property.
-   * @see #pollInterval
-   */
-  public int getPollInterval() { return getInt(pollInterval); }
-  
-  /**
-   * Set the {@code pollInterval} property.
-   * @see #pollInterval
-   */
-  public void setPollInterval(int v) { setInt(pollInterval, v, null); }
+
+    /**
+     * Slot for the {@code pollInterval} property.
+     * @see #getPollInterval
+     * @see #setPollInterval
+     */
+    public static final Property pollInterval = newProperty(0, 5000, null);
+
+    /**
+     * Get the {@code pollInterval} property.
+     * @see #pollInterval
+     */
+    public int getPollInterval() { return getInt(pollInterval); }
+
+    /**
+     * Set the {@code pollInterval} property.
+     * @see #pollInterval
+     */
+    public void setPollInterval(int v) { setInt(pollInterval, v, null); }
 
 ////////////////////////////////////////////////////////////////
 // Property "reverse"
 ////////////////////////////////////////////////////////////////
-  
-  /**
-   * Slot for the {@code reverse} property.
-   * @see #getReverse
-   * @see #setReverse
-   */
-  public static final Property reverse = newProperty(0, false, null);
-  
-  /**
-   * Get the {@code reverse} property.
-   * @see #reverse
-   */
-  public boolean getReverse() { return getBoolean(reverse); }
-  
-  /**
-   * Set the {@code reverse} property.
-   * @see #reverse
-   */
-  public void setReverse(boolean v) { setBoolean(reverse, v, null); }
+
+    /**
+     * Slot for the {@code reverse} property.
+     * @see #getReverse
+     * @see #setReverse
+     */
+    public static final Property reverse = newProperty(0, false, null);
+
+    /**
+     * Get the {@code reverse} property.
+     * @see #reverse
+     */
+    public boolean getReverse() { return getBoolean(reverse); }
+
+    /**
+     * Set the {@code reverse} property.
+     * @see #reverse
+     */
+    public void setReverse(boolean v) { setBoolean(reverse, v, null); }
 
 ////////////////////////////////////////////////////////////////
 // Property "useBooleanTag"
 ////////////////////////////////////////////////////////////////
-  
-  /**
-   * Slot for the {@code useBooleanTag} property.
-   * @see #getUseBooleanTag
-   * @see #setUseBooleanTag
-   */
-  public static final Property useBooleanTag = newProperty(0, false, null);
-  
-  /**
-   * Get the {@code useBooleanTag} property.
-   * @see #useBooleanTag
-   */
-  public boolean getUseBooleanTag() { return getBoolean(useBooleanTag); }
-  
-  /**
-   * Set the {@code useBooleanTag} property.
-   * @see #useBooleanTag
-   */
-  public void setUseBooleanTag(boolean v) { setBoolean(useBooleanTag, v, null); }
+
+    /**
+     * Slot for the {@code useBooleanTag} property.
+     * @see #getUseBooleanTag
+     * @see #setUseBooleanTag
+     */
+    public static final Property useBooleanTag = newProperty(0, false, null);
+
+    /**
+     * Get the {@code useBooleanTag} property.
+     * @see #useBooleanTag
+     */
+    public boolean getUseBooleanTag() { return getBoolean(useBooleanTag); }
+
+    /**
+     * Set the {@code useBooleanTag} property.
+     * @see #useBooleanTag
+     */
+    public void setUseBooleanTag(boolean v) { setBoolean(useBooleanTag, v, null); }
+
+////////////////////////////////////////////////////////////////
+// Property "enableAutoReconnect"
+////////////////////////////////////////////////////////////////
+
+    /**
+     * Slot for the {@code enableAutoReconnect} property.
+     * @see #getEnableAutoReconnect
+     * @see #setEnableAutoReconnect
+     */
+    public static final Property enableAutoReconnect = newProperty(0, true, null);
+
+    /**
+     * Get the {@code enableAutoReconnect} property.
+     * @see #enableAutoReconnect
+     */
+    public boolean getEnableAutoReconnect() { return getBoolean(enableAutoReconnect); }
+
+    /**
+     * Set the {@code enableAutoReconnect} property.
+     * @see #enableAutoReconnect
+     */
+    public void setEnableAutoReconnect(boolean v) { setBoolean(enableAutoReconnect, v, null); }
+
+////////////////////////////////////////////////////////////////
+// Property "maxRetries"
+////////////////////////////////////////////////////////////////
+
+    /**
+     * Slot for the {@code maxRetries} property.
+     * @see #getMaxRetries
+     * @see #setMaxRetries
+     */
+    public static final Property maxRetries = newProperty(0, 10, null);
+
+    /**
+     * Get the {@code maxRetries} property.
+     * @see #maxRetries
+     */
+    public int getMaxRetries() { return getInt(maxRetries); }
+
+    /**
+     * Set the {@code maxRetries} property.
+     * @see #maxRetries
+     */
+    public void setMaxRetries(int v) { setInt(maxRetries, v, null); }
+
+////////////////////////////////////////////////////////////////
+// Property "initialRetryDelay"
+////////////////////////////////////////////////////////////////
+
+    /**
+     * Slot for the {@code initialRetryDelay} property.
+     * @see #getInitialRetryDelay
+     * @see #setInitialRetryDelay
+     */
+    public static final Property initialRetryDelay = newProperty(0, 1000, null);
+
+    /**
+     * Get the {@code initialRetryDelay} property.
+     * @see #initialRetryDelay
+     */
+    public int getInitialRetryDelay() { return getInt(initialRetryDelay); }
+
+    /**
+     * Set the {@code initialRetryDelay} property.
+     * @see #initialRetryDelay
+     */
+    public void setInitialRetryDelay(int v) { setInt(initialRetryDelay, v, null); }
+
+////////////////////////////////////////////////////////////////
+// Property "maxRetryDelay"
+////////////////////////////////////////////////////////////////
+
+    /**
+     * Slot for the {@code maxRetryDelay} property.
+     * @see #getMaxRetryDelay
+     * @see #setMaxRetryDelay
+     */
+    public static final Property maxRetryDelay = newProperty(0, 60000, null);
+
+    /**
+     * Get the {@code maxRetryDelay} property.
+     * @see #maxRetryDelay
+     */
+    public int getMaxRetryDelay() { return getInt(maxRetryDelay); }
+
+    /**
+     * Set the {@code maxRetryDelay} property.
+     * @see #maxRetryDelay
+     */
+    public void setMaxRetryDelay(int v) { setInt(maxRetryDelay, v, null); }
+
+////////////////////////////////////////////////////////////////
+// Property "connectionStatus"
+////////////////////////////////////////////////////////////////
+
+    /**
+     * Slot for the {@code connectionStatus} property.
+     * @see #getConnectionStatus
+     * @see #setConnectionStatus
+     */
+    public static final Property connectionStatus = newProperty(Flags.READONLY, "Disconnected", null);
+
+    /**
+     * Get the {@code connectionStatus} property.
+     * @see #connectionStatus
+     */
+    public String getConnectionStatus() { return getString(connectionStatus); }
+
+    /**
+     * Set the {@code connectionStatus} property.
+     * @see #connectionStatus
+     */
+    public void setConnectionStatus(String v) { setString(connectionStatus, v, null); }
 
 ////////////////////////////////////////////////////////////////
 // Action "forceActive"
 ////////////////////////////////////////////////////////////////
-  
-  /**
-   * Slot for the {@code forceActive} action.
-   * @see #forceActive()
-   */
-  public static final Action forceActive = newAction(Flags.SUMMARY, null);
-  
-  /**
-   * Invoke the {@code forceActive} action.
-   * @see #forceActive
-   */
-  public void forceActive() { invoke(forceActive, null, null); }
+
+    /**
+     * Slot for the {@code forceActive} action.
+     * @see #forceActive()
+     */
+    public static final Action forceActive = newAction(Flags.SUMMARY, null);
+
+    /**
+     * Invoke the {@code forceActive} action.
+     * @see #forceActive
+     */
+    public void forceActive() { invoke(forceActive, null, null); }
 
 ////////////////////////////////////////////////////////////////
 // Action "forceInactive"
 ////////////////////////////////////////////////////////////////
-  
-  /**
-   * Slot for the {@code forceInactive} action.
-   * @see #forceInactive()
-   */
-  public static final Action forceInactive = newAction(Flags.SUMMARY, null);
-  
-  /**
-   * Invoke the {@code forceInactive} action.
-   * @see #forceInactive
-   */
-  public void forceInactive() { invoke(forceInactive, null, null); }
+
+    /**
+     * Slot for the {@code forceInactive} action.
+     * @see #forceInactive()
+     */
+    public static final Action forceInactive = newAction(Flags.SUMMARY, null);
+
+    /**
+     * Invoke the {@code forceInactive} action.
+     * @see #forceInactive
+     */
+    public void forceInactive() { invoke(forceInactive, null, null); }
 
 ////////////////////////////////////////////////////////////////
 // Type
 ////////////////////////////////////////////////////////////////
-  
-  @Override
-  public Type getType() { return TYPE; }
-  public static final Type TYPE = Sys.loadType(BMyBooleanPoint.class);
 
-/*+ ------------ END BAJA AUTO GENERATED CODE -------------- +*/
+    @Override
+    public Type getType() { return TYPE; }
+    public static final Type TYPE = Sys.loadType(BMyBooleanPoint.class);
+
+    /*+ ------------ END BAJA AUTO GENERATED CODE -------------- +*/
 
     private Thread pollingThread;
     private volatile boolean isPolling = false;
     private volatile boolean forceWriteInProgress = false;
 
-    // ✅ เก็บค่าสุดท้ายที่อ่านได้สำเร็จ
+    // ✅ Connection Management
+    private int consecutiveErrors = 0;
+    private int consecutiveSuccesses = 0;
+    private long lastSuccessTime = 0;
+    private int currentRetryDelay = 0;
+
+    // ✅ Value Retention
     private boolean lastValidValue = false;
     private boolean hasValidValue = false;
-    private int consecutiveErrors = 0;
-    private static final int MAX_ERRORS = 3;
 
     @Override
     public void started() throws Exception {
         super.started();
         System.out.println("🔵 Boolean Point Started: " + getName());
+        resetConnectionState();
         startPolling();
     }
 
@@ -233,6 +361,12 @@ public class BMyBooleanPoint extends BBooleanWritable {
     @Override
     public void changed(Property p, Context cx) {
         super.changed(p, cx);
+
+        if (p == enableAutoReconnect) {
+            if (getEnableAutoReconnect()) {
+                resetConnectionState();
+            }
+        }
 
         if (p == out) {
             if (forceWriteInProgress) {
@@ -256,6 +390,99 @@ public class BMyBooleanPoint extends BBooleanWritable {
                     System.err.println("❌ Write failed: " + e.getMessage());
                 }
             }
+        }
+    }
+
+    // ==================== Connection Management ====================
+
+    private void resetConnectionState() {
+        consecutiveErrors = 0;
+        consecutiveSuccesses = 0;
+        currentRetryDelay = getInitialRetryDelay();
+        updateConnectionStatus("Connecting");
+    }
+
+    private void updateConnectionStatus(String status) {
+        setConnectionStatus(status);
+    }
+
+    private int calculateRetryDelay() {
+        if (!getEnableAutoReconnect()) {
+            return getPollInterval();
+        }
+        // ✅ Exponential Backoff: delay = min(initial * 2^retries, maxDelay)
+        int delay = getInitialRetryDelay() * (1 << Math.min(consecutiveErrors, 10));
+        currentRetryDelay = Math.min(delay, getMaxRetryDelay());
+        return currentRetryDelay;
+    }
+
+    private boolean shouldStopRetrying() {
+        if (!getEnableAutoReconnect()) {
+            return false;
+        }
+        return getMaxRetries() > 0 && consecutiveErrors >= getMaxRetries();
+    }
+
+    private void handleSuccessfulRead(boolean value) {
+        lastValidValue = value;
+        hasValidValue = true;
+        lastSuccessTime = System.currentTimeMillis();
+
+        consecutiveSuccesses++;
+
+        if (consecutiveErrors > 0) {
+            System.out.println("✅ Connection restored [" + getName() + "] after " + consecutiveErrors + " failures");
+            updateConnectionStatus("Connected (Recovered)");
+        } else if (consecutiveSuccesses == 1) {
+            updateConnectionStatus("Connected");
+        }
+
+        consecutiveErrors = 0;
+        currentRetryDelay = getInitialRetryDelay();
+
+        setFallback(new BStatusBoolean(value, BStatus.ok));
+    }
+
+    private void handleFailedRead(Exception e) {
+        consecutiveErrors++;
+        consecutiveSuccesses = 0;
+
+        String errorMsg = e.getMessage() != null ? e.getMessage() : e.getClass().getSimpleName();
+
+        if (consecutiveErrors == 1) {
+            System.err.println("❌ Connection lost [" + getName() + "]: " + errorMsg);
+            updateConnectionStatus("Disconnected");
+        } else if (consecutiveErrors % 5 == 0) {
+            System.err.println("⚠️  Still disconnected [" + getName() + "] (attempt " + consecutiveErrors + "): " + errorMsg);
+        }
+
+        if (shouldStopRetrying()) {
+            System.err.println("🛑 Max retries reached [" + getName() + "], stopping reconnection attempts");
+            updateConnectionStatus("Failed (Max Retries)");
+            setFallback(new BStatusBoolean(hasValidValue ? lastValidValue : false, BStatus.fault));
+            return;
+        }
+
+        if (hasValidValue) {
+            if (consecutiveErrors == 1) {
+                System.out.println("💾 Keeping last value [" + getName() + "]: " + lastValidValue);
+            }
+
+            long timeSinceSuccess = System.currentTimeMillis() - lastSuccessTime;
+            String statusDetail = String.format("Down (%ds ago)", timeSinceSuccess / 1000);
+
+            if (getEnableAutoReconnect()) {
+                int nextRetry = calculateRetryDelay() / 1000;
+                statusDetail = String.format("Reconnecting (retry in %ds)", nextRetry);
+                updateConnectionStatus(statusDetail);
+            } else {
+                updateConnectionStatus("Down (No Auto-Reconnect)");
+            }
+
+            setFallback(new BStatusBoolean(lastValidValue, BStatus.down));
+        } else {
+            updateConnectionStatus("Failed (No Data)");
+            setFallback(new BStatusBoolean(false, BStatus.fault));
         }
     }
 
@@ -289,6 +516,59 @@ public class BMyBooleanPoint extends BBooleanWritable {
         } finally {
             forceWriteInProgress = false;
         }
+    }
+
+    private void startPolling() {
+        if (isPolling) return;
+        isPolling = true;
+
+        pollingThread = new Thread(() -> {
+            try {
+                // Random start delay
+                Thread.sleep((long)(Math.random() * 2000));
+            } catch (InterruptedException e) { return; }
+
+            System.out.println("🔄 Polling started: " + getName() +
+                    (getEnableAutoReconnect() ? " (Auto-Reconnect ON)" : ""));
+
+            while (isPolling) {
+                try {
+                    boolean val = readFromDevice();
+                    if (getReverse()) val = !val;
+
+                    handleSuccessfulRead(val);
+
+                    Thread.sleep(getPollInterval());
+
+                } catch (InterruptedException e) {
+                    break;
+                } catch (Exception e) {
+                    handleFailedRead(e);
+
+                    if (shouldStopRetrying()) {
+                        System.err.println("🛑 Stopping polling thread [" + getName() + "] - Max retries exceeded");
+                        break;
+                    }
+
+                    try {
+                        int delay = calculateRetryDelay();
+                        Thread.sleep(delay);
+                    } catch (InterruptedException ie) {
+                        break;
+                    }
+                }
+            }
+            updateConnectionStatus("Stopped");
+            System.out.println("⏹️  Polling stopped: " + getName());
+        });
+        pollingThread.setDaemon(true);
+        pollingThread.setName("BoolPoll-" + getName());
+        pollingThread.start();
+    }
+
+    private void stopPolling() {
+        isPolling = false;
+        if (pollingThread != null) pollingThread.interrupt();
     }
 
     private BMyPointDevice getParentDevice() {
@@ -344,7 +624,6 @@ public class BMyBooleanPoint extends BBooleanWritable {
                 socket.send(new DatagramPacket(tx, tx.length, addr, port));
 
                 setFallback(new BStatusBoolean(finalValue, BStatus.ok));
-
                 System.out.println("BACnet Write Success: " + finalValue);
             } catch (Exception e) {
                 System.err.println("BACnet Write Error: " + e.getMessage());
@@ -392,74 +671,6 @@ public class BMyBooleanPoint extends BBooleanWritable {
             }
             return null;
         });
-    }
-
-    private void startPolling() {
-        if (isPolling) return;
-        isPolling = true;
-        consecutiveErrors = 0;
-
-        pollingThread = new Thread(() -> {
-            System.out.println("🔄 Polling started: " + getName());
-            while (isPolling) {
-                try {
-                    boolean val = readFromDevice();
-                    if (getReverse()) val = !val;
-
-                    // ✅ บันทึกค่าที่อ่านได้สำเร็จ
-                    lastValidValue = val;
-                    hasValidValue = true;
-
-                    BStatusBoolean currentFb = getFallback();
-                    if (currentFb.getValue() != val || !currentFb.getStatus().isOk()) {
-                        System.out.println("📊 Poll update [" + getName() + "]: " + val);
-                    }
-
-                    setFallback(new BStatusBoolean(val, BStatus.ok));
-
-                    if (consecutiveErrors > 0) {
-                        System.out.println("✅ Connection restored [" + getName() + "]");
-                        consecutiveErrors = 0;
-                    }
-
-                    Thread.sleep(getPollInterval());
-
-                } catch (InterruptedException e) {
-                    break;
-                } catch (Exception e) {
-                    consecutiveErrors++;
-
-                    if (consecutiveErrors == 1 || consecutiveErrors % MAX_ERRORS == 0) {
-                        System.err.println("❌ Connection lost [" + getName() + "] (x" + consecutiveErrors + "): " + e.getMessage());
-                    }
-
-                    // ✅ ใช้ค่าสุดท้าย + Status Down แทนการใส่ false + Fault
-                    if (hasValidValue) {
-                        if (consecutiveErrors == 1) {
-                            System.out.println("💾 Keeping last value [" + getName() + "]: " + lastValidValue);
-                        }
-                        setFallback(new BStatusBoolean(lastValidValue, BStatus.down));
-                    } else {
-                        setFallback(new BStatusBoolean(false, BStatus.fault));
-                    }
-
-                    try {
-                        Thread.sleep(getPollInterval());
-                    } catch (InterruptedException ie) {
-                        break;
-                    }
-                }
-            }
-            System.out.println("⏹️  Polling stopped: " + getName());
-        });
-        pollingThread.setDaemon(true);
-        pollingThread.setName("BoolPoll-" + getName());
-        pollingThread.start();
-    }
-
-    private void stopPolling() {
-        isPolling = false;
-        if (pollingThread != null) pollingThread.interrupt();
     }
 
     private boolean readFromDevice() throws Exception {
