@@ -19,234 +19,255 @@ import java.security.*;
 @NiagaraProperty(name = "useCOV", type = "boolean", defaultValue = "true")
 @NiagaraProperty(name = "covLifetime", type = "int", defaultValue = "3600")
 @NiagaraAction(name = "discoverPoints", flags = Flags.ASYNC | Flags.SUMMARY)
-// ❌ ไม่ใส่ Annotation clearPoints ตรงนี้ (ถูกต้องแล้ว)
 @NiagaraAction(name = "subscribeCOV", flags = Flags.SUMMARY)
 @NiagaraAction(name = "unsubscribeCOV", flags = Flags.SUMMARY)
 public class BMyPointDevice extends BDevice {
 
-    
-/*+ ------------ BEGIN BAJA AUTO GENERATED CODE ------------ +*/
-/*@ $com.c.myPoc.BMyPointDevice(3720370310)1.0$ @*/
-/* Generated Fri Dec 26 13:38:00 ICT 2025 by Slot-o-Matic (c) Tridium, Inc. 2012 */
+
+    /*+ ------------ BEGIN BAJA AUTO GENERATED CODE ------------ +*/
+    /*@ $com.c.myPoc.BMyPointDevice(3720370310)1.0$ @*/
+    /* Generated Fri Dec 26 13:38:00 ICT 2025 by Slot-o-Matic (c) Tridium, Inc. 2012 */
 
 ////////////////////////////////////////////////////////////////
 // Property "deviceName"
 ////////////////////////////////////////////////////////////////
-  
-  /**
-   * Slot for the {@code deviceName} property.
-   * @see #getDeviceName
-   * @see #setDeviceName
-   */
-  public static final Property deviceName = newProperty(0, "", null);
-  
-  /**
-   * Get the {@code deviceName} property.
-   * @see #deviceName
-   */
-  public String getDeviceName() { return getString(deviceName); }
-  
-  /**
-   * Set the {@code deviceName} property.
-   * @see #deviceName
-   */
-  public void setDeviceName(String v) { setString(deviceName, v, null); }
+
+    /**
+     * Slot for the {@code deviceName} property.
+     * @see #getDeviceName
+     * @see #setDeviceName
+     */
+    public static final Property deviceName = newProperty(0, "", null);
+
+    /**
+     * Get the {@code deviceName} property.
+     * @see #deviceName
+     */
+    public String getDeviceName() { return getString(deviceName); }
+
+    /**
+     * Set the {@code deviceName} property.
+     * @see #deviceName
+     */
+    public void setDeviceName(String v) { setString(deviceName, v, null); }
 
 ////////////////////////////////////////////////////////////////
 // Property "deviceAddress"
 ////////////////////////////////////////////////////////////////
-  
-  /**
-   * Slot for the {@code deviceAddress} property.
-   * @see #getDeviceAddress
-   * @see #setDeviceAddress
-   */
-  public static final Property deviceAddress = newProperty(0, "", null);
-  
-  /**
-   * Get the {@code deviceAddress} property.
-   * @see #deviceAddress
-   */
-  public String getDeviceAddress() { return getString(deviceAddress); }
-  
-  /**
-   * Set the {@code deviceAddress} property.
-   * @see #deviceAddress
-   */
-  public void setDeviceAddress(String v) { setString(deviceAddress, v, null); }
+
+    /**
+     * Slot for the {@code deviceAddress} property.
+     * @see #getDeviceAddress
+     * @see #setDeviceAddress
+     */
+    public static final Property deviceAddress = newProperty(0, "", null);
+
+    /**
+     * Get the {@code deviceAddress} property.
+     * @see #deviceAddress
+     */
+    public String getDeviceAddress() { return getString(deviceAddress); }
+
+    /**
+     * Set the {@code deviceAddress} property.
+     * @see #deviceAddress
+     */
+    public void setDeviceAddress(String v) { setString(deviceAddress, v, null); }
 
 ////////////////////////////////////////////////////////////////
 // Property "deviceDescription"
 ////////////////////////////////////////////////////////////////
-  
-  /**
-   * Slot for the {@code deviceDescription} property.
-   * @see #getDeviceDescription
-   * @see #setDeviceDescription
-   */
-  public static final Property deviceDescription = newProperty(0, "", null);
-  
-  /**
-   * Get the {@code deviceDescription} property.
-   * @see #deviceDescription
-   */
-  public String getDeviceDescription() { return getString(deviceDescription); }
-  
-  /**
-   * Set the {@code deviceDescription} property.
-   * @see #deviceDescription
-   */
-  public void setDeviceDescription(String v) { setString(deviceDescription, v, null); }
+
+    /**
+     * Slot for the {@code deviceDescription} property.
+     * @see #getDeviceDescription
+     * @see #setDeviceDescription
+     */
+    public static final Property deviceDescription = newProperty(0, "", null);
+
+    /**
+     * Get the {@code deviceDescription} property.
+     * @see #deviceDescription
+     */
+    public String getDeviceDescription() { return getString(deviceDescription); }
+
+    /**
+     * Set the {@code deviceDescription} property.
+     * @see #deviceDescription
+     */
+    public void setDeviceDescription(String v) { setString(deviceDescription, v, null); }
 
 ////////////////////////////////////////////////////////////////
 // Property "protocol"
 ////////////////////////////////////////////////////////////////
-  
-  /**
-   * Slot for the {@code protocol} property.
-   * @see #getProtocol
-   * @see #setProtocol
-   */
-  public static final Property protocol = newProperty(Flags.READONLY, "", null);
-  
-  /**
-   * Get the {@code protocol} property.
-   * @see #protocol
-   */
-  public String getProtocol() { return getString(protocol); }
-  
-  /**
-   * Set the {@code protocol} property.
-   * @see #protocol
-   */
-  public void setProtocol(String v) { setString(protocol, v, null); }
+
+    /**
+     * Slot for the {@code protocol} property.
+     * @see #getProtocol
+     * @see #setProtocol
+     */
+    public static final Property protocol = newProperty(Flags.READONLY, "", null);
+
+    /**
+     * Get the {@code protocol} property.
+     * @see #protocol
+     */
+    public String getProtocol() { return getString(protocol); }
+
+    /**
+     * Set the {@code protocol} property.
+     * @see #protocol
+     */
+    public void setProtocol(String v) { setString(protocol, v, null); }
 
 ////////////////////////////////////////////////////////////////
 // Property "deviceId"
 ////////////////////////////////////////////////////////////////
-  
-  /**
-   * Slot for the {@code deviceId} property.
-   * @see #getDeviceId
-   * @see #setDeviceId
-   */
-  public static final Property deviceId = newProperty(Flags.READONLY, -1, null);
-  
-  /**
-   * Get the {@code deviceId} property.
-   * @see #deviceId
-   */
-  public int getDeviceId() { return getInt(deviceId); }
-  
-  /**
-   * Set the {@code deviceId} property.
-   * @see #deviceId
-   */
-  public void setDeviceId(int v) { setInt(deviceId, v, null); }
+
+    /**
+     * Slot for the {@code deviceId} property.
+     * @see #getDeviceId
+     * @see #setDeviceId
+     */
+    public static final Property deviceId = newProperty(Flags.READONLY, -1, null);
+
+    /**
+     * Get the {@code deviceId} property.
+     * @see #deviceId
+     */
+    public int getDeviceId() { return getInt(deviceId); }
+
+    /**
+     * Set the {@code deviceId} property.
+     * @see #deviceId
+     */
+    public void setDeviceId(int v) { setInt(deviceId, v, null); }
 
 ////////////////////////////////////////////////////////////////
 // Property "useCOV"
 ////////////////////////////////////////////////////////////////
-  
-  /**
-   * Slot for the {@code useCOV} property.
-   * @see #getUseCOV
-   * @see #setUseCOV
-   */
-  public static final Property useCOV = newProperty(0, true, null);
-  
-  /**
-   * Get the {@code useCOV} property.
-   * @see #useCOV
-   */
-  public boolean getUseCOV() { return getBoolean(useCOV); }
-  
-  /**
-   * Set the {@code useCOV} property.
-   * @see #useCOV
-   */
-  public void setUseCOV(boolean v) { setBoolean(useCOV, v, null); }
+
+    /**
+     * Slot for the {@code useCOV} property.
+     * @see #getUseCOV
+     * @see #setUseCOV
+     */
+    public static final Property useCOV = newProperty(0, true, null);
+
+    /**
+     * Get the {@code useCOV} property.
+     * @see #useCOV
+     */
+    public boolean getUseCOV() { return getBoolean(useCOV); }
+
+    /**
+     * Set the {@code useCOV} property.
+     * @see #useCOV
+     */
+    public void setUseCOV(boolean v) { setBoolean(useCOV, v, null); }
 
 ////////////////////////////////////////////////////////////////
 // Property "covLifetime"
 ////////////////////////////////////////////////////////////////
-  
-  /**
-   * Slot for the {@code covLifetime} property.
-   * @see #getCovLifetime
-   * @see #setCovLifetime
-   */
-  public static final Property covLifetime = newProperty(0, 3600, null);
-  
-  /**
-   * Get the {@code covLifetime} property.
-   * @see #covLifetime
-   */
-  public int getCovLifetime() { return getInt(covLifetime); }
-  
-  /**
-   * Set the {@code covLifetime} property.
-   * @see #covLifetime
-   */
-  public void setCovLifetime(int v) { setInt(covLifetime, v, null); }
+
+    /**
+     * Slot for the {@code covLifetime} property.
+     * @see #getCovLifetime
+     * @see #setCovLifetime
+     */
+    public static final Property covLifetime = newProperty(0, 3600, null);
+
+    /**
+     * Get the {@code covLifetime} property.
+     * @see #covLifetime
+     */
+    public int getCovLifetime() { return getInt(covLifetime); }
+
+    /**
+     * Set the {@code covLifetime} property.
+     * @see #covLifetime
+     */
+    public void setCovLifetime(int v) { setInt(covLifetime, v, null); }
 
 ////////////////////////////////////////////////////////////////
 // Action "discoverPoints"
 ////////////////////////////////////////////////////////////////
-  
-  /**
-   * Slot for the {@code discoverPoints} action.
-   * @see #discoverPoints()
-   */
-  public static final Action discoverPoints = newAction(Flags.ASYNC | Flags.SUMMARY, null);
-  
-  /**
-   * Invoke the {@code discoverPoints} action.
-   * @see #discoverPoints
-   */
-  public void discoverPoints() { invoke(discoverPoints, null, null); }
+
+    /**
+     * Slot for the {@code discoverPoints} action.
+     * @see #discoverPoints()
+     */
+    public static final Action discoverPoints = newAction(Flags.ASYNC | Flags.SUMMARY, null);
+
+    /**
+     * Invoke the {@code discoverPoints} action.
+     * @see #discoverPoints
+     */
+    public void discoverPoints() { invoke(discoverPoints, null, null); }
 
 ////////////////////////////////////////////////////////////////
 // Action "subscribeCOV"
 ////////////////////////////////////////////////////////////////
-  
-  /**
-   * Slot for the {@code subscribeCOV} action.
-   * @see #subscribeCOV()
-   */
-  public static final Action subscribeCOV = newAction(Flags.SUMMARY, null);
-  
-  /**
-   * Invoke the {@code subscribeCOV} action.
-   * @see #subscribeCOV
-   */
-  public void subscribeCOV() { invoke(subscribeCOV, null, null); }
+
+    /**
+     * Slot for the {@code subscribeCOV} action.
+     * @see #subscribeCOV()
+     */
+    public static final Action subscribeCOV = newAction(Flags.SUMMARY, null);
+
+    /**
+     * Invoke the {@code subscribeCOV} action.
+     * @see #subscribeCOV
+     */
+    public void subscribeCOV() { invoke(subscribeCOV, null, null); }
 
 ////////////////////////////////////////////////////////////////
 // Action "unsubscribeCOV"
 ////////////////////////////////////////////////////////////////
-  
-  /**
-   * Slot for the {@code unsubscribeCOV} action.
-   * @see #unsubscribeCOV()
-   */
-  public static final Action unsubscribeCOV = newAction(Flags.SUMMARY, null);
-  
-  /**
-   * Invoke the {@code unsubscribeCOV} action.
-   * @see #unsubscribeCOV
-   */
-  public void unsubscribeCOV() { invoke(unsubscribeCOV, null, null); }
+
+    /**
+     * Slot for the {@code unsubscribeCOV} action.
+     * @see #unsubscribeCOV()
+     */
+    public static final Action unsubscribeCOV = newAction(Flags.SUMMARY, null);
+
+    /**
+     * Invoke the {@code unsubscribeCOV} action.
+     * @see #unsubscribeCOV
+     */
+    public void unsubscribeCOV() { invoke(unsubscribeCOV, null, null); }
+
+////////////////////////////////////////////////////////////////
+// Action "clearPoints" (MANUAL DEFINITION)
+////////////////////////////////////////////////////////////////
+
+    /**
+     * Slot for the {@code clearPoints} action with Custom Facets.
+     */
+    public static final Action clearPoints = newAction(
+            Flags.SUMMARY,
+            BBoolean.FALSE,
+            BFacets.make(
+                    BFacets.TRUE_TEXT, BString.make("Yes, Clear All Points"),
+                    BFacets.FALSE_TEXT, BString.make("Cancel")
+            )
+    );
+
+    /**
+     * Invoke the {@code clearPoints} action.
+     * @see #clearPoints
+     */
+    public void clearPoints(BBoolean confirm) { invoke(clearPoints, confirm, null); }
 
 ////////////////////////////////////////////////////////////////
 // Type
 ////////////////////////////////////////////////////////////////
-  
-  @Override
-  public Type getType() { return TYPE; }
-  public static final Type TYPE = Sys.loadType(BMyPointDevice.class);
 
-/*+ ------------ END BAJA AUTO GENERATED CODE -------------- +*/
+    @Override
+    public Type getType() { return TYPE; }
+    public static final Type TYPE = Sys.loadType(BMyPointDevice.class);
+
+    /*+ ------------ END BAJA AUTO GENERATED CODE -------------- +*/
 
     // ==================== COV Management ====================
 
