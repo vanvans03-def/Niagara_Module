@@ -314,6 +314,36 @@ public class BMyPointDevice extends BDevice {
     @Override
     protected IFuture postPing() { return null; }
 
+    // ==================== Point Management from API ====================
+
+    /**
+     * ✅ NEW: Method to create points from API data
+     */
+    public void createPointFromImport(String name, int address, String objectType, String dataType, String protocol) {
+        Type niagaraType = BMyProxyPoint.TYPE; // Default
+
+        // 1. Determine Type based on ObjectType/DataType
+        String upperType = objectType != null ? objectType.toUpperCase() : "";
+        String upperData = dataType != null ? dataType.toUpperCase() : "";
+
+        if (upperType.contains("BINARY") || upperType.contains("DIGITAL") || upperType.contains("COIL") || upperType.contains("DISCRETE")) {
+            niagaraType = BMyBooleanPoint.TYPE;
+        } else if (upperType.contains("MULTI")) {
+            niagaraType = BMyEnumPoint.TYPE;
+        } else if (upperType.contains("ANALOG") || upperType.contains("REGISTER")) {
+            niagaraType = BMyProxyPoint.TYPE;
+        }
+
+        // 2. Add the point
+        if (addDynamicPoint(name, protocol, address, niagaraType)) {
+            // 3. Set additional properties if they exist
+            setPointRegisterType(name, objectType); // e.g. "HOLDING_REGISTER" or "OBJECT_ANALOG_INPUT"
+            System.out.println("   ✓ Imported Point: " + name + " [" + address + "]");
+        } else {
+            System.out.println("   ⚠️ Point exists/skipped: " + name);
+        }
+    }
+
     // ==================== Point Discovery ====================
 
     public void doDiscoverPoints() throws Exception {
@@ -945,7 +975,7 @@ public class BMyPointDevice extends BDevice {
         } catch (Exception e) { }
     }
 
-    private boolean addDynamicPoint(String propName, String proto, int address, Type pointType) {
+    public boolean addDynamicPoint(String propName, String proto, int address, Type pointType) {
         try {
             BComponent pointsFolder = getPointsFolder();
             if (pointsFolder.get(propName) != null) return false;
@@ -1016,9 +1046,8 @@ public class BMyPointDevice extends BDevice {
      * Implementation of Clear Points
      */
     public void doClearPoints(BBoolean confirm) throws Exception {
-        // ✅ เช็คก่อนว่า User กด Yes หรือไม่
         if (!confirm.getBoolean()) {
-            return; // ถ้า Cancel ก็จบการทำงาน
+            return;
         }
 
         System.out.println("Clearing all points...");

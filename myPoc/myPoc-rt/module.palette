@@ -15,5 +15,7 @@
     <p n="MyApiNetwork" m="myPoc=myPoc" t="myPoc:MyApiNetwork"/>
     <p n="MyPointServer" m="myPoc=myPoc" t="myPoc:MyPointServer"/>
     <p n="PointController" m="myPoc=myPoc" t="myPoc:PointController"/>
+    <p n="ImportParams" m="myPoc=myPoc" t="myPoc:ImportParams"/>
+
   </p>
 </bajaObjectGraph>

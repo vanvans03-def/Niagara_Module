@@ -29,249 +29,250 @@ import java.security.PrivilegedAction;
 @NiagaraProperty(name = "maxRetryDelay", type = "int", defaultValue = "60000")
 @NiagaraProperty(name = "connectionStatus", type = "String", defaultValue = "Disconnected", flags = Flags.READONLY)
 public class BMyStringPoint extends BStringWritable {
-    /*+ ------------ BEGIN BAJA AUTO GENERATED CODE ------------ +*/
-    /*@ $com.c.myPoc.BMyStringPoint(2839460515)1.0$ @*/
-    /* Generated Mon Dec 29 18:20:00 ICT 2025 by Slot-o-Matic (c) Tridium, Inc. 2012 */
+    
+/*+ ------------ BEGIN BAJA AUTO GENERATED CODE ------------ +*/
+/*@ $com.c.myPoc.BMyStringPoint(3904147835)1.0$ @*/
+/* Generated Mon Jan 05 17:36:00 ICT 2026 by Slot-o-Matic (c) Tridium, Inc. 2012 */
 
 ////////////////////////////////////////////////////////////////
 // Property "address"
 ////////////////////////////////////////////////////////////////
-
-    /**
-     * Slot for the {@code address} property.
-     * @see #getAddress
-     * @see #setAddress
-     */
-    public static final Property address = newProperty(0, "", null);
-
-    /**
-     * Get the {@code address} property.
-     * @see #address
-     */
-    public String getAddress() { return getString(address); }
-
-    /**
-     * Set the {@code address} property.
-     * @see #address
-     */
-    public void setAddress(String v) { setString(address, v, null); }
+  
+  /**
+   * Slot for the {@code address} property.
+   * @see #getAddress
+   * @see #setAddress
+   */
+  public static final Property address = newProperty(0, "", null);
+  
+  /**
+   * Get the {@code address} property.
+   * @see #address
+   */
+  public String getAddress() { return getString(address); }
+  
+  /**
+   * Set the {@code address} property.
+   * @see #address
+   */
+  public void setAddress(String v) { setString(address, v, null); }
 
 ////////////////////////////////////////////////////////////////
 // Property "registerAddress"
 ////////////////////////////////////////////////////////////////
-
-    /**
-     * Slot for the {@code registerAddress} property.
-     * @see #getRegisterAddress
-     * @see #setRegisterAddress
-     */
-    public static final Property registerAddress = newProperty(0, 0, null);
-
-    /**
-     * Get the {@code registerAddress} property.
-     * @see #registerAddress
-     */
-    public int getRegisterAddress() { return getInt(registerAddress); }
-
-    /**
-     * Set the {@code registerAddress} property.
-     * @see #registerAddress
-     */
-    public void setRegisterAddress(int v) { setInt(registerAddress, v, null); }
+  
+  /**
+   * Slot for the {@code registerAddress} property.
+   * @see #getRegisterAddress
+   * @see #setRegisterAddress
+   */
+  public static final Property registerAddress = newProperty(0, 0, null);
+  
+  /**
+   * Get the {@code registerAddress} property.
+   * @see #registerAddress
+   */
+  public int getRegisterAddress() { return getInt(registerAddress); }
+  
+  /**
+   * Set the {@code registerAddress} property.
+   * @see #registerAddress
+   */
+  public void setRegisterAddress(int v) { setInt(registerAddress, v, null); }
 
 ////////////////////////////////////////////////////////////////
 // Property "stringLength"
 ////////////////////////////////////////////////////////////////
-
-    /**
-     * Slot for the {@code stringLength} property.
-     * @see #getStringLength
-     * @see #setStringLength
-     */
-    public static final Property stringLength = newProperty(0, 10, null);
-
-    /**
-     * Get the {@code stringLength} property.
-     * @see #stringLength
-     */
-    public int getStringLength() { return getInt(stringLength); }
-
-    /**
-     * Set the {@code stringLength} property.
-     * @see #stringLength
-     */
-    public void setStringLength(int v) { setInt(stringLength, v, null); }
+  
+  /**
+   * Slot for the {@code stringLength} property.
+   * @see #getStringLength
+   * @see #setStringLength
+   */
+  public static final Property stringLength = newProperty(0, 10, null);
+  
+  /**
+   * Get the {@code stringLength} property.
+   * @see #stringLength
+   */
+  public int getStringLength() { return getInt(stringLength); }
+  
+  /**
+   * Set the {@code stringLength} property.
+   * @see #stringLength
+   */
+  public void setStringLength(int v) { setInt(stringLength, v, null); }
 
 ////////////////////////////////////////////////////////////////
 // Property "protocol"
 ////////////////////////////////////////////////////////////////
-
-    /**
-     * Slot for the {@code protocol} property.
-     * @see #getProtocol
-     * @see #setProtocol
-     */
-    public static final Property protocol = newProperty(0, "modbus", null);
-
-    /**
-     * Get the {@code protocol} property.
-     * @see #protocol
-     */
-    public String getProtocol() { return getString(protocol); }
-
-    /**
-     * Set the {@code protocol} property.
-     * @see #protocol
-     */
-    public void setProtocol(String v) { setString(protocol, v, null); }
+  
+  /**
+   * Slot for the {@code protocol} property.
+   * @see #getProtocol
+   * @see #setProtocol
+   */
+  public static final Property protocol = newProperty(0, "modbus", null);
+  
+  /**
+   * Get the {@code protocol} property.
+   * @see #protocol
+   */
+  public String getProtocol() { return getString(protocol); }
+  
+  /**
+   * Set the {@code protocol} property.
+   * @see #protocol
+   */
+  public void setProtocol(String v) { setString(protocol, v, null); }
 
 ////////////////////////////////////////////////////////////////
 // Property "pollInterval"
 ////////////////////////////////////////////////////////////////
-
-    /**
-     * Slot for the {@code pollInterval} property.
-     * @see #getPollInterval
-     * @see #setPollInterval
-     */
-    public static final Property pollInterval = newProperty(0, 10000, null);
-
-    /**
-     * Get the {@code pollInterval} property.
-     * @see #pollInterval
-     */
-    public int getPollInterval() { return getInt(pollInterval); }
-
-    /**
-     * Set the {@code pollInterval} property.
-     * @see #pollInterval
-     */
-    public void setPollInterval(int v) { setInt(pollInterval, v, null); }
+  
+  /**
+   * Slot for the {@code pollInterval} property.
+   * @see #getPollInterval
+   * @see #setPollInterval
+   */
+  public static final Property pollInterval = newProperty(0, 10000, null);
+  
+  /**
+   * Get the {@code pollInterval} property.
+   * @see #pollInterval
+   */
+  public int getPollInterval() { return getInt(pollInterval); }
+  
+  /**
+   * Set the {@code pollInterval} property.
+   * @see #pollInterval
+   */
+  public void setPollInterval(int v) { setInt(pollInterval, v, null); }
 
 ////////////////////////////////////////////////////////////////
 // Property "enableAutoReconnect"
 ////////////////////////////////////////////////////////////////
-
-    /**
-     * Slot for the {@code enableAutoReconnect} property.
-     * @see #getEnableAutoReconnect
-     * @see #setEnableAutoReconnect
-     */
-    public static final Property enableAutoReconnect = newProperty(0, true, null);
-
-    /**
-     * Get the {@code enableAutoReconnect} property.
-     * @see #enableAutoReconnect
-     */
-    public boolean getEnableAutoReconnect() { return getBoolean(enableAutoReconnect); }
-
-    /**
-     * Set the {@code enableAutoReconnect} property.
-     * @see #enableAutoReconnect
-     */
-    public void setEnableAutoReconnect(boolean v) { setBoolean(enableAutoReconnect, v, null); }
+  
+  /**
+   * Slot for the {@code enableAutoReconnect} property.
+   * @see #getEnableAutoReconnect
+   * @see #setEnableAutoReconnect
+   */
+  public static final Property enableAutoReconnect = newProperty(0, true, null);
+  
+  /**
+   * Get the {@code enableAutoReconnect} property.
+   * @see #enableAutoReconnect
+   */
+  public boolean getEnableAutoReconnect() { return getBoolean(enableAutoReconnect); }
+  
+  /**
+   * Set the {@code enableAutoReconnect} property.
+   * @see #enableAutoReconnect
+   */
+  public void setEnableAutoReconnect(boolean v) { setBoolean(enableAutoReconnect, v, null); }
 
 ////////////////////////////////////////////////////////////////
 // Property "maxRetries"
 ////////////////////////////////////////////////////////////////
-
-    /**
-     * Slot for the {@code maxRetries} property.
-     * @see #getMaxRetries
-     * @see #setMaxRetries
-     */
-    public static final Property maxRetries = newProperty(0, 10, null);
-
-    /**
-     * Get the {@code maxRetries} property.
-     * @see #maxRetries
-     */
-    public int getMaxRetries() { return getInt(maxRetries); }
-
-    /**
-     * Set the {@code maxRetries} property.
-     * @see #maxRetries
-     */
-    public void setMaxRetries(int v) { setInt(maxRetries, v, null); }
+  
+  /**
+   * Slot for the {@code maxRetries} property.
+   * @see #getMaxRetries
+   * @see #setMaxRetries
+   */
+  public static final Property maxRetries = newProperty(0, 10, null);
+  
+  /**
+   * Get the {@code maxRetries} property.
+   * @see #maxRetries
+   */
+  public int getMaxRetries() { return getInt(maxRetries); }
+  
+  /**
+   * Set the {@code maxRetries} property.
+   * @see #maxRetries
+   */
+  public void setMaxRetries(int v) { setInt(maxRetries, v, null); }
 
 ////////////////////////////////////////////////////////////////
 // Property "initialRetryDelay"
 ////////////////////////////////////////////////////////////////
-
-    /**
-     * Slot for the {@code initialRetryDelay} property.
-     * @see #getInitialRetryDelay
-     * @see #setInitialRetryDelay
-     */
-    public static final Property initialRetryDelay = newProperty(0, 1000, null);
-
-    /**
-     * Get the {@code initialRetryDelay} property.
-     * @see #initialRetryDelay
-     */
-    public int getInitialRetryDelay() { return getInt(initialRetryDelay); }
-
-    /**
-     * Set the {@code initialRetryDelay} property.
-     * @see #initialRetryDelay
-     */
-    public void setInitialRetryDelay(int v) { setInt(initialRetryDelay, v, null); }
+  
+  /**
+   * Slot for the {@code initialRetryDelay} property.
+   * @see #getInitialRetryDelay
+   * @see #setInitialRetryDelay
+   */
+  public static final Property initialRetryDelay = newProperty(0, 1000, null);
+  
+  /**
+   * Get the {@code initialRetryDelay} property.
+   * @see #initialRetryDelay
+   */
+  public int getInitialRetryDelay() { return getInt(initialRetryDelay); }
+  
+  /**
+   * Set the {@code initialRetryDelay} property.
+   * @see #initialRetryDelay
+   */
+  public void setInitialRetryDelay(int v) { setInt(initialRetryDelay, v, null); }
 
 ////////////////////////////////////////////////////////////////
 // Property "maxRetryDelay"
 ////////////////////////////////////////////////////////////////
-
-    /**
-     * Slot for the {@code maxRetryDelay} property.
-     * @see #getMaxRetryDelay
-     * @see #setMaxRetryDelay
-     */
-    public static final Property maxRetryDelay = newProperty(0, 60000, null);
-
-    /**
-     * Get the {@code maxRetryDelay} property.
-     * @see #maxRetryDelay
-     */
-    public int getMaxRetryDelay() { return getInt(maxRetryDelay); }
-
-    /**
-     * Set the {@code maxRetryDelay} property.
-     * @see #maxRetryDelay
-     */
-    public void setMaxRetryDelay(int v) { setInt(maxRetryDelay, v, null); }
+  
+  /**
+   * Slot for the {@code maxRetryDelay} property.
+   * @see #getMaxRetryDelay
+   * @see #setMaxRetryDelay
+   */
+  public static final Property maxRetryDelay = newProperty(0, 60000, null);
+  
+  /**
+   * Get the {@code maxRetryDelay} property.
+   * @see #maxRetryDelay
+   */
+  public int getMaxRetryDelay() { return getInt(maxRetryDelay); }
+  
+  /**
+   * Set the {@code maxRetryDelay} property.
+   * @see #maxRetryDelay
+   */
+  public void setMaxRetryDelay(int v) { setInt(maxRetryDelay, v, null); }
 
 ////////////////////////////////////////////////////////////////
 // Property "connectionStatus"
 ////////////////////////////////////////////////////////////////
-
-    /**
-     * Slot for the {@code connectionStatus} property.
-     * @see #getConnectionStatus
-     * @see #setConnectionStatus
-     */
-    public static final Property connectionStatus = newProperty(Flags.READONLY, "Disconnected", null);
-
-    /**
-     * Get the {@code connectionStatus} property.
-     * @see #connectionStatus
-     */
-    public String getConnectionStatus() { return getString(connectionStatus); }
-
-    /**
-     * Set the {@code connectionStatus} property.
-     * @see #connectionStatus
-     */
-    public void setConnectionStatus(String v) { setString(connectionStatus, v, null); }
+  
+  /**
+   * Slot for the {@code connectionStatus} property.
+   * @see #getConnectionStatus
+   * @see #setConnectionStatus
+   */
+  public static final Property connectionStatus = newProperty(Flags.READONLY, "Disconnected", null);
+  
+  /**
+   * Get the {@code connectionStatus} property.
+   * @see #connectionStatus
+   */
+  public String getConnectionStatus() { return getString(connectionStatus); }
+  
+  /**
+   * Set the {@code connectionStatus} property.
+   * @see #connectionStatus
+   */
+  public void setConnectionStatus(String v) { setString(connectionStatus, v, null); }
 
 ////////////////////////////////////////////////////////////////
 // Type
 ////////////////////////////////////////////////////////////////
+  
+  @Override
+  public Type getType() { return TYPE; }
+  public static final Type TYPE = Sys.loadType(BMyStringPoint.class);
 
-    @Override
-    public Type getType() { return TYPE; }
-    public static final Type TYPE = Sys.loadType(BMyStringPoint.class);
-
-    /*+ ------------ END BAJA AUTO GENERATED CODE -------------- +*/
+/*+ ------------ END BAJA AUTO GENERATED CODE -------------- +*/
 
     private Thread pollingThread;
     private volatile boolean isPolling = false;

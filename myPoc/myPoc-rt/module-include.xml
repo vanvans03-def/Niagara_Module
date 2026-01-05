@@ -14,4 +14,7 @@
   <type class="com.c.myPoc.BMyBooleanPoint" name="MyBooleanPoint"/>
   <type class="com.c.myPoc.BMyEnumPoint" name="MyEnumPoint"/>
   <type class="com.c.myPoc.BMyStringPoint" name="MyStringPoint"/>
+  <type class="com.c.myPoc.BImportParams" name="ImportParams"/>
+  <!--com.c.myPoc.BMyUniversalNetwork-->
+  <type class="com.c.myPoc.BMyUniversalNetwork.BImportParams" name="ImportParams"/>
 </types>
