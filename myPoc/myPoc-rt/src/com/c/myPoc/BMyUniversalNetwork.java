@@ -11,15 +11,14 @@ import java.util.*;
 import java.util.concurrent.*;
 import java.security.*;
 
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-
 /**
  * Universal Multi-Protocol Network Discovery
  */
 @NiagaraType
-@NiagaraProperty(name = "version", type = "String", defaultValue = "3.4.0", flags = Flags.READONLY)
+@NiagaraProperty(name = "version", type = "String", defaultValue = "3.7.1", flags = Flags.READONLY)
 @NiagaraProperty(name = "subnet", type = "String", defaultValue = "192.168.1.0/24", flags = Flags.SUMMARY)
+@NiagaraProperty(name = "apiUrl", type = "String", defaultValue = "http://localhost:3000/integration/niagara/export?protocol=MODBUS", flags = Flags.SUMMARY)
+@NiagaraProperty(name = "apiKey", type = "String", defaultValue = "", flags = Flags.SUMMARY)
 @NiagaraProperty(name = "enableBACnet", type = "boolean", defaultValue = "true")
 @NiagaraProperty(name = "enableModbus", type = "boolean", defaultValue = "true")
 @NiagaraProperty(name = "enableHTTP", type = "boolean", defaultValue = "true")
@@ -28,388 +27,173 @@ import javax.script.ScriptEngineManager;
 @NiagaraProperty(name = "lastDiscoveryCount", type = "int", defaultValue = "0", flags = Flags.READONLY)
 @NiagaraProperty(name = "lastDiscoveryTime", type = "String", defaultValue = "", flags = Flags.READONLY)
 @NiagaraProperty(name = "localDeviceId", type = "int", defaultValue = "12345")
+
 @NiagaraAction(name = "discoverAll", flags = Flags.ASYNC | Flags.SUMMARY)
 @NiagaraAction(name = "discoverBACnet", flags = Flags.ASYNC)
 @NiagaraAction(name = "discoverModbus", flags = Flags.ASYNC)
 @NiagaraAction(name = "discoverHTTP", flags = Flags.ASYNC)
-
-@NiagaraAction(name = "importFromApi", parameterType = "BImportParams", defaultValue = "new BImportParams()", flags = Flags.ASYNC | Flags.SUMMARY)
+@NiagaraAction(name = "importFromApi", flags = Flags.ASYNC | Flags.SUMMARY)
+@NiagaraAction(name = "clearDevices", parameterType = "BBoolean", defaultValue = "BBoolean.FALSE", flags = Flags.ASYNC)
 @NiagaraAction(name = "ping")
 
 public class BMyUniversalNetwork extends BDeviceNetwork {
 
-    
-/*+ ------------ BEGIN BAJA AUTO GENERATED CODE ------------ +*/
-/*@ $com.c.myPoc.BMyUniversalNetwork(3146566737)1.0$ @*/
-/* Generated Mon Jan 05 17:36:00 ICT 2026 by Slot-o-Matic (c) Tridium, Inc. 2012 */
+    /*+ ------------ BEGIN BAJA AUTO GENERATED CODE ------------ +*/
+    /*@ $com.c.myPoc.BMyUniversalNetwork(4093836791)1.0$ @*/
+    /* Generated Mon Jan 05 19:30:00 ICT 2026 by Slot-o-Matic (c) Tridium, Inc. 2012 */
 
 ////////////////////////////////////////////////////////////////
 // Property "version"
 ////////////////////////////////////////////////////////////////
-  
-  /**
-   * Slot for the {@code version} property.
-   * @see #getVersion
-   * @see #setVersion
-   */
-  public static final Property version = newProperty(Flags.READONLY, "3.4.0", null);
-  
-  /**
-   * Get the {@code version} property.
-   * @see #version
-   */
-  public String getVersion() { return getString(version); }
-  
-  /**
-   * Set the {@code version} property.
-   * @see #version
-   */
-  public void setVersion(String v) { setString(version, v, null); }
+
+    public static final Property version = newProperty(Flags.READONLY, "3.7.1", null);
+    public String getVersion() { return getString(version); }
+    public void setVersion(String v) { setString(version, v, null); }
 
 ////////////////////////////////////////////////////////////////
 // Property "subnet"
 ////////////////////////////////////////////////////////////////
-  
-  /**
-   * Slot for the {@code subnet} property.
-   * @see #getSubnet
-   * @see #setSubnet
-   */
-  public static final Property subnet = newProperty(Flags.SUMMARY, "192.168.1.0/24", null);
-  
-  /**
-   * Get the {@code subnet} property.
-   * @see #subnet
-   */
-  public String getSubnet() { return getString(subnet); }
-  
-  /**
-   * Set the {@code subnet} property.
-   * @see #subnet
-   */
-  public void setSubnet(String v) { setString(subnet, v, null); }
+
+    public static final Property subnet = newProperty(Flags.SUMMARY, "192.168.1.0/24", null);
+    public String getSubnet() { return getString(subnet); }
+    public void setSubnet(String v) { setString(subnet, v, null); }
+
+////////////////////////////////////////////////////////////////
+// Property "apiUrl"
+////////////////////////////////////////////////////////////////
+
+    public static final Property apiUrl = newProperty(Flags.SUMMARY, "http://localhost:3000/integration/niagara/export?protocol=MODBUS", null);
+    public String getApiUrl() { return getString(apiUrl); }
+    public void setApiUrl(String v) { setString(apiUrl, v, null); }
+
+////////////////////////////////////////////////////////////////
+// Property "apiKey"
+////////////////////////////////////////////////////////////////
+
+    public static final Property apiKey = newProperty(Flags.SUMMARY, "", null);
+    public String getApiKey() { return getString(apiKey); }
+    public void setApiKey(String v) { setString(apiKey, v, null); }
 
 ////////////////////////////////////////////////////////////////
 // Property "enableBACnet"
 ////////////////////////////////////////////////////////////////
-  
-  /**
-   * Slot for the {@code enableBACnet} property.
-   * @see #getEnableBACnet
-   * @see #setEnableBACnet
-   */
-  public static final Property enableBACnet = newProperty(0, true, null);
-  
-  /**
-   * Get the {@code enableBACnet} property.
-   * @see #enableBACnet
-   */
-  public boolean getEnableBACnet() { return getBoolean(enableBACnet); }
-  
-  /**
-   * Set the {@code enableBACnet} property.
-   * @see #enableBACnet
-   */
-  public void setEnableBACnet(boolean v) { setBoolean(enableBACnet, v, null); }
+
+    public static final Property enableBACnet = newProperty(0, true, null);
+    public boolean getEnableBACnet() { return getBoolean(enableBACnet); }
+    public void setEnableBACnet(boolean v) { setBoolean(enableBACnet, v, null); }
 
 ////////////////////////////////////////////////////////////////
 // Property "enableModbus"
 ////////////////////////////////////////////////////////////////
-  
-  /**
-   * Slot for the {@code enableModbus} property.
-   * @see #getEnableModbus
-   * @see #setEnableModbus
-   */
-  public static final Property enableModbus = newProperty(0, true, null);
-  
-  /**
-   * Get the {@code enableModbus} property.
-   * @see #enableModbus
-   */
-  public boolean getEnableModbus() { return getBoolean(enableModbus); }
-  
-  /**
-   * Set the {@code enableModbus} property.
-   * @see #enableModbus
-   */
-  public void setEnableModbus(boolean v) { setBoolean(enableModbus, v, null); }
+
+    public static final Property enableModbus = newProperty(0, true, null);
+    public boolean getEnableModbus() { return getBoolean(enableModbus); }
+    public void setEnableModbus(boolean v) { setBoolean(enableModbus, v, null); }
 
 ////////////////////////////////////////////////////////////////
 // Property "enableHTTP"
 ////////////////////////////////////////////////////////////////
-  
-  /**
-   * Slot for the {@code enableHTTP} property.
-   * @see #getEnableHTTP
-   * @see #setEnableHTTP
-   */
-  public static final Property enableHTTP = newProperty(0, true, null);
-  
-  /**
-   * Get the {@code enableHTTP} property.
-   * @see #enableHTTP
-   */
-  public boolean getEnableHTTP() { return getBoolean(enableHTTP); }
-  
-  /**
-   * Set the {@code enableHTTP} property.
-   * @see #enableHTTP
-   */
-  public void setEnableHTTP(boolean v) { setBoolean(enableHTTP, v, null); }
+
+    public static final Property enableHTTP = newProperty(0, true, null);
+    public boolean getEnableHTTP() { return getBoolean(enableHTTP); }
+    public void setEnableHTTP(boolean v) { setBoolean(enableHTTP, v, null); }
 
 ////////////////////////////////////////////////////////////////
 // Property "scanTimeout"
 ////////////////////////////////////////////////////////////////
-  
-  /**
-   * Slot for the {@code scanTimeout} property.
-   * @see #getScanTimeout
-   * @see #setScanTimeout
-   */
-  public static final Property scanTimeout = newProperty(0, 2000, null);
-  
-  /**
-   * Get the {@code scanTimeout} property.
-   * @see #scanTimeout
-   */
-  public int getScanTimeout() { return getInt(scanTimeout); }
-  
-  /**
-   * Set the {@code scanTimeout} property.
-   * @see #scanTimeout
-   */
-  public void setScanTimeout(int v) { setInt(scanTimeout, v, null); }
+
+    public static final Property scanTimeout = newProperty(0, 2000, null);
+    public int getScanTimeout() { return getInt(scanTimeout); }
+    public void setScanTimeout(int v) { setInt(scanTimeout, v, null); }
 
 ////////////////////////////////////////////////////////////////
 // Property "maxThreads"
 ////////////////////////////////////////////////////////////////
-  
-  /**
-   * Slot for the {@code maxThreads} property.
-   * @see #getMaxThreads
-   * @see #setMaxThreads
-   */
-  public static final Property maxThreads = newProperty(0, 50, null);
-  
-  /**
-   * Get the {@code maxThreads} property.
-   * @see #maxThreads
-   */
-  public int getMaxThreads() { return getInt(maxThreads); }
-  
-  /**
-   * Set the {@code maxThreads} property.
-   * @see #maxThreads
-   */
-  public void setMaxThreads(int v) { setInt(maxThreads, v, null); }
+
+    public static final Property maxThreads = newProperty(0, 50, null);
+    public int getMaxThreads() { return getInt(maxThreads); }
+    public void setMaxThreads(int v) { setInt(maxThreads, v, null); }
 
 ////////////////////////////////////////////////////////////////
 // Property "lastDiscoveryCount"
 ////////////////////////////////////////////////////////////////
-  
-  /**
-   * Slot for the {@code lastDiscoveryCount} property.
-   * @see #getLastDiscoveryCount
-   * @see #setLastDiscoveryCount
-   */
-  public static final Property lastDiscoveryCount = newProperty(Flags.READONLY, 0, null);
-  
-  /**
-   * Get the {@code lastDiscoveryCount} property.
-   * @see #lastDiscoveryCount
-   */
-  public int getLastDiscoveryCount() { return getInt(lastDiscoveryCount); }
-  
-  /**
-   * Set the {@code lastDiscoveryCount} property.
-   * @see #lastDiscoveryCount
-   */
-  public void setLastDiscoveryCount(int v) { setInt(lastDiscoveryCount, v, null); }
+
+    public static final Property lastDiscoveryCount = newProperty(Flags.READONLY, 0, null);
+    public int getLastDiscoveryCount() { return getInt(lastDiscoveryCount); }
+    public void setLastDiscoveryCount(int v) { setInt(lastDiscoveryCount, v, null); }
 
 ////////////////////////////////////////////////////////////////
 // Property "lastDiscoveryTime"
 ////////////////////////////////////////////////////////////////
-  
-  /**
-   * Slot for the {@code lastDiscoveryTime} property.
-   * @see #getLastDiscoveryTime
-   * @see #setLastDiscoveryTime
-   */
-  public static final Property lastDiscoveryTime = newProperty(Flags.READONLY, "", null);
-  
-  /**
-   * Get the {@code lastDiscoveryTime} property.
-   * @see #lastDiscoveryTime
-   */
-  public String getLastDiscoveryTime() { return getString(lastDiscoveryTime); }
-  
-  /**
-   * Set the {@code lastDiscoveryTime} property.
-   * @see #lastDiscoveryTime
-   */
-  public void setLastDiscoveryTime(String v) { setString(lastDiscoveryTime, v, null); }
+
+    public static final Property lastDiscoveryTime = newProperty(Flags.READONLY, "", null);
+    public String getLastDiscoveryTime() { return getString(lastDiscoveryTime); }
+    public void setLastDiscoveryTime(String v) { setString(lastDiscoveryTime, v, null); }
 
 ////////////////////////////////////////////////////////////////
 // Property "localDeviceId"
 ////////////////////////////////////////////////////////////////
-  
-  /**
-   * Slot for the {@code localDeviceId} property.
-   * @see #getLocalDeviceId
-   * @see #setLocalDeviceId
-   */
-  public static final Property localDeviceId = newProperty(0, 12345, null);
-  
-  /**
-   * Get the {@code localDeviceId} property.
-   * @see #localDeviceId
-   */
-  public int getLocalDeviceId() { return getInt(localDeviceId); }
-  
-  /**
-   * Set the {@code localDeviceId} property.
-   * @see #localDeviceId
-   */
-  public void setLocalDeviceId(int v) { setInt(localDeviceId, v, null); }
+
+    public static final Property localDeviceId = newProperty(0, 12345, null);
+    public int getLocalDeviceId() { return getInt(localDeviceId); }
+    public void setLocalDeviceId(int v) { setInt(localDeviceId, v, null); }
 
 ////////////////////////////////////////////////////////////////
-// Action "discoverAll"
+// Actions
 ////////////////////////////////////////////////////////////////
-  
-  /**
-   * Slot for the {@code discoverAll} action.
-   * @see #discoverAll()
-   */
-  public static final Action discoverAll = newAction(Flags.ASYNC | Flags.SUMMARY, null);
-  
-  /**
-   * Invoke the {@code discoverAll} action.
-   * @see #discoverAll
-   */
-  public void discoverAll() { invoke(discoverAll, null, null); }
 
-////////////////////////////////////////////////////////////////
-// Action "discoverBACnet"
-////////////////////////////////////////////////////////////////
-  
-  /**
-   * Slot for the {@code discoverBACnet} action.
-   * @see #discoverBACnet()
-   */
-  public static final Action discoverBACnet = newAction(Flags.ASYNC, null);
-  
-  /**
-   * Invoke the {@code discoverBACnet} action.
-   * @see #discoverBACnet
-   */
-  public void discoverBACnet() { invoke(discoverBACnet, null, null); }
+    public static final Action discoverAll = newAction(Flags.ASYNC | Flags.SUMMARY, null);
+    public void discoverAll() { invoke(discoverAll, null, null); }
 
-////////////////////////////////////////////////////////////////
-// Action "discoverModbus"
-////////////////////////////////////////////////////////////////
-  
-  /**
-   * Slot for the {@code discoverModbus} action.
-   * @see #discoverModbus()
-   */
-  public static final Action discoverModbus = newAction(Flags.ASYNC, null);
-  
-  /**
-   * Invoke the {@code discoverModbus} action.
-   * @see #discoverModbus
-   */
-  public void discoverModbus() { invoke(discoverModbus, null, null); }
+    public static final Action discoverBACnet = newAction(Flags.ASYNC, null);
+    public void discoverBACnet() { invoke(discoverBACnet, null, null); }
 
-////////////////////////////////////////////////////////////////
-// Action "discoverHTTP"
-////////////////////////////////////////////////////////////////
-  
-  /**
-   * Slot for the {@code discoverHTTP} action.
-   * @see #discoverHTTP()
-   */
-  public static final Action discoverHTTP = newAction(Flags.ASYNC, null);
-  
-  /**
-   * Invoke the {@code discoverHTTP} action.
-   * @see #discoverHTTP
-   */
-  public void discoverHTTP() { invoke(discoverHTTP, null, null); }
+    public static final Action discoverModbus = newAction(Flags.ASYNC, null);
+    public void discoverModbus() { invoke(discoverModbus, null, null); }
 
-////////////////////////////////////////////////////////////////
-// Action "importFromApi"
-////////////////////////////////////////////////////////////////
-  
-  /**
-   * Slot for the {@code importFromApi} action.
-   * @see #importFromApi(BImportParams parameter)
-   */
-  public static final Action importFromApi = newAction(Flags.ASYNC | Flags.SUMMARY, new BImportParams(), null);
-  
-  /**
-   * Invoke the {@code importFromApi} action.
-   * @see #importFromApi
-   */
-  public void importFromApi(BImportParams parameter) { invoke(importFromApi, parameter, null); }
+    public static final Action discoverHTTP = newAction(Flags.ASYNC, null);
+    public void discoverHTTP() { invoke(discoverHTTP, null, null); }
 
-////////////////////////////////////////////////////////////////
-// Action "ping"
-////////////////////////////////////////////////////////////////
-  
-  /**
-   * Slot for the {@code ping} action.
-   * @see #ping()
-   */
-  public static final Action ping = newAction(0, null);
-  
-  /**
-   * Invoke the {@code ping} action.
-   * @see #ping
-   */
-  public void ping() { invoke(ping, null, null); }
+    public static final Action importFromApi = newAction(Flags.ASYNC | Flags.SUMMARY, null);
+    public void importFromApi() { invoke(importFromApi, null, null); }
+
+    public static final Action clearDevices = newAction(Flags.ASYNC, BBoolean.FALSE, null);
+    public void clearDevices(BBoolean confirm) { invoke(clearDevices, confirm, null); }
+
+    public static final Action ping = newAction(0, null);
+    public void ping() { invoke(ping, null, null); }
 
 ////////////////////////////////////////////////////////////////
 // Type
 ////////////////////////////////////////////////////////////////
-  
-  @Override
-  public Type getType() { return TYPE; }
-  public static final Type TYPE = Sys.loadType(BMyUniversalNetwork.class);
 
-/*+ ------------ END BAJA AUTO GENERATED CODE -------------- +*/
+    @Override
+    public Type getType() { return TYPE; }
+    public static final Type TYPE = Sys.loadType(BMyUniversalNetwork.class);
+
+    /*+ ------------ END BAJA AUTO GENERATED CODE -------------- +*/
 
     // ==================== Constants ====================
-
     private static final int BACNET_PORT = 47808;
     private static final int MODBUS_PORT = 502;
     private static final int[] HTTP_PORTS = {80, 443, 8080, 8443};
-
-    // ==================== BDeviceNetwork Required Methods ====================
-
-    @Override
-    public Type getDeviceType() {
-        return BMyPointDevice.TYPE;
-    }
-
-    @Override
-    public Type getDeviceFolderType() {
-        return BDeviceFolder.TYPE;
-    }
-
-    // ==================== Device Storage ====================
-
     private List<BDevice> devicesList = new ArrayList<>();
     private ExecutorService executor;
 
+    // ==================== BDeviceNetwork Required Methods ====================
+    @Override
+    public Type getDeviceType() { return BMyPointDevice.TYPE; }
+    @Override
+    public Type getDeviceFolderType() { return BDeviceFolder.TYPE; }
+
     // ==================== API Import Logic ====================
 
-    public void doImportFromApi(BImportParams params) {
-        String url = params.getApiUrl();
-        String key = params.getApiKey();
+    public void doImportFromApi() {
+        String url = getApiUrl();
+        String key = getApiKey();
 
         System.out.println("═══════════════════════════════════════════");
-        System.out.println("📥 Importing from API");
+        System.out.println("📥 Importing from API (Native Parser)");
         System.out.println("   🌐 URL: " + url);
         System.out.println("   🔑 Key: " + (key.isEmpty() ? "None" : "******"));
         System.out.println("═══════════════════════════════════════════");
@@ -423,33 +207,40 @@ public class BMyUniversalNetwork extends BDeviceNetwork {
             }
 
             // 2. Parse JSON
-            Object result = AccessController.doPrivileged((PrivilegedAction<Object>) () -> {
-                try {
-                    ScriptEngine engine = new ScriptEngineManager().getEngineByName("javascript");
-                    String script = "var result = " + json + "; result;";
-                    return engine.eval(script);
-                } catch (Exception e) {
-                    throw new RuntimeException("Script Error: " + e.getMessage(), e);
-                }
-            });
+            Object result = new SimpleJsonParser(json).parse();
 
-            // Handle Nashorn
+            if (result == null) {
+                System.err.println("❌ Failed to parse JSON or invalid format");
+                return;
+            }
+
             Map<String, Object> root = (Map<String, Object>) result;
 
             if (!Boolean.TRUE.equals(root.get("success"))) {
                 System.out.println("❌ API returned error or success=false");
-                return;
             }
 
             // 3. Process Devices
-            Map<String, Object> devicesMap = (Map<String, Object>) root.get("devices");
-            Collection<Object> deviceCollection = devicesMap.values();
+            Object devicesObj = root.get("devices");
             int importedCount = 0;
 
-            for (Object obj : deviceCollection) {
-                if (obj instanceof Map) {
-                    Map<String, Object> devData = (Map<String, Object>) obj;
-                    importedCount += processDeviceImport(devData);
+            Collection<Object> deviceCollection = null;
+            if (devicesObj instanceof List) {
+                deviceCollection = (List<Object>) devicesObj;
+            } else if (devicesObj instanceof Map) {
+                deviceCollection = ((Map<String, Object>) devicesObj).values();
+            }
+
+            if (deviceCollection != null) {
+                for (Object obj : deviceCollection) {
+                    if (obj instanceof Map) {
+                        Map<String, Object> devData = (Map<String, Object>) obj;
+                        try {
+                            importedCount += processDeviceImport(devData);
+                        } catch (Exception e) {
+                            System.err.println("   ❌ Error importing device: " + devData.get("name") + " - " + e.getMessage());
+                        }
+                    }
                 }
             }
 
@@ -464,46 +255,54 @@ public class BMyUniversalNetwork extends BDeviceNetwork {
     }
 
     private int processDeviceImport(Map<String, Object> devData) throws Exception {
-        String name = (String) devData.get("name");
+        String rawName = (String) devData.get("name");
+        String name = sanitizeName(rawName); // ✅ Sanitize Name
+
         String ip = (String) devData.get("ip");
         Number portNum = (Number) devData.get("port");
         String protocol = (String) devData.get("protocol");
-        Number devId = (Number) devData.get("instanceId"); // For BACnet
-        if (devId == null) devId = (Number) devData.get("unitId"); // For Modbus
+        Number devId = (Number) devData.get("instanceId");
+        if (devId == null) devId = (Number) devData.get("unitId");
 
         String deviceAddress = ip + ":" + portNum;
 
-        System.out.println("   → Processing: " + name + " (" + protocol + ")");
+        System.out.println("   → Processing: " + rawName + " (" + protocol + ")");
 
         BMyPointDevice device;
         boolean created = false;
 
-        // Check if device exists
         if (get(name) instanceof BMyPointDevice) {
             device = (BMyPointDevice) get(name);
-            System.out.println("      Found existing device.");
         } else {
             device = new BMyPointDevice();
-            device.setDeviceName(name);
-            add(name, device); // Add to station
+            device.setDeviceName(rawName);
+            add(name, device);
             created = true;
-            System.out.println("      Created new device.");
+            System.out.println("      Created new device slot: " + name);
         }
 
-        // Update Properties
         device.setDeviceAddress(deviceAddress);
         device.setProtocol(protocol != null ? protocol.toLowerCase() : "unknown");
         if (devId != null) device.setDeviceId(devId.intValue());
         device.setDeviceDescription("Imported from BMS API");
 
         // Process Points
-        Map<String, Object> pointsMap = (Map<String, Object>) devData.get("points");
-        if (pointsMap != null && !pointsMap.isEmpty()) {
-            Collection<Object> pointsList = pointsMap.values();
+        Object pointsObj = devData.get("points");
+        Collection<Object> pointsList = null;
+
+        if (pointsObj instanceof List) {
+            pointsList = (List<Object>) pointsObj;
+        } else if (pointsObj instanceof Map) {
+            pointsList = ((Map<String, Object>) pointsObj).values();
+        }
+
+        if (pointsList != null && !pointsList.isEmpty()) {
             for (Object pObj : pointsList) {
                 if (pObj instanceof Map) {
                     Map<String, Object> pData = (Map<String, Object>) pObj;
-                    String pName = (String) pData.get("name");
+                    String rawPName = (String) pData.get("name");
+                    String pName = sanitizeName(rawPName);
+
                     Number pAddr = (Number) pData.get("address");
                     String pType = (String) pData.get("objectType");
                     String pDataType = (String) pData.get("dataType");
@@ -520,8 +319,16 @@ public class BMyUniversalNetwork extends BDeviceNetwork {
                 }
             }
         }
-
         return created ? 1 : 0;
+    }
+
+    private String sanitizeName(String input) {
+        if (input == null || input.isEmpty()) return "Device_" + System.currentTimeMillis();
+        String valid = input.trim().replaceAll("[^a-zA-Z0-9_]", "_"); // Hyphens are removed
+        if (Character.isDigit(valid.charAt(0))) {
+            valid = "_" + valid;
+        }
+        return valid;
     }
 
     private String fetchUrl(String urlString, String key) {
@@ -532,11 +339,9 @@ public class BMyUniversalNetwork extends BDeviceNetwork {
             conn.setRequestMethod("GET");
             conn.setConnectTimeout(5000);
             conn.setReadTimeout(5000);
-
             if (key != null && !key.isEmpty()) {
                 conn.setRequestProperty("x-api-key", key);
             }
-
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
                 String line;
                 while ((line = reader.readLine()) != null) {
@@ -550,7 +355,39 @@ public class BMyUniversalNetwork extends BDeviceNetwork {
         return result.toString();
     }
 
-    // ==================== Discovery Actions (Original) ====================
+    // ==================== Clear Devices Action (FIXED) ====================
+
+    public void doClearDevices(BBoolean confirm) throws Exception {
+        if (!confirm.getBoolean()) {
+            System.out.println("❌ Clear devices cancelled (Must check confirm).");
+            return;
+        }
+
+        System.out.println("🗑️ Clearing all devices...");
+        List<String> toRemove = new ArrayList<>();
+        SlotCursor cursor = getSlots();
+
+        while (cursor.next()) {
+            // FIX: ต้องเช็ค isProperty() ก่อนเรียก get()
+            if (cursor.slot().isProperty()) {
+                try {
+                    if (cursor.get() instanceof BDevice) {
+                        toRemove.add(cursor.slot().getName());
+                    }
+                } catch (Exception ignored) {}
+            }
+        }
+
+        for (String name : toRemove) {
+            remove(name);
+        }
+
+        devicesList.clear();
+        setLastDiscoveryCount(0);
+        System.out.println("✅ Cleared " + toRemove.size() + " device(s).");
+    }
+
+    // ==================== Discovery Actions ====================
 
     public void doDiscoverAll() throws Exception {
         System.out.println("═══════════════════════════════════════════");
@@ -591,7 +428,6 @@ public class BMyUniversalNetwork extends BDeviceNetwork {
             System.out.println("  ⏱️  Duration: " + duration + "ms");
             System.out.println("  📊 Found: " + allDevices.size() + " devices");
             System.out.println("  ✅ Created: " + createdCount + " new devices");
-            System.out.println("  ⏭️  Skipped: " + (allDevices.size() - createdCount) + " existing");
             System.out.println("═══════════════════════════════════════════");
 
         } catch (Exception e) {
@@ -779,7 +615,7 @@ public class BMyUniversalNetwork extends BDeviceNetwork {
         });
     }
 
-    // ==================== Helper Methods ====================
+    // ==================== Helper Methods for Discovery ====================
 
     private byte[] buildBACnetWhoIs() {
         return new byte[]{(byte) 0x81, (byte) 0x0A, (byte) 0x00, (byte) 0x0C, (byte) 0x01, (byte) 0x20, (byte) 0xFF, (byte) 0xFF, (byte) 0x00, (byte) 0xFF, (byte) 0x10, (byte) 0x08};
@@ -838,13 +674,14 @@ public class BMyUniversalNetwork extends BDeviceNetwork {
     private int createDevicesFromList(List<DiscoveredDevice> discovered) throws Exception {
         int created = 0;
         for (DiscoveredDevice disc : discovered) {
-            if (!deviceExists(disc.getName())) {
+            String safeName = sanitizeName(disc.getName());
+            if (!deviceExists(safeName)) {
                 BMyPointDevice device = new BMyPointDevice();
                 device.setDeviceName(disc.getName());
                 device.setDeviceAddress(disc.getAddress() + ":" + disc.getPort());
                 device.setDeviceDescription(disc.getProtocol() + " - " + disc.getDescription());
 
-                addDeviceToNetwork(disc.getName(), device);
+                addDeviceToNetwork(safeName, device);
                 created++;
 
                 try {
@@ -859,12 +696,8 @@ public class BMyUniversalNetwork extends BDeviceNetwork {
         return created;
     }
 
-    // ==================== Device Management ====================
-
     @Override
-    public BDevice[] getDevices() {
-        return devicesList.toArray(new BDevice[0]);
-    }
+    public BDevice[] getDevices() { return devicesList.toArray(new BDevice[0]); }
 
     private void addDeviceToNetwork(String name, BMyPointDevice device) throws Exception {
         add(name, device);
@@ -881,60 +714,6 @@ public class BMyUniversalNetwork extends BDeviceNetwork {
         }
         return false;
     }
-
-    /**
-     * Clear all devices (Updated logic)
-     */
-    public void doClearDevices(BBoolean confirm) throws Exception {
-        if (!confirm.getBoolean()) {
-            System.out.println("❌ Clear devices cancelled.");
-            return;
-        }
-
-        System.out.println("Clearing all devices...");
-
-        List<String> toRemove = new ArrayList<>();
-        SlotCursor cursor = getSlots();
-
-        while (cursor.next()) {
-            if (cursor.slot().isProperty() && (cursor.get() instanceof BDevice)) {
-                toRemove.add(cursor.slot().getName());
-            }
-        }
-
-        for (String name : toRemove) {
-            remove(name);
-        }
-
-        devicesList.clear();
-        setLastDiscoveryCount(0);
-
-        System.out.println("✅ Cleared " + toRemove.size() + " device(s)");
-    }
-
-    // ==================== Action Handlers ====================
-
-    public void doPing() {
-        System.out.println("═══════════════════════════════════════════");
-        System.out.println("Universal Network: Status Report");
-        System.out.println("═══════════════════════════════════════════");
-        System.out.println("  Version: " + getVersion());
-        System.out.println("  Subnet: " + getSubnet());
-        System.out.println("  Scan Timeout: " + getScanTimeout() + "ms");
-        System.out.println("  Max Threads: " + getMaxThreads());
-        System.out.println("");
-        System.out.println("  Enabled Protocols:");
-        System.out.println("    - BACnet/IP: " + (getEnableBACnet() ? "✅" : "❌"));
-        System.out.println("    - Modbus TCP: " + (getEnableModbus() ? "✅" : "❌"));
-        System.out.println("    - HTTP/REST: " + (getEnableHTTP() ? "✅" : "❌"));
-        System.out.println("");
-        System.out.println("  Last Discovery: " + getLastDiscoveryTime());
-        System.out.println("  Devices Created: " + getLastDiscoveryCount());
-        System.out.println("  Total Devices: " + devicesList.size());
-        System.out.println("═══════════════════════════════════════════");
-    }
-
-    // ==================== Lifecycle ====================
 
     @Override
     public void started() throws Exception {
@@ -956,6 +735,10 @@ public class BMyUniversalNetwork extends BDeviceNetwork {
         }
         System.out.println("🛑 Universal Network: Stopped");
         super.stopped();
+    }
+
+    public void doPing() {
+        System.out.println("Universal Network is Alive!");
     }
 
     // ==================== Helper Classes ====================
@@ -980,5 +763,141 @@ public class BMyUniversalNetwork extends BDeviceNetwork {
         public String getAddress() { return address; }
         public int getPort() { return port; }
         public String getDescription() { return description; }
+    }
+
+    // ==================== Simple Embedded JSON Parser ====================
+
+    private static class SimpleJsonParser {
+        private final String json;
+        private int pos = 0;
+        private final int length;
+
+        public SimpleJsonParser(String json) {
+            this.json = json;
+            this.length = json.length();
+        }
+
+        public Object parse() {
+            consumeWhitespace();
+            char c = peek();
+            if (c == '{') return parseObject();
+            if (c == '[') return parseArray();
+            throw new RuntimeException("Invalid JSON root: must be Object or Array");
+        }
+
+        private Object parseValue() {
+            consumeWhitespace();
+            char c = peek();
+            if (c == '{') return parseObject();
+            if (c == '[') return parseArray();
+            if (c == '"') return parseString();
+            if (c == 't' || c == 'f') return parseBoolean();
+            if (c == 'n') return parseNull();
+            if (Character.isDigit(c) || c == '-') return parseNumber();
+            throw new RuntimeException("Unexpected char at " + pos + ": " + c);
+        }
+
+        private Map<String, Object> parseObject() {
+            Map<String, Object> map = new HashMap<>();
+            consume('{');
+            consumeWhitespace();
+            if (peek() == '}') {
+                consume('}');
+                return map;
+            }
+            while (true) {
+                String key = parseString();
+                consumeWhitespace();
+                consume(':');
+                Object value = parseValue();
+                map.put(key, value);
+                consumeWhitespace();
+                if (peek() == '}') break;
+                consume(',');
+                consumeWhitespace();
+            }
+            consume('}');
+            return map;
+        }
+
+        private List<Object> parseArray() {
+            List<Object> list = new ArrayList<>();
+            consume('[');
+            consumeWhitespace();
+            if (peek() == ']') {
+                consume(']');
+                return list;
+            }
+            while (true) {
+                list.add(parseValue());
+                consumeWhitespace();
+                if (peek() == ']') break;
+                consume(',');
+            }
+            consume(']');
+            return list;
+        }
+
+        private String parseString() {
+            consume('"');
+            StringBuilder sb = new StringBuilder();
+            while (pos < length) {
+                char c = json.charAt(pos++);
+                if (c == '"') return sb.toString();
+                if (c == '\\') {
+                    char esc = json.charAt(pos++);
+                    if (esc == 'n') sb.append('\n');
+                    else if (esc == 't') sb.append('\t');
+                    else if (esc == 'r') sb.append('\r');
+                    else if (esc == '"') sb.append('"');
+                    else if (esc == '\\') sb.append('\\');
+                    else sb.append(esc);
+                } else {
+                    sb.append(c);
+                }
+            }
+            throw new RuntimeException("Unterminated string");
+        }
+
+        private Number parseNumber() {
+            int start = pos;
+            while (pos < length && (Character.isDigit(json.charAt(pos)) || json.charAt(pos) == '.' || json.charAt(pos) == '-')) {
+                pos++;
+            }
+            String numStr = json.substring(start, pos);
+            if (numStr.contains(".")) return Double.parseDouble(numStr);
+            try {
+                return Integer.parseInt(numStr);
+            } catch (NumberFormatException e) {
+                return Long.parseLong(numStr);
+            }
+        }
+
+        private Boolean parseBoolean() {
+            if (json.startsWith("true", pos)) { pos += 4; return true; }
+            if (json.startsWith("false", pos)) { pos += 5; return false; }
+            throw new RuntimeException("Invalid boolean");
+        }
+
+        private Object parseNull() {
+            if (json.startsWith("null", pos)) { pos += 4; return null; }
+            throw new RuntimeException("Invalid null");
+        }
+
+        private void consumeWhitespace() {
+            while (pos < length && Character.isWhitespace(json.charAt(pos))) pos++;
+        }
+
+        private void consume(char expected) {
+            consumeWhitespace();
+            if (pos >= length || json.charAt(pos) != expected)
+                throw new RuntimeException("Expected " + expected + " at " + pos);
+            pos++;
+        }
+
+        private char peek() {
+            if (pos >= length) throw new RuntimeException("Unexpected EOF");
+            return json.charAt(pos);
+        }
     }
 }
