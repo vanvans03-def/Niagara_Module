@@ -18,5 +18,30 @@
       </parameters>
     </req-permission>
 
+    <std-permission>
+      <name>java.lang.RuntimePermission</name>
+      <target>createClassLoader</target>
+    </std-permission>
+
+    <std-permission>
+      <name>java.lang.RuntimePermission</name>
+      <target>getClassLoader</target>
+    </std-permission>
+
+    <std-permission>
+      <name>java.lang.RuntimePermission</name>
+      <target>accessDeclaredMembers</target>
+    </std-permission>
+
+    <std-permission>
+      <name>java.lang.RuntimePermission</name>
+      <target>accessClassInPackage.*</target>
+    </std-permission>
+
+    <std-permission>
+      <name>java.lang.reflect.ReflectPermission</name>
+      <target>suppressAccessChecks</target>
+    </std-permission>
+
   </niagara-permission-groups>
 </permissions>
