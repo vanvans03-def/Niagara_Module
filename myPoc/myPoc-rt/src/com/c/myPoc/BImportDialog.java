@@ -2,71 +2,66 @@ package com.c.myPoc;
 
 import javax.baja.nre.annotations.*;
 import javax.baja.sys.*;
-import javax.baja.util.*;
 
 @NiagaraType
+// 1. ประกาศ Property ตรงนี้แทน
 @NiagaraProperty(
         name = "protocol",
-        type = "BDynamicEnum",
-        defaultValue = "BDynamicEnum.make(0, BEnumRange.make(new String[]{\"BACnet\", \"Modbus\"}))"
+        type = "BProtocolSelect",
+        defaultValue = "BProtocolSelect.bacnet"
 )
 @NiagaraProperty(
         name = "apiKey",
         type = "String",
         defaultValue = ""
 )
-@NiagaraProperty(
-        name = "customUrl",
-        type = "String",
-        defaultValue = ""
-)
-public class BImportParams extends BStruct {
+public class BImportDialog extends BStruct {
 
-
+    
 /*+ ------------ BEGIN BAJA AUTO GENERATED CODE ------------ +*/
-/*@ $com.c.myPoc.BImportParams(3037158188)1.0$ @*/
-/* Generated Tue Jan 06 16:21:46 ICT 2026 by Slot-o-Matic (c) Tridium, Inc. 2012 */
+/*@ $com.c.myPoc.BImportDialog(240805866)1.0$ @*/
+/* Generated Tue Jan 06 17:18:39 ICT 2026 by Slot-o-Matic (c) Tridium, Inc. 2012 */
 
 ////////////////////////////////////////////////////////////////
 // Property "protocol"
 ////////////////////////////////////////////////////////////////
-
+  
   /**
    * Slot for the {@code protocol} property.
    * @see #getProtocol
    * @see #setProtocol
    */
-  public static final Property protocol = newProperty(0, BDynamicEnum.make(0, BEnumRange.make(new String[]{"BACnet", "Modbus"})), null);
-
+  public static final Property protocol = newProperty(0, BProtocolSelect.bacnet, null);
+  
   /**
    * Get the {@code protocol} property.
    * @see #protocol
    */
-  public BDynamicEnum getProtocol() { return (BDynamicEnum)get(protocol); }
-
+  public BProtocolSelect getProtocol() { return (BProtocolSelect)get(protocol); }
+  
   /**
    * Set the {@code protocol} property.
    * @see #protocol
    */
-  public void setProtocol(BDynamicEnum v) { set(protocol, v, null); }
+  public void setProtocol(BProtocolSelect v) { set(protocol, v, null); }
 
 ////////////////////////////////////////////////////////////////
 // Property "apiKey"
 ////////////////////////////////////////////////////////////////
-
+  
   /**
    * Slot for the {@code apiKey} property.
    * @see #getApiKey
    * @see #setApiKey
    */
   public static final Property apiKey = newProperty(0, "", null);
-
+  
   /**
    * Get the {@code apiKey} property.
    * @see #apiKey
    */
   public String getApiKey() { return getString(apiKey); }
-
+  
   /**
    * Set the {@code apiKey} property.
    * @see #apiKey
@@ -74,35 +69,12 @@ public class BImportParams extends BStruct {
   public void setApiKey(String v) { setString(apiKey, v, null); }
 
 ////////////////////////////////////////////////////////////////
-// Property "customUrl"
-////////////////////////////////////////////////////////////////
-
-  /**
-   * Slot for the {@code customUrl} property.
-   * @see #getCustomUrl
-   * @see #setCustomUrl
-   */
-  public static final Property customUrl = newProperty(0, "", null);
-
-  /**
-   * Get the {@code customUrl} property.
-   * @see #customUrl
-   */
-  public String getCustomUrl() { return getString(customUrl); }
-
-  /**
-   * Set the {@code customUrl} property.
-   * @see #customUrl
-   */
-  public void setCustomUrl(String v) { setString(customUrl, v, null); }
-
-////////////////////////////////////////////////////////////////
 // Type
 ////////////////////////////////////////////////////////////////
-
+  
   @Override
   public Type getType() { return TYPE; }
-  public static final Type TYPE = Sys.loadType(BImportParams.class);
+  public static final Type TYPE = Sys.loadType(BImportDialog.class);
 
 /*+ ------------ END BAJA AUTO GENERATED CODE -------------- +*/
 

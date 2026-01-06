@@ -32,7 +32,13 @@ import java.security.*;
 @NiagaraAction(name = "discoverBACnet", flags = Flags.ASYNC)
 @NiagaraAction(name = "discoverModbus", flags = Flags.ASYNC)
 @NiagaraAction(name = "discoverHTTP", flags = Flags.ASYNC)
-@NiagaraAction(name = "importFromApi", flags = Flags.ASYNC | Flags.SUMMARY)
+//@NiagaraAction(name = "importFromApi", flags = Flags.ASYNC | Flags.SUMMARY)
+@NiagaraAction(
+        name = "importFromApi",
+        parameterType = "BImportDialog",
+        defaultValue = "new BImportDialog()",
+        flags = Flags.ASYNC | Flags.SUMMARY
+)
 @NiagaraAction(name = "clearDevices", parameterType = "BBoolean", defaultValue = "BBoolean.FALSE", flags = Flags.ASYNC)
 @NiagaraAction(name = "ping")
 
@@ -40,26 +46,26 @@ public class BMyUniversalNetwork extends BDeviceNetwork {
 
     
 /*+ ------------ BEGIN BAJA AUTO GENERATED CODE ------------ +*/
-/*@ $com.c.myPoc.BMyUniversalNetwork(1629335218)1.0$ @*/
-/* Generated Tue Jan 06 16:14:48 ICT 2026 by Slot-o-Matic (c) Tridium, Inc. 2012 */
+/*@ $com.c.myPoc.BMyUniversalNetwork(1163805678)1.0$ @*/
+/* Generated Tue Jan 06 17:20:41 ICT 2026 by Slot-o-Matic (c) Tridium, Inc. 2012 */
 
 ////////////////////////////////////////////////////////////////
 // Property "version"
 ////////////////////////////////////////////////////////////////
-
+  
   /**
    * Slot for the {@code version} property.
    * @see #getVersion
    * @see #setVersion
    */
   public static final Property version = newProperty(Flags.READONLY, "3.7.1", null);
-
+  
   /**
    * Get the {@code version} property.
    * @see #version
    */
   public String getVersion() { return getString(version); }
-
+  
   /**
    * Set the {@code version} property.
    * @see #version
@@ -69,20 +75,20 @@ public class BMyUniversalNetwork extends BDeviceNetwork {
 ////////////////////////////////////////////////////////////////
 // Property "subnet"
 ////////////////////////////////////////////////////////////////
-
+  
   /**
    * Slot for the {@code subnet} property.
    * @see #getSubnet
    * @see #setSubnet
    */
   public static final Property subnet = newProperty(Flags.SUMMARY, "192.168.1.0/24", null);
-
+  
   /**
    * Get the {@code subnet} property.
    * @see #subnet
    */
   public String getSubnet() { return getString(subnet); }
-
+  
   /**
    * Set the {@code subnet} property.
    * @see #subnet
@@ -92,20 +98,20 @@ public class BMyUniversalNetwork extends BDeviceNetwork {
 ////////////////////////////////////////////////////////////////
 // Property "apiUrl"
 ////////////////////////////////////////////////////////////////
-
+  
   /**
    * Slot for the {@code apiUrl} property.
    * @see #getApiUrl
    * @see #setApiUrl
    */
   public static final Property apiUrl = newProperty(Flags.SUMMARY, "http://localhost:3000/integration/niagara/export?protocol=MODBUS", null);
-
+  
   /**
    * Get the {@code apiUrl} property.
    * @see #apiUrl
    */
   public String getApiUrl() { return getString(apiUrl); }
-
+  
   /**
    * Set the {@code apiUrl} property.
    * @see #apiUrl
@@ -115,20 +121,20 @@ public class BMyUniversalNetwork extends BDeviceNetwork {
 ////////////////////////////////////////////////////////////////
 // Property "apiKey"
 ////////////////////////////////////////////////////////////////
-
+  
   /**
    * Slot for the {@code apiKey} property.
    * @see #getApiKey
    * @see #setApiKey
    */
   public static final Property apiKey = newProperty(Flags.SUMMARY, "", null);
-
+  
   /**
    * Get the {@code apiKey} property.
    * @see #apiKey
    */
   public String getApiKey() { return getString(apiKey); }
-
+  
   /**
    * Set the {@code apiKey} property.
    * @see #apiKey
@@ -138,20 +144,20 @@ public class BMyUniversalNetwork extends BDeviceNetwork {
 ////////////////////////////////////////////////////////////////
 // Property "enableBACnet"
 ////////////////////////////////////////////////////////////////
-
+  
   /**
    * Slot for the {@code enableBACnet} property.
    * @see #getEnableBACnet
    * @see #setEnableBACnet
    */
   public static final Property enableBACnet = newProperty(0, true, null);
-
+  
   /**
    * Get the {@code enableBACnet} property.
    * @see #enableBACnet
    */
   public boolean getEnableBACnet() { return getBoolean(enableBACnet); }
-
+  
   /**
    * Set the {@code enableBACnet} property.
    * @see #enableBACnet
@@ -161,20 +167,20 @@ public class BMyUniversalNetwork extends BDeviceNetwork {
 ////////////////////////////////////////////////////////////////
 // Property "enableModbus"
 ////////////////////////////////////////////////////////////////
-
+  
   /**
    * Slot for the {@code enableModbus} property.
    * @see #getEnableModbus
    * @see #setEnableModbus
    */
   public static final Property enableModbus = newProperty(0, true, null);
-
+  
   /**
    * Get the {@code enableModbus} property.
    * @see #enableModbus
    */
   public boolean getEnableModbus() { return getBoolean(enableModbus); }
-
+  
   /**
    * Set the {@code enableModbus} property.
    * @see #enableModbus
@@ -184,20 +190,20 @@ public class BMyUniversalNetwork extends BDeviceNetwork {
 ////////////////////////////////////////////////////////////////
 // Property "enableHTTP"
 ////////////////////////////////////////////////////////////////
-
+  
   /**
    * Slot for the {@code enableHTTP} property.
    * @see #getEnableHTTP
    * @see #setEnableHTTP
    */
   public static final Property enableHTTP = newProperty(0, true, null);
-
+  
   /**
    * Get the {@code enableHTTP} property.
    * @see #enableHTTP
    */
   public boolean getEnableHTTP() { return getBoolean(enableHTTP); }
-
+  
   /**
    * Set the {@code enableHTTP} property.
    * @see #enableHTTP
@@ -207,20 +213,20 @@ public class BMyUniversalNetwork extends BDeviceNetwork {
 ////////////////////////////////////////////////////////////////
 // Property "scanTimeout"
 ////////////////////////////////////////////////////////////////
-
+  
   /**
    * Slot for the {@code scanTimeout} property.
    * @see #getScanTimeout
    * @see #setScanTimeout
    */
   public static final Property scanTimeout = newProperty(0, 2000, null);
-
+  
   /**
    * Get the {@code scanTimeout} property.
    * @see #scanTimeout
    */
   public int getScanTimeout() { return getInt(scanTimeout); }
-
+  
   /**
    * Set the {@code scanTimeout} property.
    * @see #scanTimeout
@@ -230,20 +236,20 @@ public class BMyUniversalNetwork extends BDeviceNetwork {
 ////////////////////////////////////////////////////////////////
 // Property "maxThreads"
 ////////////////////////////////////////////////////////////////
-
+  
   /**
    * Slot for the {@code maxThreads} property.
    * @see #getMaxThreads
    * @see #setMaxThreads
    */
   public static final Property maxThreads = newProperty(0, 50, null);
-
+  
   /**
    * Get the {@code maxThreads} property.
    * @see #maxThreads
    */
   public int getMaxThreads() { return getInt(maxThreads); }
-
+  
   /**
    * Set the {@code maxThreads} property.
    * @see #maxThreads
@@ -253,20 +259,20 @@ public class BMyUniversalNetwork extends BDeviceNetwork {
 ////////////////////////////////////////////////////////////////
 // Property "lastDiscoveryCount"
 ////////////////////////////////////////////////////////////////
-
+  
   /**
    * Slot for the {@code lastDiscoveryCount} property.
    * @see #getLastDiscoveryCount
    * @see #setLastDiscoveryCount
    */
   public static final Property lastDiscoveryCount = newProperty(Flags.READONLY, 0, null);
-
+  
   /**
    * Get the {@code lastDiscoveryCount} property.
    * @see #lastDiscoveryCount
    */
   public int getLastDiscoveryCount() { return getInt(lastDiscoveryCount); }
-
+  
   /**
    * Set the {@code lastDiscoveryCount} property.
    * @see #lastDiscoveryCount
@@ -276,20 +282,20 @@ public class BMyUniversalNetwork extends BDeviceNetwork {
 ////////////////////////////////////////////////////////////////
 // Property "lastDiscoveryTime"
 ////////////////////////////////////////////////////////////////
-
+  
   /**
    * Slot for the {@code lastDiscoveryTime} property.
    * @see #getLastDiscoveryTime
    * @see #setLastDiscoveryTime
    */
   public static final Property lastDiscoveryTime = newProperty(Flags.READONLY, "", null);
-
+  
   /**
    * Get the {@code lastDiscoveryTime} property.
    * @see #lastDiscoveryTime
    */
   public String getLastDiscoveryTime() { return getString(lastDiscoveryTime); }
-
+  
   /**
    * Set the {@code lastDiscoveryTime} property.
    * @see #lastDiscoveryTime
@@ -299,20 +305,20 @@ public class BMyUniversalNetwork extends BDeviceNetwork {
 ////////////////////////////////////////////////////////////////
 // Property "localDeviceId"
 ////////////////////////////////////////////////////////////////
-
+  
   /**
    * Slot for the {@code localDeviceId} property.
    * @see #getLocalDeviceId
    * @see #setLocalDeviceId
    */
   public static final Property localDeviceId = newProperty(0, 12345, null);
-
+  
   /**
    * Get the {@code localDeviceId} property.
    * @see #localDeviceId
    */
   public int getLocalDeviceId() { return getInt(localDeviceId); }
-
+  
   /**
    * Set the {@code localDeviceId} property.
    * @see #localDeviceId
@@ -322,13 +328,13 @@ public class BMyUniversalNetwork extends BDeviceNetwork {
 ////////////////////////////////////////////////////////////////
 // Action "discoverAll"
 ////////////////////////////////////////////////////////////////
-
+  
   /**
    * Slot for the {@code discoverAll} action.
    * @see #discoverAll()
    */
   public static final Action discoverAll = newAction(Flags.ASYNC | Flags.SUMMARY, null);
-
+  
   /**
    * Invoke the {@code discoverAll} action.
    * @see #discoverAll
@@ -338,13 +344,13 @@ public class BMyUniversalNetwork extends BDeviceNetwork {
 ////////////////////////////////////////////////////////////////
 // Action "discoverBACnet"
 ////////////////////////////////////////////////////////////////
-
+  
   /**
    * Slot for the {@code discoverBACnet} action.
    * @see #discoverBACnet()
    */
   public static final Action discoverBACnet = newAction(Flags.ASYNC, null);
-
+  
   /**
    * Invoke the {@code discoverBACnet} action.
    * @see #discoverBACnet
@@ -354,13 +360,13 @@ public class BMyUniversalNetwork extends BDeviceNetwork {
 ////////////////////////////////////////////////////////////////
 // Action "discoverModbus"
 ////////////////////////////////////////////////////////////////
-
+  
   /**
    * Slot for the {@code discoverModbus} action.
    * @see #discoverModbus()
    */
   public static final Action discoverModbus = newAction(Flags.ASYNC, null);
-
+  
   /**
    * Invoke the {@code discoverModbus} action.
    * @see #discoverModbus
@@ -370,13 +376,13 @@ public class BMyUniversalNetwork extends BDeviceNetwork {
 ////////////////////////////////////////////////////////////////
 // Action "discoverHTTP"
 ////////////////////////////////////////////////////////////////
-
+  
   /**
    * Slot for the {@code discoverHTTP} action.
    * @see #discoverHTTP()
    */
   public static final Action discoverHTTP = newAction(Flags.ASYNC, null);
-
+  
   /**
    * Invoke the {@code discoverHTTP} action.
    * @see #discoverHTTP
@@ -384,31 +390,15 @@ public class BMyUniversalNetwork extends BDeviceNetwork {
   public void discoverHTTP() { invoke(discoverHTTP, null, null); }
 
 ////////////////////////////////////////////////////////////////
-// Action "importFromApi"
-////////////////////////////////////////////////////////////////
-
-  /**
-   * Slot for the {@code importFromApi} action.
-   * @see #importFromApi()
-   */
-  public static final Action importFromApi = newAction(Flags.ASYNC | Flags.SUMMARY, null);
-
-  /**
-   * Invoke the {@code importFromApi} action.
-   * @see #importFromApi
-   */
-  public void importFromApi() { invoke(importFromApi, null, null); }
-
-////////////////////////////////////////////////////////////////
 // Action "clearDevices"
 ////////////////////////////////////////////////////////////////
-
+  
   /**
    * Slot for the {@code clearDevices} action.
    * @see #clearDevices(BBoolean parameter)
    */
   public static final Action clearDevices = newAction(Flags.ASYNC, BBoolean.FALSE, null);
-
+  
   /**
    * Invoke the {@code clearDevices} action.
    * @see #clearDevices
@@ -418,18 +408,34 @@ public class BMyUniversalNetwork extends BDeviceNetwork {
 ////////////////////////////////////////////////////////////////
 // Action "ping"
 ////////////////////////////////////////////////////////////////
-
+  
   /**
    * Slot for the {@code ping} action.
    * @see #ping()
    */
   public static final Action ping = newAction(0, null);
-
+  
   /**
    * Invoke the {@code ping} action.
    * @see #ping
    */
   public void ping() { invoke(ping, null, null); }
+
+////////////////////////////////////////////////////////////////
+// Action "importFromApi"
+////////////////////////////////////////////////////////////////
+  
+  /**
+   * Slot for the {@code importFromApi} action.
+   * @see #importFromApi(BImportDialog parameter)
+   */
+  public static final Action importFromApi = newAction(Flags.ASYNC | Flags.SUMMARY, new BImportDialog(), null);
+  
+  /**
+   * Invoke the {@code importFromApi} action.
+   * @see #importFromApi
+   */
+  public void importFromApi(BImportDialog parameter) { invoke(importFromApi, parameter, null); }
 
 ////////////////////////////////////////////////////////////////
 // Type
@@ -456,39 +462,44 @@ public class BMyUniversalNetwork extends BDeviceNetwork {
 
     // ==================== API Import Logic ====================
 
-    public void doImportFromApi() {
-        String url = getApiUrl();
-        String key = getApiKey();
+    public void doImportFromApi(BImportDialog dialog) {
+        // 1. ดึงค่าจาก Dialog
+        String apiKey = dialog.getApiKey();
+        BProtocolSelect protocolEnum = dialog.getProtocol();
+
+        // 2. เลือก URL อัตโนมัติตาม Protocol
+        String targetUrl;
+        if (protocolEnum.getOrdinal() == BProtocolSelect.BACNET) {
+            targetUrl = "http://localhost:3000/integration/niagara/export?protocol=BACNET";
+        } else {
+            targetUrl = "http://localhost:3000/integration/niagara/export?protocol=MODBUS";
+        }
 
         System.out.println("═══════════════════════════════════════════");
-        System.out.println("📥 Importing from API (Native Parser)");
-        System.out.println("   🌐 URL: " + url);
-        System.out.println("   🔑 Key: " + (key.isEmpty() ? "None" : "******"));
+        System.out.println("📥 Importing from API (Dialog Input)");
+        System.out.println("   ⚙️ Protocol: " + protocolEnum.getTag());
+        System.out.println("   🌐 URL: " + targetUrl);
+        System.out.println("   🔑 Key: " + (apiKey.isEmpty() ? "None" : "******"));
         System.out.println("═══════════════════════════════════════════");
 
         try {
-            // 1. Fetch JSON
-            String json = fetchUrl(url, key);
+            // 3. ใช้ฟังก์ชัน fetchUrl เดิม (ส่ง URL ใหม่เข้าไป)
+            String json = fetchUrl(targetUrl, apiKey);
+
             if (json == null || json.isEmpty()) {
                 System.out.println("❌ No data received from API");
                 return;
             }
 
-            // 2. Parse JSON
+            // 4. เรียกใช้ Logic การ Parse เดิมที่มีอยู่แล้ว
             Object result = new SimpleJsonParser(json).parse();
-
             if (result == null) {
-                System.err.println("❌ Failed to parse JSON or invalid format");
+                System.err.println("❌ Failed to parse JSON");
                 return;
             }
 
             Map<String, Object> root = (Map<String, Object>) result;
 
-            if (!Boolean.TRUE.equals(root.get("success"))) {
-                System.out.println("❌ API returned error or success=false");
-            }
-
-            // 3. Process Devices
             Object devicesObj = root.get("devices");
             int importedCount = 0;
 
@@ -521,7 +532,6 @@ public class BMyUniversalNetwork extends BDeviceNetwork {
             e.printStackTrace();
         }
     }
-
     private int processDeviceImport(Map<String, Object> devData) throws Exception {
         String rawName = (String) devData.get("name");
         String name = sanitizeName(rawName); // ✅ Sanitize Name

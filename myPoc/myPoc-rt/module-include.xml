@@ -15,6 +15,9 @@
   <type class="com.c.myPoc.BMyEnumPoint" name="MyEnumPoint"/>
   <type class="com.c.myPoc.BMyStringPoint" name="MyStringPoint"/>
   <type class="com.c.myPoc.BImportParams" name="ImportParams"/>
+  <type class="com.c.myPoc.BProtocolEnum" name="ProtocolEnum"/>
+  <type class="com.c.myPoc.BImportDialog" name="ImportDialog"/>
+  <type class="com.c.myPoc.BProtocolSelect" name="ProtocolSelect"/>
   <!--com.c.myPoc.BMyUniversalNetwork-->
   <type class="com.c.myPoc.BMyUniversalNetwork.BImportParams" name="ImportParams"/>
 </types>
