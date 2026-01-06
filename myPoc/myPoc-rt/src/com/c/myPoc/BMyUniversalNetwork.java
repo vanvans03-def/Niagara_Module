@@ -38,140 +38,408 @@ import java.security.*;
 
 public class BMyUniversalNetwork extends BDeviceNetwork {
 
-    /*+ ------------ BEGIN BAJA AUTO GENERATED CODE ------------ +*/
-    /*@ $com.c.myPoc.BMyUniversalNetwork(4093836791)1.0$ @*/
-    /* Generated Mon Jan 05 19:30:00 ICT 2026 by Slot-o-Matic (c) Tridium, Inc. 2012 */
+    
+/*+ ------------ BEGIN BAJA AUTO GENERATED CODE ------------ +*/
+/*@ $com.c.myPoc.BMyUniversalNetwork(1629335218)1.0$ @*/
+/* Generated Tue Jan 06 16:14:48 ICT 2026 by Slot-o-Matic (c) Tridium, Inc. 2012 */
 
 ////////////////////////////////////////////////////////////////
 // Property "version"
 ////////////////////////////////////////////////////////////////
 
-    public static final Property version = newProperty(Flags.READONLY, "3.7.1", null);
-    public String getVersion() { return getString(version); }
-    public void setVersion(String v) { setString(version, v, null); }
+  /**
+   * Slot for the {@code version} property.
+   * @see #getVersion
+   * @see #setVersion
+   */
+  public static final Property version = newProperty(Flags.READONLY, "3.7.1", null);
+
+  /**
+   * Get the {@code version} property.
+   * @see #version
+   */
+  public String getVersion() { return getString(version); }
+
+  /**
+   * Set the {@code version} property.
+   * @see #version
+   */
+  public void setVersion(String v) { setString(version, v, null); }
 
 ////////////////////////////////////////////////////////////////
 // Property "subnet"
 ////////////////////////////////////////////////////////////////
 
-    public static final Property subnet = newProperty(Flags.SUMMARY, "192.168.1.0/24", null);
-    public String getSubnet() { return getString(subnet); }
-    public void setSubnet(String v) { setString(subnet, v, null); }
+  /**
+   * Slot for the {@code subnet} property.
+   * @see #getSubnet
+   * @see #setSubnet
+   */
+  public static final Property subnet = newProperty(Flags.SUMMARY, "192.168.1.0/24", null);
+
+  /**
+   * Get the {@code subnet} property.
+   * @see #subnet
+   */
+  public String getSubnet() { return getString(subnet); }
+
+  /**
+   * Set the {@code subnet} property.
+   * @see #subnet
+   */
+  public void setSubnet(String v) { setString(subnet, v, null); }
 
 ////////////////////////////////////////////////////////////////
 // Property "apiUrl"
 ////////////////////////////////////////////////////////////////
 
-    public static final Property apiUrl = newProperty(Flags.SUMMARY, "http://localhost:3000/integration/niagara/export?protocol=MODBUS", null);
-    public String getApiUrl() { return getString(apiUrl); }
-    public void setApiUrl(String v) { setString(apiUrl, v, null); }
+  /**
+   * Slot for the {@code apiUrl} property.
+   * @see #getApiUrl
+   * @see #setApiUrl
+   */
+  public static final Property apiUrl = newProperty(Flags.SUMMARY, "http://localhost:3000/integration/niagara/export?protocol=MODBUS", null);
+
+  /**
+   * Get the {@code apiUrl} property.
+   * @see #apiUrl
+   */
+  public String getApiUrl() { return getString(apiUrl); }
+
+  /**
+   * Set the {@code apiUrl} property.
+   * @see #apiUrl
+   */
+  public void setApiUrl(String v) { setString(apiUrl, v, null); }
 
 ////////////////////////////////////////////////////////////////
 // Property "apiKey"
 ////////////////////////////////////////////////////////////////
 
-    public static final Property apiKey = newProperty(Flags.SUMMARY, "", null);
-    public String getApiKey() { return getString(apiKey); }
-    public void setApiKey(String v) { setString(apiKey, v, null); }
+  /**
+   * Slot for the {@code apiKey} property.
+   * @see #getApiKey
+   * @see #setApiKey
+   */
+  public static final Property apiKey = newProperty(Flags.SUMMARY, "", null);
+
+  /**
+   * Get the {@code apiKey} property.
+   * @see #apiKey
+   */
+  public String getApiKey() { return getString(apiKey); }
+
+  /**
+   * Set the {@code apiKey} property.
+   * @see #apiKey
+   */
+  public void setApiKey(String v) { setString(apiKey, v, null); }
 
 ////////////////////////////////////////////////////////////////
 // Property "enableBACnet"
 ////////////////////////////////////////////////////////////////
 
-    public static final Property enableBACnet = newProperty(0, true, null);
-    public boolean getEnableBACnet() { return getBoolean(enableBACnet); }
-    public void setEnableBACnet(boolean v) { setBoolean(enableBACnet, v, null); }
+  /**
+   * Slot for the {@code enableBACnet} property.
+   * @see #getEnableBACnet
+   * @see #setEnableBACnet
+   */
+  public static final Property enableBACnet = newProperty(0, true, null);
+
+  /**
+   * Get the {@code enableBACnet} property.
+   * @see #enableBACnet
+   */
+  public boolean getEnableBACnet() { return getBoolean(enableBACnet); }
+
+  /**
+   * Set the {@code enableBACnet} property.
+   * @see #enableBACnet
+   */
+  public void setEnableBACnet(boolean v) { setBoolean(enableBACnet, v, null); }
 
 ////////////////////////////////////////////////////////////////
 // Property "enableModbus"
 ////////////////////////////////////////////////////////////////
 
-    public static final Property enableModbus = newProperty(0, true, null);
-    public boolean getEnableModbus() { return getBoolean(enableModbus); }
-    public void setEnableModbus(boolean v) { setBoolean(enableModbus, v, null); }
+  /**
+   * Slot for the {@code enableModbus} property.
+   * @see #getEnableModbus
+   * @see #setEnableModbus
+   */
+  public static final Property enableModbus = newProperty(0, true, null);
+
+  /**
+   * Get the {@code enableModbus} property.
+   * @see #enableModbus
+   */
+  public boolean getEnableModbus() { return getBoolean(enableModbus); }
+
+  /**
+   * Set the {@code enableModbus} property.
+   * @see #enableModbus
+   */
+  public void setEnableModbus(boolean v) { setBoolean(enableModbus, v, null); }
 
 ////////////////////////////////////////////////////////////////
 // Property "enableHTTP"
 ////////////////////////////////////////////////////////////////
 
-    public static final Property enableHTTP = newProperty(0, true, null);
-    public boolean getEnableHTTP() { return getBoolean(enableHTTP); }
-    public void setEnableHTTP(boolean v) { setBoolean(enableHTTP, v, null); }
+  /**
+   * Slot for the {@code enableHTTP} property.
+   * @see #getEnableHTTP
+   * @see #setEnableHTTP
+   */
+  public static final Property enableHTTP = newProperty(0, true, null);
+
+  /**
+   * Get the {@code enableHTTP} property.
+   * @see #enableHTTP
+   */
+  public boolean getEnableHTTP() { return getBoolean(enableHTTP); }
+
+  /**
+   * Set the {@code enableHTTP} property.
+   * @see #enableHTTP
+   */
+  public void setEnableHTTP(boolean v) { setBoolean(enableHTTP, v, null); }
 
 ////////////////////////////////////////////////////////////////
 // Property "scanTimeout"
 ////////////////////////////////////////////////////////////////
 
-    public static final Property scanTimeout = newProperty(0, 2000, null);
-    public int getScanTimeout() { return getInt(scanTimeout); }
-    public void setScanTimeout(int v) { setInt(scanTimeout, v, null); }
+  /**
+   * Slot for the {@code scanTimeout} property.
+   * @see #getScanTimeout
+   * @see #setScanTimeout
+   */
+  public static final Property scanTimeout = newProperty(0, 2000, null);
+
+  /**
+   * Get the {@code scanTimeout} property.
+   * @see #scanTimeout
+   */
+  public int getScanTimeout() { return getInt(scanTimeout); }
+
+  /**
+   * Set the {@code scanTimeout} property.
+   * @see #scanTimeout
+   */
+  public void setScanTimeout(int v) { setInt(scanTimeout, v, null); }
 
 ////////////////////////////////////////////////////////////////
 // Property "maxThreads"
 ////////////////////////////////////////////////////////////////
 
-    public static final Property maxThreads = newProperty(0, 50, null);
-    public int getMaxThreads() { return getInt(maxThreads); }
-    public void setMaxThreads(int v) { setInt(maxThreads, v, null); }
+  /**
+   * Slot for the {@code maxThreads} property.
+   * @see #getMaxThreads
+   * @see #setMaxThreads
+   */
+  public static final Property maxThreads = newProperty(0, 50, null);
+
+  /**
+   * Get the {@code maxThreads} property.
+   * @see #maxThreads
+   */
+  public int getMaxThreads() { return getInt(maxThreads); }
+
+  /**
+   * Set the {@code maxThreads} property.
+   * @see #maxThreads
+   */
+  public void setMaxThreads(int v) { setInt(maxThreads, v, null); }
 
 ////////////////////////////////////////////////////////////////
 // Property "lastDiscoveryCount"
 ////////////////////////////////////////////////////////////////
 
-    public static final Property lastDiscoveryCount = newProperty(Flags.READONLY, 0, null);
-    public int getLastDiscoveryCount() { return getInt(lastDiscoveryCount); }
-    public void setLastDiscoveryCount(int v) { setInt(lastDiscoveryCount, v, null); }
+  /**
+   * Slot for the {@code lastDiscoveryCount} property.
+   * @see #getLastDiscoveryCount
+   * @see #setLastDiscoveryCount
+   */
+  public static final Property lastDiscoveryCount = newProperty(Flags.READONLY, 0, null);
+
+  /**
+   * Get the {@code lastDiscoveryCount} property.
+   * @see #lastDiscoveryCount
+   */
+  public int getLastDiscoveryCount() { return getInt(lastDiscoveryCount); }
+
+  /**
+   * Set the {@code lastDiscoveryCount} property.
+   * @see #lastDiscoveryCount
+   */
+  public void setLastDiscoveryCount(int v) { setInt(lastDiscoveryCount, v, null); }
 
 ////////////////////////////////////////////////////////////////
 // Property "lastDiscoveryTime"
 ////////////////////////////////////////////////////////////////
 
-    public static final Property lastDiscoveryTime = newProperty(Flags.READONLY, "", null);
-    public String getLastDiscoveryTime() { return getString(lastDiscoveryTime); }
-    public void setLastDiscoveryTime(String v) { setString(lastDiscoveryTime, v, null); }
+  /**
+   * Slot for the {@code lastDiscoveryTime} property.
+   * @see #getLastDiscoveryTime
+   * @see #setLastDiscoveryTime
+   */
+  public static final Property lastDiscoveryTime = newProperty(Flags.READONLY, "", null);
+
+  /**
+   * Get the {@code lastDiscoveryTime} property.
+   * @see #lastDiscoveryTime
+   */
+  public String getLastDiscoveryTime() { return getString(lastDiscoveryTime); }
+
+  /**
+   * Set the {@code lastDiscoveryTime} property.
+   * @see #lastDiscoveryTime
+   */
+  public void setLastDiscoveryTime(String v) { setString(lastDiscoveryTime, v, null); }
 
 ////////////////////////////////////////////////////////////////
 // Property "localDeviceId"
 ////////////////////////////////////////////////////////////////
 
-    public static final Property localDeviceId = newProperty(0, 12345, null);
-    public int getLocalDeviceId() { return getInt(localDeviceId); }
-    public void setLocalDeviceId(int v) { setInt(localDeviceId, v, null); }
+  /**
+   * Slot for the {@code localDeviceId} property.
+   * @see #getLocalDeviceId
+   * @see #setLocalDeviceId
+   */
+  public static final Property localDeviceId = newProperty(0, 12345, null);
+
+  /**
+   * Get the {@code localDeviceId} property.
+   * @see #localDeviceId
+   */
+  public int getLocalDeviceId() { return getInt(localDeviceId); }
+
+  /**
+   * Set the {@code localDeviceId} property.
+   * @see #localDeviceId
+   */
+  public void setLocalDeviceId(int v) { setInt(localDeviceId, v, null); }
 
 ////////////////////////////////////////////////////////////////
-// Actions
+// Action "discoverAll"
 ////////////////////////////////////////////////////////////////
 
-    public static final Action discoverAll = newAction(Flags.ASYNC | Flags.SUMMARY, null);
-    public void discoverAll() { invoke(discoverAll, null, null); }
+  /**
+   * Slot for the {@code discoverAll} action.
+   * @see #discoverAll()
+   */
+  public static final Action discoverAll = newAction(Flags.ASYNC | Flags.SUMMARY, null);
 
-    public static final Action discoverBACnet = newAction(Flags.ASYNC, null);
-    public void discoverBACnet() { invoke(discoverBACnet, null, null); }
+  /**
+   * Invoke the {@code discoverAll} action.
+   * @see #discoverAll
+   */
+  public void discoverAll() { invoke(discoverAll, null, null); }
 
-    public static final Action discoverModbus = newAction(Flags.ASYNC, null);
-    public void discoverModbus() { invoke(discoverModbus, null, null); }
+////////////////////////////////////////////////////////////////
+// Action "discoverBACnet"
+////////////////////////////////////////////////////////////////
 
-    public static final Action discoverHTTP = newAction(Flags.ASYNC, null);
-    public void discoverHTTP() { invoke(discoverHTTP, null, null); }
+  /**
+   * Slot for the {@code discoverBACnet} action.
+   * @see #discoverBACnet()
+   */
+  public static final Action discoverBACnet = newAction(Flags.ASYNC, null);
 
-    public static final Action importFromApi = newAction(Flags.ASYNC | Flags.SUMMARY, null);
-    public void importFromApi() { invoke(importFromApi, null, null); }
+  /**
+   * Invoke the {@code discoverBACnet} action.
+   * @see #discoverBACnet
+   */
+  public void discoverBACnet() { invoke(discoverBACnet, null, null); }
 
-    public static final Action clearDevices = newAction(Flags.ASYNC, BBoolean.FALSE, null);
-    public void clearDevices(BBoolean confirm) { invoke(clearDevices, confirm, null); }
+////////////////////////////////////////////////////////////////
+// Action "discoverModbus"
+////////////////////////////////////////////////////////////////
 
-    public static final Action ping = newAction(0, null);
-    public void ping() { invoke(ping, null, null); }
+  /**
+   * Slot for the {@code discoverModbus} action.
+   * @see #discoverModbus()
+   */
+  public static final Action discoverModbus = newAction(Flags.ASYNC, null);
+
+  /**
+   * Invoke the {@code discoverModbus} action.
+   * @see #discoverModbus
+   */
+  public void discoverModbus() { invoke(discoverModbus, null, null); }
+
+////////////////////////////////////////////////////////////////
+// Action "discoverHTTP"
+////////////////////////////////////////////////////////////////
+
+  /**
+   * Slot for the {@code discoverHTTP} action.
+   * @see #discoverHTTP()
+   */
+  public static final Action discoverHTTP = newAction(Flags.ASYNC, null);
+
+  /**
+   * Invoke the {@code discoverHTTP} action.
+   * @see #discoverHTTP
+   */
+  public void discoverHTTP() { invoke(discoverHTTP, null, null); }
+
+////////////////////////////////////////////////////////////////
+// Action "importFromApi"
+////////////////////////////////////////////////////////////////
+
+  /**
+   * Slot for the {@code importFromApi} action.
+   * @see #importFromApi()
+   */
+  public static final Action importFromApi = newAction(Flags.ASYNC | Flags.SUMMARY, null);
+
+  /**
+   * Invoke the {@code importFromApi} action.
+   * @see #importFromApi
+   */
+  public void importFromApi() { invoke(importFromApi, null, null); }
+
+////////////////////////////////////////////////////////////////
+// Action "clearDevices"
+////////////////////////////////////////////////////////////////
+
+  /**
+   * Slot for the {@code clearDevices} action.
+   * @see #clearDevices(BBoolean parameter)
+   */
+  public static final Action clearDevices = newAction(Flags.ASYNC, BBoolean.FALSE, null);
+
+  /**
+   * Invoke the {@code clearDevices} action.
+   * @see #clearDevices
+   */
+  public void clearDevices(BBoolean parameter) { invoke(clearDevices, parameter, null); }
+
+////////////////////////////////////////////////////////////////
+// Action "ping"
+////////////////////////////////////////////////////////////////
+
+  /**
+   * Slot for the {@code ping} action.
+   * @see #ping()
+   */
+  public static final Action ping = newAction(0, null);
+
+  /**
+   * Invoke the {@code ping} action.
+   * @see #ping
+   */
+  public void ping() { invoke(ping, null, null); }
 
 ////////////////////////////////////////////////////////////////
 // Type
 ////////////////////////////////////////////////////////////////
+  
+  @Override
+  public Type getType() { return TYPE; }
+  public static final Type TYPE = Sys.loadType(BMyUniversalNetwork.class);
 
-    @Override
-    public Type getType() { return TYPE; }
-    public static final Type TYPE = Sys.loadType(BMyUniversalNetwork.class);
-
-    /*+ ------------ END BAJA AUTO GENERATED CODE -------------- +*/
+/*+ ------------ END BAJA AUTO GENERATED CODE -------------- +*/
 
     // ==================== Constants ====================
     private static final int BACNET_PORT = 47808;

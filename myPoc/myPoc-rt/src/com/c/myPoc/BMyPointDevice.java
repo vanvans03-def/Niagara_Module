@@ -337,8 +337,9 @@ public class BMyPointDevice extends BDevice {
         // 2. Add the point
         if (addDynamicPoint(name, protocol, address, niagaraType)) {
             // 3. Set additional properties if they exist
-            setPointRegisterType(name, objectType); // e.g. "HOLDING_REGISTER" or "OBJECT_ANALOG_INPUT"
-            System.out.println("   ✓ Imported Point: " + name + " [" + address + "]");
+            // ✅ Fix: Call this unconditionally with the smart logic
+            setPointRegisterType(name, objectType);
+            System.out.println("   ✓ Imported Point: " + name + " [" + address + "] Type: " + objectType);
         } else {
             System.out.println("   ⚠️ Point exists/skipped: " + name);
         }
@@ -454,9 +455,9 @@ public class BMyPointDevice extends BDevice {
                 Type targetType = selectPointType(typeName);
 
                 if (addDynamicPoint(pointName, "bacnet", instance, targetType)) {
-                    if (targetType == BMyProxyPoint.TYPE) {
-                        setPointRegisterType(pointName, typeName);
-                    }
+                    // ✅ Fix: Set registerType regardless of point class (handled safely inside)
+                    setPointRegisterType(pointName, typeName);
+
                     created++;
                     System.out.println("✓ Created: " + pointName + " (Type: " + typeName + ")");
                 } else {
@@ -658,6 +659,8 @@ public class BMyPointDevice extends BDevice {
         for (int i = 0; i < 10; i++) {
             String propName = "HR" + i;
             if (addDynamicPoint(propName, "modbus", i, BMyProxyPoint.TYPE)) {
+                // ✅ Fix: Explicitly set Holding type
+                setPointRegisterType(propName, "holding");
                 count++;
                 System.out.println("   ✓ Created: " + propName);
             }
@@ -1020,17 +1023,74 @@ public class BMyPointDevice extends BDevice {
         }
     }
 
+    // ==================== [FIX] Type Mapping Helper ====================
+
+    /**
+     * แก้ไข: ฟังก์ชันตั้งค่า Register Type ให้รองรับ BDynamicEnum อย่างถูกต้อง
+     * รองรับทั้ง BACnet (AI, AO, AV...) และ Modbus (Holding, Input, Coil...)
+     */
     private void setPointRegisterType(String propName, String typeName) {
         try {
             BComponent pointsFolder = getPointsFolder();
             BComplex point = (BComplex) pointsFolder.get(propName);
-            if (point != null) {
-                try {
-                    point.set("registerType", BString.make(typeName));
-                } catch (Exception e) { }
+            if (point == null) return;
+
+            Property regTypeProp = point.getProperty("registerType");
+            if (regTypeProp == null) return;
+
+            String targetTag = normalizeRegisterType(typeName);
+
+            BValue val = point.get(regTypeProp);
+            if (val instanceof BDynamicEnum) {
+                BDynamicEnum dyn = (BDynamicEnum) val;
+                BEnumRange range = dyn.getRange();
+
+                BEnum enm = range.get(targetTag);
+
+                if (enm == null) {
+                    int[] ordinals = range.getOrdinals();
+                    for (int ord : ordinals) {
+                        if (range.get(ord).getTag().equalsIgnoreCase(targetTag)) {
+                            enm = range.get(ord);
+                            break;
+                        }
+                    }
+                }
+
+                if (enm != null) {
+                    point.set(regTypeProp, BDynamicEnum.make(enm.getOrdinal(), range));
+                    System.out.println("   -> [Auto-Config] Set " + propName + " type to " + enm.getTag());
+                } else {
+                    System.out.println("   -> [Warning] Could not map type '" + typeName + "' to any Enum option.");
+                }
             }
-        } catch (Exception e) { }
+        } catch (Exception e) {
+            System.err.println("   -> [Error] Failed to set registerType: " + e.getMessage());
+        }
     }
+
+    private String normalizeRegisterType(String raw) {
+        if (raw == null) return "holding";
+        String s = raw.toUpperCase().trim();
+
+        // --- BACnet ---
+        if (s.equals("AI") || (s.contains("ANALOG") && s.contains("INPUT"))) return "AI";
+        if (s.equals("AO") || (s.contains("ANALOG") && s.contains("OUTPUT"))) return "AO";
+        if (s.equals("AV") || (s.contains("ANALOG") && s.contains("VALUE"))) return "AV";
+        if (s.equals("BI") || (s.contains("BINARY") && s.contains("INPUT"))) return "BI";
+        if (s.equals("BO") || (s.contains("BINARY") && s.contains("OUTPUT"))) return "BO";
+        if (s.equals("BV") || (s.contains("BINARY") && s.contains("VALUE"))) return "BV";
+        if (s.equals("MI") || s.contains("MULTI")) return "AV"; // Map Multistate to AV for now
+
+        // --- Modbus ---
+        if (s.contains("HOLDING") || s.contains("HR")) return "holding";
+        if (s.contains("INPUT") && s.contains("REG")) return "input"; // Input Register
+        if (s.contains("COIL")) return "coil";
+        if (s.contains("DISCRETE") || s.contains("IST") || s.contains("DI")) return "discrete";
+
+        return "holding"; // Default fallback
+    }
+
 
     private int parseDeviceIdFromName(String name) {
         try {
